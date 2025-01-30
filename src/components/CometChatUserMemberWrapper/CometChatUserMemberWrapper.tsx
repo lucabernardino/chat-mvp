@@ -1,25 +1,17 @@
-import { CSSProperties, useContext } from 'react';
 import { CometChatUsers } from '../CometChatUsers/CometChatUsers';
 import { CometChatGroupMembers } from '../CometChatGroupMembers/CometChatGroupMembers';
 import { UserMemberListType } from '../../Enums/Enums';
 
-
 export interface MentionsProps {
   userMemberListType?: UserMemberListType;
   onItemClick?: (user: CometChat.User | CometChat.GroupMember) => void;
-  listItemView?: (item?: CometChat.User | CometChat.GroupMember) => JSX.Element
-  statusIndicatorStyle?: CSSProperties;
+  itemView?: (item?: CometChat.User | CometChat.GroupMember) => JSX.Element;
   searchKeyword?: string;
   group?: CometChat.Group;
   subtitleView?: (item?: CometChat.User | CometChat.GroupMember) => JSX.Element;
   usersRequestBuilder?: CometChat.UsersRequestBuilder;
-  disableUsersPresence?: boolean;
-  hideSeparator?: boolean;
-  loadingStateView?: JSX.Element;
   onEmpty?: () => void;
   groupMemberRequestBuilder?: CometChat.GroupMembersRequestBuilder;
-  loadingIconUrl?: string;
-  disableLoadingState?: boolean,
   onError?: () => void;
 }
 
@@ -27,25 +19,15 @@ export function CometChatUserMemberWrapper(props: MentionsProps) {
   const {
     userMemberListType = UserMemberListType.users,
     onItemClick,
-    listItemView,
-    statusIndicatorStyle,
+    itemView,
     searchKeyword,
     group,
     subtitleView,
     usersRequestBuilder,
-    loadingStateView,
     onEmpty,
     groupMemberRequestBuilder,
-    loadingIconUrl,
-    disableLoadingState = false,
-    hideSeparator = false,
     onError,
-    disableUsersPresence
   } = props;
-
-
-
-
 
   return (
     <>
@@ -55,7 +37,7 @@ export function CometChatUserMemberWrapper(props: MentionsProps) {
           showSectionHeader={false}
           onItemClick={onItemClick}
           searchKeyword={searchKeyword}
-          itemView={listItemView}
+          itemView={itemView}
           usersRequestBuilder={usersRequestBuilder}
           subtitleView={subtitleView}
           onEmpty={onEmpty}
@@ -71,7 +53,7 @@ export function CometChatUserMemberWrapper(props: MentionsProps) {
           groupMemberRequestBuilder={groupMemberRequestBuilder}
           onItemClick={onItemClick}
           searchKeyword={searchKeyword}
-          itemView={listItemView}
+          itemView={itemView}
           subtitleView={subtitleView}
           onEmpty={onEmpty}
           trailingView={(entity: CometChat.GroupMember) => { return <></> }}

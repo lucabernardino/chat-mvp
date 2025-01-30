@@ -1082,7 +1082,7 @@ export class MessagesDataSource implements DataSource {
 
     const fullScreenViewer = (
       <CometChatFullScreenViewer
-        URL={message?.getAttachments()[0]?.getUrl() ?? imageUrl}
+        url={message?.getAttachments()[0]?.getUrl() ?? imageUrl}
         ccCloseClicked={() => {
           CometChatUIEvents.ccHideDialog.next();
         }}

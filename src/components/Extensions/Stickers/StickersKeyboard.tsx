@@ -118,6 +118,9 @@ const StickersKeyboard = (props: StickersKeyboardProps) => {
 
       const categoryUrls = Object.keys(stickerSet).map(sectionItem => stickerSet[sectionItem][0]);
       setCategoryStickerUrl(categoryUrls);
+      if (!activeTab) {
+        setActiveTab(categoryUrls?.[0]?.stickerSetName);
+      }
     } catch (error) {
       console.error(error);
       setState(States.error);

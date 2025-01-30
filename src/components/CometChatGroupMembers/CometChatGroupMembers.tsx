@@ -752,6 +752,8 @@ export function CometChatGroupMembers(props: GroupMembersProps) {
       if (selectionMode === SelectionMode.single) {
         return (
           <CometChatRadioButton
+            name={CometChatUIKitConstants.radioNames.groupMembers}
+            id={groupMember.getUid()}
             onRadioButtonChanged={(e) => onSelect?.(groupMember, e.checked)}
           />
         );

@@ -176,11 +176,11 @@ const CometChatCallButtons = (props: CallButtonsPropsType) => {
               sessionIdRef.current = "";
               return;
             }
+            sessionIdRef.current = call.getSessionId();
             setShowOutgoingCallScreen(false);
             setShowOngoingCall(true);
             setDisableButtons(true);
             callRef.current = call;
-            sessionIdRef.current = call.getSessionId();
           },
         })
       );

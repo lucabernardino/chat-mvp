@@ -25,6 +25,7 @@ const CometChatEmojiKeyboard = (props: EmojiKeyboardProps) => {
     const {
         emojiDataState,
         activeCategory,
+        setActiveCategory,
         searchEmojiData,
         searchString,
         getEmojiData,
@@ -33,11 +34,17 @@ const CometChatEmojiKeyboard = (props: EmojiKeyboardProps) => {
         filterEmojis,
     } = useCometChatEmojiKeyboard({ emojiData });
 
-  const scrollRef = useRef<HTMLDivElement | null>(null);
+    const scrollRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
         getEmojiCategory()
     }, [])
+
+    useEffect(() => {
+        if (!activeCategory) {
+            setActiveCategory(emojiDataState[0]?.id);
+        }
+    }, [emojiDataState]);
 
     const getEmojiListComponent = (emojiData: { [key: string]: CometChatEmoji }) => {
         return (
@@ -57,34 +64,34 @@ const CometChatEmojiKeyboard = (props: EmojiKeyboardProps) => {
     }
 
 
-/**
- * Handles the wheel event to enable smooth horizontal scrolling of the container.
- *
- * @param {React.WheelEvent<HTMLDivElement>} e - The wheel event triggered on the scrollable container.
- * This event provides information about the scrolling direction and distance.
- * 
- * @returns {void} - This function does not return a value.
- */
-const onWheel = useCallback((e: React.WheelEvent<HTMLDivElement>) => {
-    const container = scrollRef.current;
-  
-    if (container) {
-      const containerScrollPosition = container.scrollLeft;
-      
-      let scrollAmount = e.deltaY * 0.5; // Default for normal mice
-  
-      if (e.deltaMode === 1 || e.deltaY > 100) {
-        // Handle hyper scroll or fast-scrolling devices
-        scrollAmount = e.deltaY * 0.2; // Slow down for hyper scroll
-      }
-  
-      container.scrollTo({
-        top: 0,
-        left: containerScrollPosition + scrollAmount,
-        behavior: 'auto', // Use 'auto' to avoid jitter on hyper scroll
-      });
-    }
-  }, []);
+    /**
+     * Handles the wheel event to enable smooth horizontal scrolling of the container.
+     *
+     * @param {React.WheelEvent<HTMLDivElement>} e - The wheel event triggered on the scrollable container.
+     * This event provides information about the scrolling direction and distance.
+     * 
+     * @returns {void} - This function does not return a value.
+     */
+    const onWheel = useCallback((e: React.WheelEvent<HTMLDivElement>) => {
+        const container = scrollRef.current;
+
+        if (container) {
+            const containerScrollPosition = container.scrollLeft;
+
+            let scrollAmount = e.deltaY * 0.5; // Default for normal mice
+
+            if (e.deltaMode === 1 || e.deltaY > 100) {
+                // Handle hyper scroll or fast-scrolling devices
+                scrollAmount = e.deltaY * 0.2; // Slow down for hyper scroll
+            }
+
+            container.scrollTo({
+                top: 0,
+                left: containerScrollPosition + scrollAmount,
+                behavior: 'auto', // Use 'auto' to avoid jitter on hyper scroll
+            });
+        }
+    }, []);
 
     return (
         <div className="cometchat" style={{
@@ -93,8 +100,8 @@ const onWheel = useCallback((e: React.WheelEvent<HTMLDivElement>) => {
         }}>
             <div className="cometchat-emoji-keyboard">
                 <div className="cometchat-emoji-keyboard__tabs"
-                ref={scrollRef}
-                onWheel={onWheel}
+                    ref={scrollRef}
+                    onWheel={onWheel}
                 >
                     {emojiDataState.map((emoji: CometChatEmojiCategory, counter: number) =>
                         <div

@@ -16,6 +16,7 @@ import emptyIconDark from "../../assets/groups_empty_state_dark.svg";
 import errorIcon from "../../assets/list_error_state_icon.svg"
 import errorIconDark from "../../assets/list_error_state_icon_dark.svg"
 import { getThemeMode } from "../../utils/util";
+import { CometChatUIKitConstants } from "../../constants/CometChatUIKitConstants";
 interface GroupsProps {
     /**
      * Hides the default search bar.
@@ -463,6 +464,8 @@ export function CometChatGroups(props: GroupsProps) {
                 case SelectionMode.single: {
                     return (
                         <CometChatRadioButton
+                            name={CometChatUIKitConstants.radioNames.groups}
+                            id={group.getGuid()}
                             onRadioButtonChanged={e => onSelect?.(group, e.checked)}
                         />
                     );

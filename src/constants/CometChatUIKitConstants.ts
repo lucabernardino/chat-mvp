@@ -136,10 +136,17 @@ export class CometChatUIKitConstants {
 
     static requestBuilderLimits = Object.freeze({
         reactionListLimit: 10,
-        reactionInfoLimit:10,
+        reactionInfoLimit: 10,
         messageListLimit: 30,
         usersLimit: 30,
         groupsLimit: 30,
     })
 
+    static radioNames = Object.freeze({
+        conversations: "conversations",
+        users: "users",
+        groups: "groups",
+        changeScope: "changeScope",
+        groupMembers: "groupMembers",
+    })
 }

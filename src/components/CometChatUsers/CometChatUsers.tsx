@@ -24,6 +24,7 @@ import emptyIconDark from "../../assets/user_empty_dark.svg";
 import errorIcon from "../../assets/list_error_state_icon.svg"
 import errorIconDark from "../../assets/list_error_state_icon_dark.svg"
 import { getThemeMode } from "../../utils/util";
+import { CometChatUIKitConstants } from "../../constants/CometChatUIKitConstants";
 
 export interface UsersProps {
   /**
@@ -479,6 +480,8 @@ export function CometChatUsers(props: UsersProps) {
       if (selectionMode === SelectionMode.single) {
         tailViewContent = (
           <CometChatRadioButton
+            name={CometChatUIKitConstants.radioNames.users}
+            id={user.getUid()}
             onRadioButtonChanged={(e) => onSelect?.(user, e.checked)}
           />
         );

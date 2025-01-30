@@ -75,11 +75,9 @@
   flex-shrink: 0;
   width: 48px;
   height: 48px;
-  border-radius: var(--cometchat-radius-max,1000px);
-  background: var(
-    --cometchat-shimmer-gradient-color,
-    linear-gradient(90deg, #e0e0e0 0%, #eee 100%)
-  );
+  border-radius: var(--cometchat-radius-max, 1000px);
+  background: var(--cometchat-shimmer-gradient-color,
+      linear-gradient(90deg, #e0e0e0 0%, #eee 100%));
 }
 
 .cometchat-users__shimmer-item-body {
@@ -91,27 +89,23 @@
 }
 
 .cometchat-users__shimmer-item-title {
-  width: 50%;
+  width: calc(100% - 64px);
   height: 22px;
   flex-shrink: 0;
   border-radius: var(--cometchat-radius-2, 8px);
-  background: var(
-    --cometchat-shimmer-gradient-color,
-    linear-gradient(90deg, #e0e0e0 0%, #eee 100%)
-  );
+  background: var(--cometchat-shimmer-gradient-color,
+      linear-gradient(90deg, #e0e0e0 0%, #eee 100%));
   animation: shimmerAnimation 1.5s infinite linear;
 
 }
 
 .cometchat-users__shimmer-item-body-subtitle {
-  width:25%;
+  width: 25%;
   height: 12px;
   flex-shrink: 0;
   border-radius: var(--cometchat-radius-2, 8px);
-  background: var(
-    --cometchat-shimmer-gradient-color,
-    linear-gradient(90deg, #e0e0e0 0%, #eee 100%)
-  );
+  background: var(--cometchat-shimmer-gradient-color,
+      linear-gradient(90deg, #e0e0e0 0%, #eee 100%));
   animation: shimmerAnimation 1.5s infinite linear;
 
 }
@@ -124,21 +118,22 @@
   top: 20px;
   right: 15px;
   border-radius: var(--cometchat-radius-max, 1000px);
-  background:  var(--cometchat-success-color,#09C26F);
+  background: var(--cometchat-success-color, #09C26F);
   min-width: 14px;
-  border: 2px solid var(--cometchat-neutral-color-50,#FFFFFF);
+  border: 2px solid var(--cometchat-neutral-color-50, #FFFFFF);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.cometchat-users__list-item-active .cometchat-list-item{
-  background-color:var(--cometchat-white-pressed,#E8E8E8)
+.cometchat-users__list-item-active .cometchat-list-item {
+  background-color: var(--cometchat-white-pressed, #E8E8E8)
 }
 
-.cometchat-users__list-item  {
+.cometchat-users__list-item {
   cursor: pointer;
 }
+
 .cometchat-users__list-item .cometchat-avatar {
   width: 40px;
   height: 40px;
@@ -155,11 +150,11 @@
 }
 
 @keyframes shimmerAnimation {
-    0% {
-      background-position: -468px 0;
-    }
-  
-    100% {
-      background-position: 468px 0;
-    }
+  0% {
+    background-position: -468px 0;
   }
+
+  100% {
+    background-position: 468px 0;
+  }
+}

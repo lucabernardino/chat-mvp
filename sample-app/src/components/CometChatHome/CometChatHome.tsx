@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import blockIcon from "../../assets/block.svg";
 import deleteIcon from "../../assets/delete.svg";
 import { COMETCHAT_CONSTANTS } from "../../AppConstants";
@@ -479,6 +479,69 @@ function CometChatHome(props: { theme?: string }) {
                 setGroup(newChat.group);
             }
         }, [newChat]);
+
+        const updateGroupDetails = (eventGroup: CometChat.Group) => {
+            if (eventGroup.getGuid() === group?.getGuid()) {
+                setGroup(eventGroup);
+            }
+        }
+
+        const attachSDKGroupListenerForDetails = () => {
+            const listenerId = "GroupDetailsListener_" + String(Date.now());
+            CometChat.addGroupListener(
+                listenerId,
+                new CometChat.GroupListener({
+                    onGroupMemberBanned: (
+                        message: CometChat.Action,
+                        bannedUser: CometChat.User,
+                        bannedBy: CometChat.User,
+                        bannedFrom: CometChat.Group
+                    ) => {
+                        updateGroupDetails(bannedFrom);
+                    },
+                    onGroupMemberKicked: (
+                        message: CometChat.Action,
+                        kickedUser: CometChat.User,
+                        kickedBy: CometChat.User,
+                        kickedFrom: CometChat.Group
+                    ) => {
+                        updateGroupDetails(kickedFrom);
+                    },
+                    onMemberAddedToGroup: (
+                        message: CometChat.Action,
+                        userAdded: CometChat.User,
+                        userAddedBy: CometChat.User,
+                        userAddedIn: CometChat.Group
+                    ) => {
+                        updateGroupDetails(userAddedIn);
+                    },
+                    onGroupMemberJoined: (
+                        message: CometChat.Action,
+                        joinedUser: CometChat.User,
+                        joinedGroup: CometChat.Group
+                    ) => {
+                        updateGroupDetails(joinedGroup);
+                    },
+                    onGroupMemberLeft: (
+                        message: CometChat.Action,
+                        leavingUser: CometChat.User,
+                        group: CometChat.Group
+                    ) => {
+                        updateGroupDetails(group);
+                    },
+                })
+            );
+            return () => CometChat.removeGroupListener(listenerId);
+        }
+
+        useEffect(() => {
+            if (loggedInUser) {
+                const unsubscribeFromGroupEvents = attachSDKGroupListenerForDetails();
+                return () => {
+                    unsubscribeFromGroupEvents();
+                };
+            }
+        }, [loggedInUser, attachSDKGroupListenerForDetails]);
 
         return (
             <>
@@ -1245,6 +1308,12 @@ function CometChatHome(props: { theme?: string }) {
         }
     }
 
+    const SideComponentWrapper = useMemo(() => {
+        return (
+            <SideComponent />
+        )
+    }, [appState.sideComponent]);
+
     return (
         loggedInUser && <div className='cometchat-root' data-theme={theme}>
             {showAlertPopup.visible &&
@@ -1278,7 +1347,7 @@ function CometChatHome(props: { theme?: string }) {
             <div className='messages-wrapper'>
                 <InformationComponent />
             </div>
-            <SideComponent />
+            {SideComponentWrapper}
             <CometChatIncomingCall />
             {showToast ? <CometChatToast text={toastTextRef.current} onClose={closeToast} /> : null}
         </div>

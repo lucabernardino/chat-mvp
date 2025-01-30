@@ -407,7 +407,7 @@ const CometChatMessageList = (props: MessageListProps) => {
   * All the useRef useCometChatMessageList are declaired here. These do not trigger a rerender. They are used to get the updated values wherever required in the code.
    */
   const dateHeaderRef = useRef<number>(0);
-
+  const stickyDateHeaderRef = useRef<number>(0);
   const loggedInUserRef = useRef<CometChat.User | null>(null);
   const isFirstReloadRef = useRef<boolean>(false);
   const elementRefs = useRef<any>({});
@@ -3075,6 +3075,7 @@ const CometChatMessageList = (props: MessageListProps) => {
           if (isDateDifferent(dateHeaderRef.current, messageDate)) {
             setDateHeader(messageDate);
             dateHeaderRef.current = messageDate;
+            stickyDateHeaderRef.current = messageDate
 
           }
         }
@@ -3447,7 +3448,7 @@ const CometChatMessageList = (props: MessageListProps) => {
   const getMessageBubbleDateHeader: (item: CometChat.BaseMessage, i: number) => JSX.Element | null = useCallback(
     (item: CometChat.BaseMessage, i: number) => {
       if (
-        i != 0 && isDateDifferent(messageList[i - 1]?.getSentAt(), item?.getSentAt())
+        i != 0 && isDateDifferent(messageList[i - 1]?.getSentAt(), item?.getSentAt()) && !hideDateSeparator
       ) {
         return (
           <div
@@ -3464,6 +3465,9 @@ const CometChatMessageList = (props: MessageListProps) => {
         if ((i == 0 && !isOnBottomRef.current) || ((messageList.length < 10) && i == 0)) {
           setDateHeader(item?.getSentAt());
           dateHeaderRef.current = item?.getSentAt();
+          if(!stickyDateHeaderRef.current){
+            stickyDateHeaderRef.current = item?.getSentAt()
+          }
         }
         return null;
       }
@@ -3472,6 +3476,7 @@ const CometChatMessageList = (props: MessageListProps) => {
       datePattern,
       messageList,
       isDateDifferent,
+      hideDateSeparator
     ]
   );
 
@@ -3740,11 +3745,11 @@ const CometChatMessageList = (props: MessageListProps) => {
         <div
           className='cometchat-message-list'
         >
-          {!hideDateSeparator && dateHeader && !hideStickyDate ? <div
+          {stickyDateHeaderRef.current &&  !hideStickyDate ? <div
             className='cometchat-message-list__date-header'
           >
             <CometChatDate
-              timestamp={dateHeader}
+              timestamp={stickyDateHeaderRef.current}
               pattern={datePattern}
             ></CometChatDate>
           </div> : null}

@@ -175,7 +175,6 @@ export const CometChatReactions: React.FC<ReactionsProps> = ({
                         <CometChatPopover
                             showOnHover={true}
                             debounceOnHover={hoverDebounceTime}
-                            hasToolTip={true}
                             placement={Placement.top}
                             key={reaction.getReaction()}
                             content={reactionPopupUi(reaction)}

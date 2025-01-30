@@ -7,7 +7,7 @@ export const useCometChatEmojiKeyboard = ({
 }: {
     emojiData: CometChatEmojiCategory[];
 }) => {
-    const [activeCategory, setActiveCategory] = useState<string>("people");
+    const [activeCategory, setActiveCategory] = useState<string>();
     const [emojiDataState, setEmojiDataState] = useState<CometChatEmojiCategory[]>(emojiData);
     const [searchEmojiData, setSearchEmojiData] = useState<{ [key: string]: CometChatEmoji }>({});
     const [searchString, setSearchString] = useState<string>("");
@@ -89,6 +89,7 @@ export const useCometChatEmojiKeyboard = ({
     return {
         emojiDataState,
         activeCategory,
+        setActiveCategory,
         searchEmojiData,
         searchString,
         getEmojiData,

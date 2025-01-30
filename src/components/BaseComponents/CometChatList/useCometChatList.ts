@@ -30,7 +30,7 @@ export function useCometChatList(args: Args) {
         didTopObserverCallbackRunRef,
         errorHandler,
         scrolledUpCallback
-        } = args;
+    } = args;
     useEffect(
         /**
          * Creates an observer and sets it to observe a dummy element that is the bottom-most child of the scrollable list
@@ -150,12 +150,13 @@ export function useCometChatList(args: Args) {
                 const rootElement = intersectionObserverRootRef.current;
                 const isRootScrollable = (rootElement?.scrollHeight ?? 0) > (rootElement?.clientHeight ?? 0);
                 const shouldRootScrollToBottom = scrollToBottom && isRootScrollable && intersectionObserverBottomTargetRef.current !== null;
+                if (!rootElement) return;
                 if (shouldRootScrollToBottom) {
-                  setTimeout(() => {
-                    didComponentScrollToBottomRef.current = true;
-                    intersectionObserverBottomTargetRef.current!.scrollIntoView(false);
-                  }, 50);
+                    setTimeout(() => {
+                        didComponentScrollToBottomRef.current = true;
+                        intersectionObserverBottomTargetRef.current?.scrollIntoView?.(false);
+                    }, 50);
                 }
-            }); 
+            });
         });
 }

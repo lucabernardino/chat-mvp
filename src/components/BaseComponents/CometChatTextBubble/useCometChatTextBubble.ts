@@ -22,6 +22,14 @@ export const useCometChatTextBubble = (props: { textFormatters: Array<CometChatT
                     frag.appendChild(span);
                 }
                 else if (node instanceof HTMLElement) {
+                    if (textFormatters && textFormatters.length) {
+                        for (let i = 0; i < textFormatters.length; i++) {
+                            node = textFormatters[i].registerEventListeners(
+                                node as HTMLElement,
+                                (node as HTMLElement).classList
+                            );
+                        }
+                    }
                     frag.appendChild(node);
                 }
             });
@@ -32,12 +40,6 @@ export const useCometChatTextBubble = (props: { textFormatters: Array<CometChatT
             console.error(error);
         }
     };
-
-
-
-
-
-
 
     return {
         pasteHtml,

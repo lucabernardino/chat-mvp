@@ -3,6 +3,7 @@ import { localize } from "../../../resources/CometChatLocalize/cometchat-localiz
 import { CometChatRadioButton } from "../CometChatRadioButton/CometChatRadioButton";
 import { CometChatButton } from "../CometChatButton/CometChatButton";
 import { useState } from "react";
+import { CometChatUIKitConstants } from "../../../constants/CometChatUIKitConstants";
 
 
 interface ChangeScopeProps {
@@ -40,16 +41,16 @@ const CometChatChangeScope = (props: ChangeScopeProps) => {
         selectedValue,
         selectionChanged,
     } = useCometChatChangeScope({ defaultSelection });
-        /* This function is used to trigger the "onScopeChanged" callback with the user selected value information. */
-        const scopeChangeClicked = () => {
-            setIsError(false);
-            setIsLoading(true);
-            if(onScopeChanged) 
+    /* This function is used to trigger the "onScopeChanged" callback with the user selected value information. */
+    const scopeChangeClicked = () => {
+        setIsError(false);
+        setIsLoading(true);
+        if (onScopeChanged)
             onScopeChanged(selectedValue)
                 .then(() => {
                     setIsLoading(false);
                     setIsError(false);
-                    if(onCloseClick){
+                    if (onCloseClick) {
                         onCloseClick()
                     }
                 })
@@ -57,12 +58,12 @@ const CometChatChangeScope = (props: ChangeScopeProps) => {
                     setIsError(true);
                     setIsLoading(false);
                 });
-        };
+    };
     return (
         <div className="cometchat">
-                      
+
             <div className="cometchat-change-scope">
-   
+
                 <div className="cometchat-change-scope__icon-container">
                     <div className="cometchat-change-scope__icon" />
                 </div>
@@ -78,23 +79,28 @@ const CometChatChangeScope = (props: ChangeScopeProps) => {
                     {options.map((listItr, index) => (
                         <div key={index} className="cometchat-change-scope__list-item">
                             <div className="cometchat-change-scope__list-item-label">
-                            {localize(listItr.toUpperCase())}
+                                {localize(listItr.toUpperCase())}
                             </div>
-                            <CometChatRadioButton name="changeScopeInput" id={listItr} checked={listItr === defaultSelection} onRadioButtonChanged={selectionChanged} />
+                            <CometChatRadioButton
+                                name={CometChatUIKitConstants.radioNames.changeScope}
+                                id={listItr}
+                                checked={listItr === defaultSelection}
+                                onRadioButtonChanged={selectionChanged}
+                            />
                         </div>
                     ))}
                 </div>
-              {isError ?   <div className="cometchat-change-scope__error-view">
+                {isError ? <div className="cometchat-change-scope__error-view">
                     {localize("SOMETHING_WRONG")}
                 </div> : null}
                 <div className="cometchat-change-scope__button-container">
-          <div className="cometchat-change-scope__cancel-button">
-          <CometChatButton text={localize("CANCEL")} onClick={onCloseClick} />
-          </div>
-                    <div className={`cometchat-change-scope__submit-button ${defaultSelection == selectedValue ? "cometchat-change-scope__submit-button-disabled" : ""}`}>
-                    <CometChatButton isLoading={defaultSelection !== selectedValue && isLoading} disabled={defaultSelection === selectedValue || isLoading} text={buttonText} onClick={scopeChangeClicked} />
+                    <div className="cometchat-change-scope__cancel-button">
+                        <CometChatButton text={localize("CANCEL")} onClick={onCloseClick} />
                     </div>
-              
+                    <div className={`cometchat-change-scope__submit-button ${defaultSelection == selectedValue ? "cometchat-change-scope__submit-button-disabled" : ""}`}>
+                        <CometChatButton isLoading={defaultSelection !== selectedValue && isLoading} disabled={defaultSelection === selectedValue || isLoading} text={buttonText} onClick={scopeChangeClicked} />
+                    </div>
+
                 </div>
             </div>
         </div>

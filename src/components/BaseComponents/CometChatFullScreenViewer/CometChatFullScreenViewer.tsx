@@ -10,8 +10,17 @@ import { formatDateFromTimestamp } from '../../../utils/util';
  */
 interface FullScreenViewerProps {
 
-    /** URL of the image to be displayed */
+    
+    /**
+     * @deprecated
+     *  Use 'url' prop instead. This prop is deprecated and will be removed in future versions.
+     * */
     URL?: string;
+
+    /**
+     * URL of the image to be displayed 
+     */
+    url?: string;
 
     /** Placeholder image URL */
     placeholderImage?: string;
@@ -32,6 +41,7 @@ interface FullScreenViewerProps {
  */
 const CometChatFullScreenViewer: React.FC<FullScreenViewerProps> = ({
     URL = "",
+    url = "",
     ccCloseClicked,
     message
 }) => {
@@ -44,22 +54,22 @@ const CometChatFullScreenViewer: React.FC<FullScreenViewerProps> = ({
 
     useEffect(() => {
         const updateImage = () => {
-            downloadImage(URL)
+            downloadImage(URL || url)
                 .then((response) => {
                     const img = new Image();
-                    img.src = URL;
+                    img.src = URL || url;
                     img.onload = () => {
                      setIsDownloading(false)
                         setImage(img.src);
                     };
                 })
                 .catch(() => {
-                    setImage(URL);
+                    setImage(URL || url);
                 });
         };
 
         updateImage();
-    }, [URL]);
+    }, [url, URL]);
 
     /**
      * Downloads an image with retries in case of failure.

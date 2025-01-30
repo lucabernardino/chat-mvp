@@ -2,12 +2,11 @@ import React, { JSX, useRef } from "react";
 import {
   useCometChatErrorHandler,
   useRefSync,
-  useStateRef,
 } from "../../../CometChatCustomHooks";
 
 import { CometChat } from "@cometchat/chat-sdk-javascript";
 import { useCometChatList } from "./useCometChatList";
-import { States, TitleAlignment } from "../../../Enums/Enums";
+import { States } from "../../../Enums/Enums";
 import { CometChatSearchBar } from "../CometChatSearchBar/CometChatSearchBar";
 /**
  * Extracts the value associated with the passed key from the passed object
@@ -48,12 +47,6 @@ interface ListProps<T> {
    */
   headerView?: JSX.Element;
   /**
-   * Alignment of the `title` text
-   *
-   * @defaultValue `TitleAlignment.left`
-   */
-  titleAlignment?: TitleAlignment;
-  /**
    * Hide the search bar
    *
    * @defaulValue `false`
@@ -72,10 +65,6 @@ interface ListProps<T> {
    * This function will only be called after 500ms of the search input text change
    */
   onSearch?: (searchStr: string) => void;
-  /**
-   * Image URL for the search icon to use in the search bar
-   */
-  searchIconURL?: string;
   /**
    * Text to be displayed when the search input has no value
    *
@@ -131,10 +120,6 @@ interface ListProps<T> {
    */
   loadingView?: JSX.Element;
   /**
-   * Image URL for the default loading view
-   */
-  loadingIconURL?: string;
-  /**
    * Hide error view
    *
    * @remarks
@@ -148,21 +133,9 @@ interface ListProps<T> {
    */
   errorView?: JSX.Element;
   /**
-   * Text to display in the default error view
-   *
-   * @defaultValue `"ERROR"`
-   */
-  errorStateText?: string;
-  /**
    * Custom view for the empty state of the component
    */
   emptyView?: JSX.Element;
-  /**
-   * Text to display in the default empty view
-   *
-   * @defaultValue `"EMPTY"`
-   */
-  emptyStateText?: string;
   /**
    * Set the scrollbar to the bottom-most position of the scrollable list
    *

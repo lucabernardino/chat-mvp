@@ -828,11 +828,6 @@ try {
         dispatch({ type: "setAddToMsgInputText", addToMsgInputText: "" });
       });
       dispatch({ type: "setAddToMsgInputText", addToMsgInputText: text });
-
-
-      setTimeout(() => {
-        dispatch({ type: "setAddToMsgInputText", addToMsgInputText: "" });
-      }, 0)
      } catch (error) {
       errorHandler(error,"setAddToMsgInputText")
      }
@@ -1451,7 +1446,7 @@ try {
   const onTextInputEnter = useCallback(
     (text: string) => {
       setShowListForMentions(false);
-
+      
       if (typeof text === "string") handleSendButtonClick(text);
       // Empty the text in the message composer
       dispatch({ type: "setText", text: "" });
@@ -2294,7 +2289,6 @@ try {
               onEmpty={defaultOnEmptyForMentions}
               group={group}
               groupMemberRequestBuilder={groupMembersRequestBuilder}
-              disableLoadingState={true}
               onError={defaultOnEmptyForMentions}
             />
           </div>

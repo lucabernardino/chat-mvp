@@ -1536,6 +1536,8 @@ export function CometChatConversations(props: ConversationsProps) {
           return (
             <div className='cometchat-conversations__single-select'>
               <CometChatRadioButton
+                name={CometChatUIKitConstants.radioNames.conversations}
+                id={conversation.getConversationId()}
                 onRadioButtonChanged={(e) => onSelect?.(conversation, e.checked)}
               />
             </div>

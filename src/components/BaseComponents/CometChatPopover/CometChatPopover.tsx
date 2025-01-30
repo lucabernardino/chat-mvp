@@ -14,10 +14,8 @@ interface PopoverProps {
     debounceOnHover?: number;
     children: ReactNode;
     content: ReactNode;
-    hasToolTip?: boolean;
     childClickHandler?: (openContent: Function, event: Event) => void;
     onOutsideClick?: () => void;
-    overrideStyleProps?: CSSProperties;
 }
 
 const CometChatPopover = forwardRef<{
@@ -32,10 +30,8 @@ const CometChatPopover = forwardRef<{
             debounceOnHover = 500,
             children,
             content,
-            hasToolTip,
             onOutsideClick,
             childClickHandler,
-            overrideStyleProps,
         },
         ref
     ) => {

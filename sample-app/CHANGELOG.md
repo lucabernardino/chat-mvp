@@ -1,3 +1,17 @@
+## [5.0.2] - 30-01-2025
+
+## New
+- None
+
+## Enhancements
+- None
+
+## Fixes
+- Fixed an issue where clicking on a mentioned user did not redirect to their message screen.
+- Fixed an issue where a newly added group member's avatar was not displayed in the Group Member View.
+- Resolved an issue where the group details component re-rendered unexpectedly after each operation.
+- Corrected the position of the profile info popup in mobile view to improve the user experience on smaller screens.
+
 ## [5.0.1] - 13-01-2025
 
 #### New
