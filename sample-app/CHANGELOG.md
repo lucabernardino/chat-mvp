@@ -1,3 +1,14 @@
+## [5.0.3] - 13-02-2025
+
+## New
+- None
+
+## Enhancements
+- None
+
+## Fixes
+- Fixed a visibility issue where the `Unblock` button was displayed to the logged-in user even when they were blocked by the other user.
+
 ## [5.0.2] - 30-01-2025
 
 ## New

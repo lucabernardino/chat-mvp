@@ -813,7 +813,6 @@ export function CometChatConversations(props: ConversationsProps) {
   const fetchNextIdRef = useRef("");
   const errorHandler = useCometChatErrorHandler(onError);
   const attachListenerOnFetch = useRef<boolean>(false);
-  const isConnectionReestablished = useRef<boolean>(false);
   const [activeConversationState, setActiveConversationState] = useState(activeConversation);
   const customSoundForMessagesRef = useRefSync(customSoundForMessages);
 
@@ -823,7 +822,6 @@ export function CometChatConversations(props: ConversationsProps) {
       state.isFirstReload = false;
     }
   })();
-
   /**
    * Initiates a fetch request and appends the fetched conversations to the `conversationList` state
    *
@@ -833,13 +831,13 @@ export function CometChatConversations(props: ConversationsProps) {
    * @param fetchId - Fetch Id to decide if the fetched data should be appended to the `conversationList` state
    */
   const fetchNextAndAppendConversations = useCallback(
-    async (fetchId: string): Promise<void> => {
+    async (fetchId: string,isConnected:boolean = false): Promise<void> => {
       try {
         const conversationManager = conversationsManagerRef.current;
         if (!conversationManager) {
           return;
         }
-        let initialState = isConnectionReestablished.current
+        let initialState =  isConnected && !attachListenerOnFetch.current && state.conversationList.length > 0
           ? States.loaded
           : States.loading;
         dispatch({ type: "setFetchState", fetchState: initialState });
@@ -847,7 +845,7 @@ export function CometChatConversations(props: ConversationsProps) {
         const conversations = await conversationManager.fetchNext();
 
         if (conversations.length !== 0 && fetchNextIdRef.current === fetchId) {
-          let removeOldConversation = isConnectionReestablished.current
+          let removeOldConversation =  isConnected
             ? true
             : false;
           dispatch({
@@ -855,6 +853,7 @@ export function CometChatConversations(props: ConversationsProps) {
             conversations,
             removeOldConversation,
           });
+
         }
         if (attachListenerOnFetch.current) {
           ConversationsManager.attachConnestionListener(() => {
@@ -863,18 +862,18 @@ export function CometChatConversations(props: ConversationsProps) {
               errorHandler
 
             });
-            isConnectionReestablished.current = true;
             fetchNextAndAppendConversations(
               (fetchNextIdRef.current =
-                "initialFetchNext_" + String(Date.now()))
+                "initialFetchNext_" + String(Date.now())),
+                true
             );
           });
-          attachListenerOnFetch.current = false;
         }
-        if (!isConnectionReestablished.current) {
-          dispatch({ type: "setFetchState", fetchState: States.loaded });
-        } else {
-          isConnectionReestablished.current = false;
+        if(attachListenerOnFetch.current && conversations.length == 0 && state.conversationList.length == 0){
+          dispatch({ type: "setFetchState", fetchState: States.empty });
+        }
+        if(attachListenerOnFetch.current){
+          attachListenerOnFetch.current = false
         }
       } catch (error) {
         if (state.conversationList.length <= 0) {
@@ -1797,12 +1796,8 @@ export function CometChatConversations(props: ConversationsProps) {
             )
           }
           showSectionHeader={false}
-          state={
-            state.fetchState === States.loaded &&
-              state.conversationList.length === 0
-              ? States.empty
-              : state.fetchState
-          }
+          state={state.fetchState}
+
           loadingView={getLoadingView()}
           emptyView={getEmptyView()}
           errorView={getErrorView()}

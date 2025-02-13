@@ -1,6 +1,7 @@
 import { CometChat } from '@cometchat/chat-sdk-javascript';
 import { CometChatUIKit } from "../../CometChatUIKit/CometChatUIKit";
 import { CometChatUIKitConstants } from "../../constants/CometChatUIKitConstants";
+import { CometChatMessageEvents } from '../../events/CometChatMessageEvents';
 
 type Args = {
     conversationsRequestBuilder: CometChat.ConversationsRequestBuilder | null,
@@ -154,36 +155,30 @@ export class ConversationsManager {
      */
     static attachMessageReceiptListener(callback: (receipt: CometChat.MessageReceipt, updateReadAt: boolean) => void) {
       try {
-        const messageListenerId: string = "message-receipt_" + new Date().getTime();
-
-
-        CometChat.addMessageListener(messageListenerId, new CometChat.MessageListener({
-            onMessagesRead: (messageReceipt: CometChat.MessageReceipt) => {
-               if(messageReceipt.getReceiptType() == CometChatUIKitConstants.MessageReceiverType.user){
-                callback(messageReceipt, true);
-               }
-            },
-            onMessagesDelivered: (messageReceipt: CometChat.MessageReceipt) => {
-                if(messageReceipt.getReceiptType() == CometChatUIKitConstants.MessageReceiverType.user){
+           const onMessagesDelivered = CometChatMessageEvents.onMessagesDelivered.subscribe((messageReceipt: CometChat.MessageReceipt) => {
+                  if (messageReceipt.getReceiverType() == CometChatUIKitConstants.MessageReceiverType.user) {
                     callback(messageReceipt, false);
-                   }
-            },
-            onMessagesDeliveredToAll: (messageReceipt: CometChat.MessageReceipt) => {
-                callback(messageReceipt, false);
+                }
+                });
+                const onMessagesRead = CometChatMessageEvents.onMessagesRead.subscribe((messageReceipt: CometChat.MessageReceipt) => {
+                  if (messageReceipt.getReceiverType() == CometChatUIKitConstants.MessageReceiverType.user) {
+                    callback(messageReceipt, true);
+                }
+                });
+                const onMessagesDeliveredToAll = CometChatMessageEvents.onMessagesDeliveredToAll.subscribe((messageReceipt: CometChat.MessageReceipt) => {
+                    callback(messageReceipt, false);
 
-            },
-            onMessagesReadByAll: (messageReceipt: CometChat.MessageReceipt) => {
-                callback(messageReceipt, true);
+                });
+                const onMessagesReadByAll = CometChatMessageEvents.onMessagesReadByAll.subscribe((messageReceipt: CometChat.MessageReceipt) => {
+                    callback(messageReceipt, true);
 
-            },
-            onMediaMessageReceived: (messageReceipt: CometChat.MessageReceipt) => {
-                callback(messageReceipt, false);;
-            },
-    
-          }))
+                });
 
         return () => {
-            CometChat.removeMessageListener(messageListenerId)
+            onMessagesDelivered?.unsubscribe();
+            onMessagesRead?.unsubscribe();
+            onMessagesDeliveredToAll?.unsubscribe();
+            onMessagesReadByAll?.unsubscribe();
         };
       } catch (error) {
         ConversationsManager.errorHandler(error,"attachMessageReceiptListener")

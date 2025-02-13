@@ -1606,7 +1606,9 @@ const CometChatMessageList = (props: MessageListProps) => {
         if (isPartOfCurrentChatForSDKEvent(messages[0])) {
           try {
             setMessageList((prevMessageList: CometChat.BaseMessage[]) => {
-              const updatedMessageList = [...messages, ...prevMessageList];
+              const existingMessageIds = new Set(prevMessageList.map(message => message.getId()));
+              const uniqueMessages = messages.filter(message => !existingMessageIds.has(message.getId()));
+              const updatedMessageList = [...uniqueMessages, ...prevMessageList];
               return updatedMessageList;
             });
             totalMessagesCountRef.current = totalMessagesCountRef.current + messages.length;
@@ -1619,21 +1621,15 @@ const CometChatMessageList = (props: MessageListProps) => {
             errorHandler(error, "prependMessages");
             reject(error);
           }
-        }
-        else {
-          if (messageList.length == 0) {
+        } else {
+          if (messageList.length === 0) {
             setMessageListState(States.loaded);
           }
-
           resolve(true);
-
         }
       });
     },
-    [
-      messageList,
-      isPartOfCurrentChatForSDKEvent,
-      errorHandler]
+    [messageList, isPartOfCurrentChatForSDKEvent, errorHandler]
   );
 
   /**
@@ -2942,12 +2938,12 @@ const CometChatMessageList = (props: MessageListProps) => {
         messageReceivedHandler(customMessage);
       });
       const onMessagesDelivered = CometChatMessageEvents.onMessagesDelivered.subscribe((messageReceipt: CometChat.MessageReceipt) => {
-        if (!hideReceipts && messageReceipt.getReceiptType() == CometChatUIKitConstants.MessageReceiverType.user) {
+        if (!hideReceipts && messageReceipt.getReceiverType() == CometChatUIKitConstants.MessageReceiverType.user) {
           messageReadAndDelivered(messageReceipt);
         }
       });
       const onMessagesRead = CometChatMessageEvents.onMessagesRead.subscribe((messageReceipt: CometChat.MessageReceipt) => {
-        if (!hideReceipts && messageReceipt.getReceiptType() == CometChatUIKitConstants.MessageReceiverType.user) {
+        if (!hideReceipts && messageReceipt.getReceiverType() == CometChatUIKitConstants.MessageReceiverType.user) {
           messageReadAndDelivered(messageReceipt);
         }
       });

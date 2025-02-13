@@ -675,7 +675,7 @@ function CometChatHome(props: { theme?: string }) {
         };
 
         useEffect(() => {
-            if (user.getHasBlockedMe() || user.getBlockedByMe()) {
+            if (user.getBlockedByMe()) {
                 setShowStatus(false);
             }
             const unsubscribeFromEvents = subscribeToEvents();

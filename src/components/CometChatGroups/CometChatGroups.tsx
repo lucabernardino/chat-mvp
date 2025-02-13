@@ -181,18 +181,18 @@ var stateReducer = (state: State, action: Action): State => {
     switch (type) {
         case "appendGroups":
             if (action.groups.length > 0) {
-                let groups: CometChat.Group[] = []
+                let groups: CometChat.Group[] = [];
                 if (action.removeOldGroups) {
                     state.groupList = [];
                     groups = action.groups;
+                } else {
+                    groups = [...state.groupList, ...action.groups];
                 }
-                else {
-                    groups = [...state.groupList, ...action.groups]
-                }
-
-                newState = { ...state, groupList: groups };
+                const uniqueGroups = Array.from(new Map(groups.map(group => [group.getGuid(), group])).values());
+                newState = { ...state, groupList: uniqueGroups };
+            } else {
+                newState = { ...state, groupList: Array.from(new Map([...state.groupList, ...action.groups].map(group => [group.getGuid(), group])).values()) };
             }
-            newState = { ...state, groupList: [...state.groupList, ...action.groups] };
             break;
         case "setGroupList":
             newState = { ...state, groupList: action.groupList };

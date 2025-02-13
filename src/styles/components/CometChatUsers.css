@@ -89,7 +89,7 @@
 }
 
 .cometchat-users__shimmer-item-title {
-  width: calc(100% - 64px);
+  width: 50%;
   height: 22px;
   flex-shrink: 0;
   border-radius: var(--cometchat-radius-2, 8px);

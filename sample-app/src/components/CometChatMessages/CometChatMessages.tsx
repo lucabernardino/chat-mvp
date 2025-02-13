@@ -26,7 +26,7 @@ export const CometChatMessages = (props: MessagesViewProps) => {
 
     useEffect(() => {
         setShowComposerState(showComposer);
-        if (user?.getHasBlockedMe?.() || user?.getBlockedByMe?.()) {
+        if (user?.getBlockedByMe?.()) {
             setShowComposerState(false);
         }
     }, [user, showComposer]);
