@@ -6,7 +6,8 @@ import { CometChatMentionsFormatter } from "../formatters/CometChatFormatters/Co
 import { CometChatTextFormatter } from "../formatters/CometChatFormatters/CometChatTextFormatter";
 import { additionalParams } from "./ConversationUtils";
 import {  CometChatActionsIcon, CometChatActionsView, CometChatMessageComposerAction, CometChatMessageTemplate} from "../modals";
-import { DatePatterns, MessageBubbleAlignment } from "../Enums/Enums";
+import { MessageBubbleAlignment } from "../Enums/Enums";
+import { CalendarObject } from "./CalendarObject";
 
 /**
  * This class is used in AI, calling and Extension modules.
@@ -87,13 +88,13 @@ export abstract class DataSourceDecorator implements DataSource {
     message: CometChat.BaseMessage,
     alignment: MessageBubbleAlignment,
     hideReceipt?: boolean,
-    datePattern?: DatePatterns
+    messageSentAtDateTimeFormat?:CalendarObject
   ) {
     return (this.dataSource ?? new MessagesDataSource()).getStatusInfoView(
       message,
       alignment,
       hideReceipt,
-      datePattern
+      messageSentAtDateTimeFormat
     );
   }
   getBottomView(

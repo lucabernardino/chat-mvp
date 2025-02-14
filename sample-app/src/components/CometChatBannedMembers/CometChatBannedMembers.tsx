@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { CometChat } from "@cometchat/chat-sdk-javascript";
 import unbanIconURL from "../../assets/close.svg";
 import "../../styles/CometChatBannedMembers/CometChatBannedMembers.css";
-import { CometChatButton, CometChatGroupEvents, CometChatList, CometChatListItem, CometChatUIKitLoginListener, IGroupMemberUnBanned, States, localize } from "@cometchat/chat-uikit-react";
+import { CometChatButton, CometChatGroupEvents, CometChatList, CometChatListItem, CometChatUIKitLoginListener, IGroupMemberUnBanned, States, getLocalizedString } from "@cometchat/chat-uikit-react";
 
 interface bannedMembersProp {
     group: CometChat.Group;
@@ -56,7 +56,7 @@ export const CometChatBannedMembers = (props: bannedMembersProp) => {
             <CometChatButton
                 iconURL={unbanIconURL}
                 onClick={() => unbanMember(bannedMember)}
-                hoverText={localize('UNBAN')}
+                hoverText={getLocalizedString('unban')}
             />
         );
     }
@@ -196,7 +196,7 @@ export const CometChatBannedMembers = (props: bannedMembersProp) => {
                         <div className="cometchat-banned-members__empty">
                             <div className="cometchat-banned-members__empty-icon" />
                             <div className="cometchat-banned-members__empty-text">
-                                {localize("NO_BANNED_MEMBERS")}
+                                {getLocalizedString("no_banned_members")}
                             </div>
                         </div>
                         :

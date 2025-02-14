@@ -53,9 +53,6 @@ export class ChatSdkEventInitializer {
             onMessageDeleted: (message: CometChat.BaseMessage) => {
                 CometChatMessageEvents.onMessageDeleted.next(message);
             },
-            onTransientMessageReceived: (message: CometChat.TransientMessage) => {
-                CometChatMessageEvents.onTransientMessageReceived.next(message);
-            },
             onMessageReactionAdded: (reaction: CometChat.ReactionEvent) => {
                 CometChatMessageEvents.onMessageReactionAdded.next(reaction);
             },

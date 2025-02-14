@@ -1,22 +1,14 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { CometChatListItem } from '../CometChatListItem/CometChatListItem';
-import { DatePatterns } from '../../../Enums/Enums';
-import { useCometChatDate } from '../CometChatDate/useCometChatDate';
-import { localize } from '../../../resources/CometChatLocalize/cometchat-localize';
-import { formatDateFromTimestamp } from '../../../utils/util';
+import { CometChatLocalize } from '../../../resources/CometChatLocalize/cometchat-localize';
+import {getLocalizedString} from '../../../resources/CometChatLocalize/cometchat-localize';
+import { CalendarObject } from '../../../utils/CalendarObject';
+import { sanitizeCalendarObject } from '../../../utils/util';
 
 /**
  * Props for the CometChatFullScreenViewer component.
  */
 interface FullScreenViewerProps {
-
-    
-    /**
-     * @deprecated
-     *  Use 'url' prop instead. This prop is deprecated and will be removed in future versions.
-     * */
-    URL?: string;
-
     /**
      * URL of the image to be displayed 
      */
@@ -32,6 +24,11 @@ interface FullScreenViewerProps {
      * The media message containing the image.
      */
     message: CometChat.MediaMessage;
+
+    /**
+     * Format for timestamps associated with images in the message list.
+     */
+    imageSentAtDateTimeFormat?:CalendarObject
 }
 
 /**
@@ -40,31 +37,28 @@ interface FullScreenViewerProps {
  * @param {FullScreenViewerProps} props - The properties passed to the component.
  */
 const CometChatFullScreenViewer: React.FC<FullScreenViewerProps> = ({
-    URL = "",
     url = "",
     ccCloseClicked,
-    message
+    message,
+    imageSentAtDateTimeFormat
 }) => {
     const [image, setImage] = useState<string>();
     const [isDownloading, setIsDownloading] = useState(true);
     const [progress, setProgress] = useState(0);
 
-
-    const { getFormattedDate: getFormattedTime } = useCometChatDate({ timestamp: message.getSentAt(), pattern: DatePatterns.time, customDateString: null });
-
     useEffect(() => {
         const updateImage = () => {
-            downloadImage(URL || url)
+            downloadImage(url)
                 .then((response) => {
                     const img = new Image();
-                    img.src = URL || url;
+                    img.src = url;
                     img.onload = () => {
                      setIsDownloading(false)
                         setImage(img.src);
                     };
                 })
                 .catch(() => {
-                    setImage(URL || url);
+                    setImage(url);
                 });
         };
 
@@ -151,7 +145,26 @@ const CometChatFullScreenViewer: React.FC<FullScreenViewerProps> = ({
             </div>
         )
     }, [isDownloading, progress])
-
+   /**
+   * Function for timestamps associated with images in the message list.
+   * @returns CalendarObject
+   */
+    function getDateFormat():CalendarObject{
+        const defaultFormat = {
+            yesterday: ` DD/M/YYYY [${getLocalizedString("full_screen_viewer_at")}] hh:mm A`,
+            otherDays: ` DD/M/YYYY [${getLocalizedString("full_screen_viewer_at")}] hh:mm A`,
+            today:` DD/M/YYYY [${getLocalizedString("full_screen_viewer_at")}] hh:mm A`
+          };
+        var globalCalendarFormat = sanitizeCalendarObject(CometChatLocalize.calendarObject)
+        var componentCalendarFormat = sanitizeCalendarObject(imageSentAtDateTimeFormat)
+        
+          const finalFormat = {
+            ...defaultFormat,
+            ...globalCalendarFormat,
+            ...componentCalendarFormat
+          };
+          return finalFormat;
+      }
     return (
         <div className="cometchat">
             <div className="cometchat-fullscreen-viewer">
@@ -162,7 +175,7 @@ const CometChatFullScreenViewer: React.FC<FullScreenViewerProps> = ({
                             avatarURL={message?.getSender()?.getAvatar()}
                             title={message?.getSender()?.getName()}
                             subtitleView={
-                                `${formatDateFromTimestamp( message.getSentAt())} at ${getFormattedTime()}`}
+                                `${CometChatLocalize.formatDate(message?.getSentAt(),getDateFormat())}`}
                         />
                     </div>
 
@@ -172,7 +185,7 @@ const CometChatFullScreenViewer: React.FC<FullScreenViewerProps> = ({
                  { isDownloading ?  getProgressBar(): <img
                         src={image}
                         className="cometchat-fullscreen-viewer__body-image"
-                        alt={localize("FULL_SCREEN_VIEWER")}
+                        alt={getLocalizedString("message_list_full_screen_viewer")}
                     />}
                 </div>
 

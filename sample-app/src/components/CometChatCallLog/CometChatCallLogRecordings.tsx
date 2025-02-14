@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from "react";
 import "../../styles/CometChatCallLog/CometChatCallLogRecordings.css";
-import { CometChatDate, CometChatList, CometChatListItem, DatePatterns, localize, States } from "@cometchat/chat-uikit-react";
+import { CalendarObject, CometChatDate, CometChatList, CometChatListItem, CometChatLocalize, getLocalizedString, States } from "@cometchat/chat-uikit-react";
 
 export const CometChatCallDetailsRecording = (props: { call: any }) => {
     const { call } = props;
@@ -36,12 +36,24 @@ export const CometChatCallDetailsRecording = (props: { call: any }) => {
             console.log(e);
         }
     }
-
+    function getDateFormat():CalendarObject{
+        const defaultFormat = {
+          yesterday: `DD MMM, hh:mm A`,
+          otherDays: `DD MMM, hh:mm A`,
+          today: `DD MMM, hh:mm A`
+        };
+    
+        const finalFormat = {
+          ...defaultFormat,
+          ...CometChatLocalize.calendarObject    };
+    
+        return finalFormat;
+      }
     const getListItemSubtitleView = useCallback((item: any): JSX.Element => {
         return (
             <div className="cometchat-call-log-recordings__subtitle">
                 <CometChatDate
-                    pattern={DatePatterns.DateTime}
+                    calendarObject={getDateFormat()}
                     timestamp={getRecordingStartTime(item)}
                 ></CometChatDate>
             </div>
@@ -78,7 +90,7 @@ export const CometChatCallDetailsRecording = (props: { call: any }) => {
                 <div className="cometchat-call-log-recordings__empty-state">
                     <div className="cometchat-call-log-recordings__empty-state-icon"/>
                     <div className="cometchat-call-log-recordings__empty-state-text">
-                        {localize("NO_RECORDING_AVAILABLE")}
+                        {getLocalizedString("no_recording_available")}
                     </div>
                 </div>
                 :

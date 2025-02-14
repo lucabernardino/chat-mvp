@@ -11,8 +11,8 @@ import { CometChatOngoingCall } from "./CometChatOngoingCall/CometChatOngoingCal
 import { CometChatCallButtons } from "./CometChatCallButtons/CometChatCallButtons";
 import { CallingConfiguration } from "./CallingConfiguration";
 import { CometChatUIKitConstants } from "../../constants/CometChatUIKitConstants";
-import { CallWorkflow, DatePatterns, MessageBubbleAlignment } from "../../Enums/Enums";
-import { localize } from "../../resources/CometChatLocalize/cometchat-localize";
+import { CallWorkflow, MessageBubbleAlignment } from "../../Enums/Enums";
+import { CometChatLocalize, getLocalizedString } from "../../resources/CometChatLocalize/cometchat-localize";
 import { CallingDetailsUtils } from "../../utils/CallingDetailsUtils";
 import { CometChatCallBubble } from "../BaseComponents/CometChatCallBubble/CometChatCallBubble";
 import { CometChatMessageTemplate } from "../../modals";
@@ -20,6 +20,8 @@ import { CometChatUIEvents } from "../../events/CometChatUIEvents";
 import { CometChatUIKitCalls } from "../../CometChatUIKit/CometChatCalls";
 import { CometChatActionBubble } from "../BaseComponents/CometChatActionBubble/CometChatActionBubble";
 import { CometChatDate } from "../BaseComponents/CometChatDate/CometChatDate";
+import { CalendarObject } from "../../utils/CalendarObject";
+import { sanitizeCalendarObject } from "../../utils/util";
 
 const CallingConstants = Object.freeze({
   meeting: "meeting",
@@ -218,7 +220,27 @@ export class CallingExtensionDecorator extends DataSourceDecorator {
     return data?.customData?.sessionID;
   }
 
-
+     /**
+    *  Function for displaying the call initiation time in call logs.
+    * @returns CalendarObject
+     */
+      getDateFormat():CalendarObject{
+        const defaultFormat = {
+          yesterday: `DD MMM, hh:mm A`,
+          otherDays: `DD MMM, hh:mm A`,
+          today: `DD MMM, hh:mm A`
+        };
+    
+        var globalCalendarFormat = sanitizeCalendarObject(CometChatLocalize.calendarObject)
+        var componentCalendarFormat = sanitizeCalendarObject(this.configuration?.callInitiatedDateTimeFormat)
+        
+          const finalFormat = {
+            ...defaultFormat,
+            ...globalCalendarFormat,
+            ...componentCalendarFormat
+          };
+          return finalFormat;
+    }
 
   getDirectCallMessageBubble(
     _message: CometChat.CustomMessage,
@@ -226,16 +248,16 @@ export class CallingExtensionDecorator extends DataSourceDecorator {
   ) {
     let sessionId = this.getSessionId(_message);
 
-    let joinCallButtonText = localize("JOIN");
+    let joinCallButtonText = getLocalizedString("message_list_join_call");
     let isMyMessage = !_message.getSender() || this.loggedInUser?.getUid() == _message.getSender().getUid();
     let isAudioCall = (_message.getCustomData() as any).callType == CometChatUIKitConstants.MessageTypes.audio;
     let audioIcon = isMyMessage ? outgoingAudioCall : incomingAudioCall;
     let videoIcon = isMyMessage ? outgoingVideoCall : incomingVideoCall;
     let callIcon = isAudioCall ? audioIcon : videoIcon;
-    let callBubbleTitle = isAudioCall ? localize("VOICE_CALL") : localize("VIDEO_CALL");
+    let callBubbleTitle = isAudioCall ? getLocalizedString("message_list_voice_call") : getLocalizedString("message_list_video_call");
     return (
       <CometChatCallBubble
-        subtitle={<CometChatDate timestamp={_message.getSentAt()} pattern={DatePatterns.DateTime} />}
+        subtitle={<CometChatDate timestamp={_message.getSentAt()} calendarObject={this.getDateFormat()} />}
         isSentByMe={isMyMessage}
         sessionId={sessionId}
         title={callBubbleTitle}
@@ -280,23 +302,23 @@ export class CallingExtensionDecorator extends DataSourceDecorator {
   }
   getCallStatusClass(message: CometChat.Call) {
     switch (CallingDetailsUtils.getCallStatus(message, this.loggedInUser!)) {
-      case localize("OUTGOING_CALL"):
+      case getLocalizedString("message_list_outgoing_call"):
         return "cometchat-message-bubble__outgoing-call";
-      case localize("INCOMING_CALL"):
+      case getLocalizedString("message_list_incoming_call"):
         return "cometchat-message-bubble__incoming-call";
-      case localize("CALL_CANCELLED"):
+      case getLocalizedString("message_list_cancelled_call"):
         return "cometchat-message-bubble__cancelled-call";
-      case localize("CALL_REJECTED"):
+      case getLocalizedString("message_list_rejected_call"):
         return "cometchat-message-bubble__rejected-call";
-      case localize("CALL_BUSY"):
+      case getLocalizedString("message_list_busy_call"):
         return "cometchat-message-bubble__busy-call";
-      case localize("CALL_ENDED"):
+      case getLocalizedString("message_list_ended_call"):
         return "cometchat-message-bubble__ended-call";
-      case localize("CALL_ANSWERED"):
+      case getLocalizedString("message_list_answered_call"):
         return "cometchat-message-bubble__answered-call";
-      case localize("CALL_UNANSWERED"):
+      case getLocalizedString("message_list_unasnwered_call"):
         return "cometchat-message-bubble__unanswered-call";
-      case localize("MISSED_CALL"):
+      case getLocalizedString("message_list_missed_call"):
         return "cometchat-message-bubble__missed-call";
       default:
         return "";
@@ -348,18 +370,18 @@ export class CallingExtensionDecorator extends DataSourceDecorator {
         message?.getSender()?.getUid() == loggedInUser.getUid()
       ) {
         if (callType === CometChatUIKitConstants.MessageTypes.audio) {
-          actionMessage = localize("YOU_INITIATED_GROUP_AUDIO_CALL");
+          actionMessage = getLocalizedString("conversation_subtitle_group_voice_call_initated_self");
         } else if (callType === CometChatUIKitConstants.MessageTypes.video) {
-          actionMessage = localize("YOU_INITIATED_GROUP_VIDEO_CALL");
+          actionMessage = getLocalizedString("conversation_subtitle_group_video_call_initated_self");
         }
       } else {
         if (callType === CometChatUIKitConstants.MessageTypes.audio) {
-          actionMessage = `${message.getSender().getName()}  ${localize(
-            "INITIATED_GROUP_AUDIO_CALL"
+          actionMessage = `${message.getSender().getName()}  ${getLocalizedString(
+            "conversation_subtitle_group_voice_call_initated"
           )}`;
         } else if (callType === CometChatUIKitConstants.MessageTypes.video) {
-          actionMessage = `${message.getSender().getName()}  ${localize(
-            "INITIATED_GROUP_VIDEO_CALL"
+          actionMessage = `${message.getSender().getName()}  ${getLocalizedString(
+            "conversation_subtitle_group_video_call_initated"
           )}`;
         }
       }

@@ -30,7 +30,7 @@ import { CometChatMentionsFormatter } from "../../formatters/CometChatFormatters
 import { CometChatActionsView, CometChatMessageComposerAction } from "../../modals";
 import { CometChatUIKitConstants } from "../../constants/CometChatUIKitConstants";
 import { EnterKeyBehavior, MentionsTargetElement, MessageStatus, Placement, PreviewMessageMode, UserMemberListType } from "../../Enums/Enums";
-import { localize } from "../../resources/CometChatLocalize/cometchat-localize";
+import {getLocalizedString} from "../../resources/CometChatLocalize/cometchat-localize";
 import { CometChatButton } from "../BaseComponents/CometChatButton/CometChatButton";
 import { CometChatPopover } from "../BaseComponents/CometChatPopover/CometChatPopover";
 import { CometChatMediaRecorder } from "../BaseComponents/CometChatMediaRecorder/CometChatMediaRecorder";
@@ -1312,7 +1312,7 @@ try {
         <CometChatButton
           onClick={onSendclick}
           iconURL={SendIconFill}
-          hoverText={localize("SEND_MESSAGE")}
+          hoverText={getLocalizedString("message_composer_send_message_icon_hover")}
         />
       </div>
     );
@@ -1502,7 +1502,7 @@ return hideAttachmentButton || (hideAudioAttachmentOption && hideVideoAttachment
    try {
     const defaultSecondaryBtn = (
       <CometChatButton
-        hoverText={localize("ATTACH")}
+        hoverText={getLocalizedString("message_composer_attach_icon_hover")}
         onClick={onSecondaryBtnClick}
         iconURL={
           state.contentToDisplay === "attachments"
@@ -1715,7 +1715,7 @@ return hideAttachmentButton || (hideAudioAttachmentOption && hideVideoAttachment
       }, 5000);
     }
 
-    let errorText = state.showMentionsCountWarning ? localize("MENTIONS_LIMIT_WARNING_MESSAGE") : localize("WRONG_FILE_TYPE");
+    let errorText = state.showMentionsCountWarning ? getLocalizedString("message_composer_mention_limit_warning") : getLocalizedString("message_composer_wrong_file_type");
     return (
       <div
         className='cometchat-message-composer__header'
@@ -1754,7 +1754,7 @@ return hideAttachmentButton || (hideAudioAttachmentOption && hideVideoAttachment
     const defaultSecondaryBtn = (
       <CometChatButton
         onClick={onVoiceRecordingBtnClick}
-        hoverText={localize("VOICE_RECORDING")}
+        hoverText={getLocalizedString("message_composer_voice_notes_icon_hover")}
         iconURL={
           state.contentToDisplay === "voiceRecording"
             ? MicIconFill
@@ -1813,7 +1813,7 @@ return hideAttachmentButton || (hideAudioAttachmentOption && hideVideoAttachment
     const defaultAuxiliaryBtn = (
       <CometChatButton
         onClick={onEmojiButtonClick}
-        hoverText={localize("EMOJI")}
+        hoverText={getLocalizedString("message_composer_emoji_icon_hover")}
         iconURL={
           state.contentToDisplay === "emojiKeyboard"
             ? SmileysIconFill
@@ -2200,7 +2200,7 @@ try {
           onMouseDown={handleMouseDown}
           onInput={onTextInputChange}
           className={`cometchat-message-composer__input ${parentMessageIdPropRef.current ? "cometchat-message-composer__input-thread" : ""} ${isMobileDevice() ? "cometchat-message-composer__input-mobile" : ""}`}
-          data-placeholder={localize("COMPOSER_PLACEHOLDER_TEXT")}
+          data-placeholder={getLocalizedString("message_composer_placeholder")}
           ref={textInputRef}
         ></div>
         <div

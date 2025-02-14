@@ -1,8 +1,9 @@
-import { CometChatLocalize } from '@cometchat/chat-uikit-react';
-import english from '../locales/en/en.json';
+import { CometChatLocalize, getLocalizedString } from '@cometchat/chat-uikit-react';
+import englishUS from '../locales/en-US/en-US.json';
+import englishGB from '../locales/en-GB/en-GB.json';
+
 import german from '../locales/de/de.json';
 import spanish from '../locales/es/es.json';
-import arabic from '../locales/ar/ar.json';
 import french from '../locales/fr/fr.json';
 import hindi from '../locales/hi/hi.json';
 import hungarian from '../locales/hu/hu.json';
@@ -13,6 +14,11 @@ import russian from '../locales/ru/ru.json';
 import swedish from '../locales/sv/sv.json';
 import chinese from '../locales/zh/zh.json';
 import chineseTaiwan from '../locales/zh-tw/zh-tw.json';
+import japanese from '../locales/ja/ja.json';
+import korean from '../locales/ja/ja.json';
+import turkish from '../locales/ja/ja.json';
+import italian from '../locales/ja/ja.json';
+import dutch from '../locales/ja/ja.json';
 
 /**
  * Initializes the localization for both the sample app and the UI Kit.
@@ -32,20 +38,26 @@ import chineseTaiwan from '../locales/zh-tw/zh-tw.json';
 */
 export function setupLocalization(language?:string){
     let resourcesJson =  {
-        en:english,
-        de:german,
-        es:spanish,
-        ar:arabic,
-        fr:french,
-        hi:hindi,
-        hu:hungarian,
-        lt:lithuanian,
-        ms:malay,
-        pt:portuguese,
-        ru:russian,
-        sv:swedish,
-        zh:chinese,
-        "zh-tw": chineseTaiwan,
+      "en-US": englishUS,
+      "en-GB": englishGB,
+      "ru": russian,
+      "fr": french,
+      "de": german,
+      "zh": chinese,
+      "zh-TW": chineseTaiwan,
+      "es": spanish,
+      "hi": hindi,
+      "ms": malay,
+      "pt": portuguese,
+      "sv": swedish,
+      "lt": lithuanian,
+      "hu": hungarian,
+      "it": italian,
+      "ja": japanese,
+      "ko": korean,
+      "nl": dutch,
+      "tr": turkish,
       }
-    CometChatLocalize.init(language, resourcesJson);
-}
+    CometChatLocalize.addTranslation(resourcesJson);
+    CometChatLocalize.setCurrentLanguage(language ?? "en-US");
+  }

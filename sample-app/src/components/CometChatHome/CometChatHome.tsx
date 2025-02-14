@@ -25,7 +25,7 @@ import { CometChatUserDetails } from "../CometChatDetails/CometChatUserDetails";
 import { CometChatThreadedMessages } from "../CometChatDetails/CometChatThreadedMessages";
 import { CometChatCallDetails } from "../CometChatCallLog/CometChatCallLogDetails";
 import { CometChatAlertPopup } from "../CometChatAlertPopup/CometChatAlertPopup";
-import { CometChatAvatar, CometChatButton, CometChatConfirmDialog, CometChatConversationEvents, CometChatGroupEvents, CometChatGroupMembers, CometChatGroups, CometChatIncomingCall, CometChatMessageEvents, CometChatToast, CometChatUIKit, CometChatUIKitConstants, CometChatUIKitLoginListener, CometChatUIKitUtility, CometChatUserEvents, CometChatUsers, IMessages, localize, CometChatUIEvents, IMouseEvent } from "@cometchat/chat-uikit-react";
+import { CometChatAvatar, CometChatButton, CometChatConfirmDialog, CometChatConversationEvents, CometChatGroupEvents, CometChatGroupMembers, CometChatGroups, CometChatIncomingCall, CometChatMessageEvents, CometChatToast, CometChatUIKit, CometChatUIKitConstants, CometChatUIKitLoginListener, CometChatUIKitUtility, CometChatUserEvents, CometChatUsers, IMessages, getLocalizedString, CometChatUIEvents, IMouseEvent } from "@cometchat/chat-uikit-react";
 import { CallLog } from "@cometchat/calls-sdk-javascript";
 
 interface TabContentProps {
@@ -65,23 +65,23 @@ function CometChatHome(props: { theme?: string }) {
     }
     useEffect((() => {
         let ccOwnershipChanged = CometChatGroupEvents.ccOwnershipChanged.subscribe(() => {
-            toastTextRef.current = localize("GROUP_OWNERSHIP_TRANSFERRED_SUCCESSFULLY");
+            toastTextRef.current = getLocalizedString("ownership_transferred_successfully");
             setShowToast(true)
         })
         let ccGroupMemberScopeChanged = CometChatGroupEvents.ccGroupMemberScopeChanged.subscribe(() => {
-            toastTextRef.current = localize("PERMISSIONS_UPDATED_SUCCESSFULLY");
+            toastTextRef.current = getLocalizedString("permissions_updated_successfully");
             setShowToast(true)
         })
         let ccGroupMemberAdded = CometChatGroupEvents.ccGroupMemberAdded.subscribe(() => {
-            toastTextRef.current = localize("MEMBER_ADDED_TO_GROUP");
+            toastTextRef.current = getLocalizedString("member_added");
             setShowToast(true)
         })
         let ccGroupMemberBanned = CometChatGroupEvents.ccGroupMemberBanned.subscribe(() => {
-            toastTextRef.current = localize("MEMBER_BANNED_FROM_GROUP");
+            toastTextRef.current = getLocalizedString("member_banned");
             setShowToast(true)
         })
         let ccGroupMemberKicked = CometChatGroupEvents.ccGroupMemberKicked.subscribe(() => {
-            toastTextRef.current = localize("MEMBER_REMOVED_FROM_GROUP");
+            toastTextRef.current = getLocalizedString("member_removed");
             setShowToast(true)
         })
         return () => {
@@ -176,10 +176,10 @@ function CometChatHome(props: { theme?: string }) {
 
 
     const TabComponent = () => {
-        const onTabClicked = (tabItem: { name: string; icon: string }) => {
+        const onTabClicked = (tabItem: { name: string; icon: string;id:string }) => {
             setAppState({ type: "updateSideComponent", payload: { visible: false, type: "" } });
             setNewChat(undefined);
-            setActiveTab(tabItem.name.toLowerCase());
+            setActiveTab(tabItem.id);
         }
 
         return (
@@ -442,8 +442,8 @@ function CometChatHome(props: { theme?: string }) {
 
                 {/* Tabs for User and Group */}
                 <div className='cometchat-new-chat-view__tabs'>
-                    <div className={`cometchat-new-chat-view__tabs-tab ${selectedTab == 'user' ? "cometchat-new-chat-view__tabs-tab-active" : ""}`} onClick={() => handleTabClick('user')}> {localize("USERS")}</div>
-                    <div className={`cometchat-new-chat-view__tabs-tab ${selectedTab == 'group' ? "cometchat-new-chat-view__tabs-tab-active" : ""}`} onClick={() => handleTabClick('group')}> {localize("GROUPS")}</div>
+                    <div className={`cometchat-new-chat-view__tabs-tab ${selectedTab == 'user' ? "cometchat-new-chat-view__tabs-tab-active" : ""}`} onClick={() => handleTabClick('user')}> {getLocalizedString("user_title")}</div>
+                    <div className={`cometchat-new-chat-view__tabs-tab ${selectedTab == 'group' ? "cometchat-new-chat-view__tabs-tab-active" : ""}`} onClick={() => handleTabClick('group')}> {getLocalizedString("group_title")}</div>
                 </div>
 
                 {/* Dynamic content based on selected tab */}
@@ -560,10 +560,10 @@ function CometChatHome(props: { theme?: string }) {
         const { user } = props;
 
         const actionItemsArray = [{
-            "name": user.getBlockedByMe() ? localize("UNBLOCK") : localize("BLOCK"),
+            "name": user.getBlockedByMe() ? getLocalizedString("user_details_unblock") : getLocalizedString("user_details_block"),
             "icon": blockIcon
         }, {
-            "name": localize("DELETE_CHAT"),
+            "name": getLocalizedString("delete_chat"),
             "icon": deleteIcon
         }]
         const [actionItems, setActionItems] = useState(actionItemsArray);
@@ -578,7 +578,7 @@ function CometChatHome(props: { theme?: string }) {
                     list => {
                         user.setBlockedByMe(true);
                         CometChatUserEvents.ccUserBlocked.next(user);
-                        toastTextRef.current = localize("USER_BLOCKED");
+                        toastTextRef.current = getLocalizedString("blocked_successfully");
                         setShowToast(true);
                         return resolve();
                     }, error => {
@@ -594,10 +594,10 @@ function CometChatHome(props: { theme?: string }) {
             CometChat.unblockUsers([UID]).then(
                 list => {
                     setActionItems([{
-                        "name": localize("BLOCK"),
+                        "name": getLocalizedString("user_details_block"),
                         "icon": blockIcon
                     }, {
-                        "name": localize("DELETE_CHAT"),
+                        "name": getLocalizedString("delete_chat"),
                         "icon": deleteIcon
                     }]);
                     user.setBlockedByMe(false);
@@ -616,7 +616,7 @@ function CometChatHome(props: { theme?: string }) {
                         setSelectedItem(undefined);
                         setAppState({ type: "updateSideComponent", payload: { visible: false, type: "" } });
                         CometChatConversationEvents.ccConversationDeleted.next((selectedItem as Conversation)!);
-                        toastTextRef.current = localize("CHAT_DELETED_SUCCESSFULLY");
+                        toastTextRef.current = getLocalizedString("chat_deleted_successfully");
                         setShowToast(true);
                         return resolve();
                     }, error => {
@@ -631,11 +631,11 @@ function CometChatHome(props: { theme?: string }) {
             name: string;
             icon: string;
         }) => {
-            if (item.name == localize("BLOCK")) {
+            if (item.name == getLocalizedString("user_details_block")) {
                 setShowBlockUserDialog(true);
-            } else if (item.name == localize("UNBLOCK")) {
+            } else if (item.name == getLocalizedString("user_details_unblock")) {
                 onUnblockUserClicked();
-            } else if (item.name == localize("DELETE_CHAT")) {
+            } else if (item.name == getLocalizedString("delete_chat")) {
                 setShowDeleteConversationDialog(true);
             }
         }
@@ -645,10 +645,10 @@ function CometChatHome(props: { theme?: string }) {
                 if (user.getBlockedByMe()) {
                     setShowStatus(false);
                     setActionItems([{
-                        "name": localize("UNBLOCK"),
+                        "name": getLocalizedString("user_details_unblock"),
                         "icon": blockIcon
                     }, {
-                        "name": localize("DELETE_CHAT"),
+                        "name": getLocalizedString("delete_chat"),
                         "icon": deleteIcon
                     }]);
                 }
@@ -658,10 +658,10 @@ function CometChatHome(props: { theme?: string }) {
                 if (!user.getBlockedByMe()) {
                     setShowStatus(true);
                     setActionItems([{
-                        "name": localize("BLOCK"),
+                        "name": getLocalizedString("user_details_block"),
                         "icon": blockIcon
                     }, {
-                        "name": localize("DELETE_CHAT"),
+                        "name": getLocalizedString("delete_chat"),
                         "icon": deleteIcon
                     }]);
                 }
@@ -690,9 +690,9 @@ function CometChatHome(props: { theme?: string }) {
             return <>
                 <div className="cometchat-delete-chat-dialog__backdrop">
                     <CometChatConfirmDialog
-                        title={localize("DELETE_CHAT")}
-                        messageText={localize("CONFIRM_DELETE_CHAT")}
-                        confirmButtonText={localize("DELETE")}
+                        title={getLocalizedString("delete_chat")}
+                        messageText={getLocalizedString("confirm_delete_chat")}
+                        confirmButtonText={getLocalizedString("conversation_delete_title")}
                         onCancelClick={() => {
                             setShowDeleteConversationDialog(!showDeleteConversationDialog)
                         }}
@@ -705,9 +705,9 @@ function CometChatHome(props: { theme?: string }) {
             return <>
                 <div className="cometchat-block-user-dialog__backdrop">
                     <CometChatConfirmDialog
-                        title={localize("BLOCK_THIS_CONTACT")}
-                        messageText={localize("CONFIRM_BLOCK_CONTACT")}
-                        confirmButtonText={localize("BLOCK")}
+                        title={getLocalizedString("block_contact")}
+                        messageText={getLocalizedString("confirm_block_contact")}
+                        confirmButtonText={getLocalizedString("user_details_block")}
                         onCancelClick={() => {
                             setShowBlockUserDialog(!showBlockUserDialog);
                         }}
@@ -828,7 +828,7 @@ function CometChatHome(props: { theme?: string }) {
         function transferOwnershipDialogView() {
             return <>
                 <div className="cometchat-transfer-ownership-dialog__backdrop">
-                    <CometChatConfirmDialog title={localize("OWNERSHIP_TRANSFER")} messageText={localize("CONFIRM_OWNERSHIP_TRANSFER")} confirmButtonText={localize("CONTINUE")} onCancelClick={() => {
+                    <CometChatConfirmDialog title={getLocalizedString("ownership_transfer")} messageText={getLocalizedString("confirm_ownership_transfer")} confirmButtonText={getLocalizedString("continue")} onCancelClick={() => {
                         setShowTransferownershipDialog(!showTransferownershipDialog)
                     }} onSubmitClick={
                         () => {
@@ -870,7 +870,7 @@ function CometChatHome(props: { theme?: string }) {
         function deleteGroupView() {
             return <>
                 <div className="cometchat-delete-group__backdrop">
-                    <CometChatConfirmDialog title={localize("DELETE_AND_EXIT")} messageText={localize("CONFIRM_DELETE_AND_EXIT")} confirmButtonText={localize("DELETE_AND_EXIT_LABEL")} onCancelClick={() => {
+                    <CometChatConfirmDialog title={getLocalizedString("delete_and_exit")} messageText={getLocalizedString("confirm_delete_and_exit")} confirmButtonText={getLocalizedString("delete_and_exit_label")} onCancelClick={() => {
                         setShowDeleteGroup(!showDeleteGroup)
                     }} onSubmitClick={
                         () => {
@@ -881,7 +881,7 @@ function CometChatHome(props: { theme?: string }) {
                                     CometChatGroupEvents.ccGroupDeleted.next(CometChatUIKitUtility.clone(group));
                                     setShowDeleteGroup(!showDeleteGroup)
                                     CometChatConversationEvents.ccConversationDeleted.next((selectedItem as Conversation)!)
-                                    toastTextRef.current = localize("GROUP_LEFT_AND_CHAT_DELETED");
+                                    toastTextRef.current = getLocalizedString("group_left_and_chat_deleted");
                                     setShowToast(true);
                                     return resolve()
                                 }).catch(() => {
@@ -917,7 +917,7 @@ function CometChatHome(props: { theme?: string }) {
         function leaveGroupView() {
             return <>
                 <div className="cometchat-leave-group__backdrop">
-                    <CometChatConfirmDialog title={localize("LEAVE_GROUP")} messageText={localize("CONFIRM_LEAVE_GROUP")} confirmButtonText={localize("LEAVE")} onCancelClick={() => {
+                    <CometChatConfirmDialog title={getLocalizedString("leave_group")} messageText={getLocalizedString("confirm_leave_group")} confirmButtonText={getLocalizedString("leave")} onCancelClick={() => {
                         setShowLeaveGroup(!showLeaveGroup)
                     }} onSubmitClick={
                         () => {
@@ -936,7 +936,7 @@ function CometChatHome(props: { theme?: string }) {
                                     setAppState({ type: "updateSideComponent", payload: { visible: false, type: "" } })
                                     setSelectedItem(undefined);
                                     setShowLeaveGroup(!showLeaveGroup);
-                                    toastTextRef.current = localize("GROUP_LEFT");
+                                    toastTextRef.current = getLocalizedString("group_left");
                                     setShowToast(true);
                                     return resolve()
                                 }).catch(() => {
@@ -971,9 +971,9 @@ function CometChatHome(props: { theme?: string }) {
             return <>
                 <div className="cometchat-delete-chat-dialog__backdrop">
                     <CometChatConfirmDialog
-                        title={localize("DELETE_CHAT")}
-                        messageText={localize("CONFIRM_DELETE_CHAT")}
-                        confirmButtonText={localize("DELETE")}
+                        title={getLocalizedString("delete_chat")}
+                        messageText={getLocalizedString("confirm_delete_chat")}
+                        confirmButtonText={getLocalizedString("conversation_delete_title")}
                         onCancelClick={() => {
                             setShowDeleteGroupChatDialog(!showDeleteGroupChatDialog)
                         }}
@@ -985,7 +985,7 @@ function CometChatHome(props: { theme?: string }) {
         return (
             <>
                 <div className="side-component-header">
-                    <div className="side-component-header__text">{localize("GROUP_INFO")}</div>
+                    <div className="side-component-header__text">{getLocalizedString("group_info")}</div>
                     <div className="side-component-header__icon" onClick={() => setAppState({ type: "updateSideComponent", payload: { visible: false, type: "" } })} />
                 </div>
                 <div className="side-component-content">
@@ -1001,7 +1001,7 @@ function CometChatHome(props: { theme?: string }) {
                                 {group?.getName()}
                             </div>
                             <div className="side-component-content__description">
-                                {group?.getMembersCount?.() + " " + localize('MEMBERS')}
+                                {group?.getMembersCount?.() + " " + getLocalizedString('group_members')}
                             </div>
                         </div>
                     </div>
@@ -1030,7 +1030,7 @@ function CometChatHome(props: { theme?: string }) {
                                 onClick={() => setGroupTab("view")}
                             >
                                 <div className={`side-component-group-tabs__tab-text ${groupTab === "view" ? "side-component-group-tabs__tab-text-active" : ""}`}>
-                                    {localize("VIEW_MEMBERS")}
+                                    {getLocalizedString("view_members")}
                                 </div>
                             </div>
                             <div
@@ -1038,7 +1038,7 @@ function CometChatHome(props: { theme?: string }) {
                                 onClick={() => { setGroupTab("banned") }}
                             >
                                 <div className={`side-component-group-tabs__tab-text ${groupTab === "banned" ? "side-component-group-tabs__tab-text-active" : ""}`}>
-                                    {localize("BANNED_MEMBERS")}
+                                    {getLocalizedString("banned_members")}
                                 </div>
                             </div>
                         </div>
@@ -1256,7 +1256,7 @@ function CometChatHome(props: { theme?: string }) {
                     kickedFrom: CometChat.Group
                 ) => {
                     if (((selectedItem as Group).getGuid?.() === kickedFrom.getGuid() || ((selectedItem as Conversation).getConversationWith?.() as Group)?.getGuid?.() === kickedFrom.getGuid()) && kickedUser.getUid() === loggedInUser?.getUid()) {
-                        setShowAlertPopup({ visible: true, description: localize("BANNED") });
+                        setShowAlertPopup({ visible: true, description: getLocalizedString("member_banned") });
                     }
                 },
                 onGroupMemberKicked: (
@@ -1266,7 +1266,7 @@ function CometChatHome(props: { theme?: string }) {
                     kickedFrom: CometChat.Group
                 ) => {
                     if (((selectedItem as Group).getGuid?.() === kickedFrom.getGuid() || ((selectedItem as Conversation).getConversationWith?.() as Group)?.getGuid?.() === kickedFrom.getGuid()) && kickedUser.getUid() === loggedInUser?.getUid()) {
-                        setShowAlertPopup({ visible: true, description: localize("KICKED") });
+                        setShowAlertPopup({ visible: true, description: getLocalizedString("member_removed") });
                     }
                 },
 
@@ -1319,8 +1319,8 @@ function CometChatHome(props: { theme?: string }) {
             {showAlertPopup.visible &&
                 <CometChatAlertPopup
                     onConfirmClick={removedFromGroup}
-                    title={localize("NO_LONGER_PART_OF_GROUP")}
-                    description={`${localize("YOU_HAVE_BEEN")} ${showAlertPopup.description} ${localize('REMOVED_BY_ADMIN')}`}
+                    title={getLocalizedString("no_longer_part_of_group")}
+                    description={`${getLocalizedString("you_have_been")} ${showAlertPopup.description} ${getLocalizedString('removed_by_admin')}`}
                 />}
             <div className='conversations-wrapper'>
                 <div className='selector-wrapper'>

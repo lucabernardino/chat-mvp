@@ -1,5 +1,5 @@
 import { useCometChatSearchBar } from "./useCometChatSearchBar";
-import { localize } from "../../../resources/CometChatLocalize/cometchat-localize";
+import {getLocalizedString} from "../../../resources/CometChatLocalize/cometchat-localize";
 
 
 interface SearchBarProps {
@@ -19,7 +19,7 @@ interface SearchBarProps {
 const CometChatSearchBar = (props: SearchBarProps) => {
     const {
         searchText = "",
-        placeholderText = localize("SEARCH"),
+        placeholderText = getLocalizedString("search_placeholder"),
         onChange = ({ value = "" }) => { },
     } = props;
 

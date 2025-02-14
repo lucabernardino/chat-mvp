@@ -157,6 +157,7 @@ export const CometChatReactions: React.FC<ReactionsProps> = ({
             return () => {
                 if (resizeObserver.current) {
                     resizeObserver.current.disconnect();
+                    resizeObserver.current = null;
                 }
             };
         } catch (error) {

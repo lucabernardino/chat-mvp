@@ -20,9 +20,9 @@ import { useCometChatMessageList } from "./useCometChatMessageList";
 import { MessageListManager } from "./CometChatMessageListController";
 import { CometChatUIKitUtility } from "../../CometChatUIKit/CometChatUIKitUtility";
 import { CometChatActionsIcon, CometChatActionsView, CometChatMessageTemplate } from "../../modals";
-import { DatePatterns, MessageBubbleAlignment, MessageListAlignment, MessageStatus, PanelAlignment, States } from "../../Enums/Enums";
+import { MessageBubbleAlignment, MessageListAlignment, MessageStatus, PanelAlignment, States } from "../../Enums/Enums";
 import { CometChatUIKitConstants } from "../../constants/CometChatUIKitConstants";
-import { localize } from "../../resources/CometChatLocalize/cometchat-localize";
+import {CometChatLocalize, getLocalizedString} from "../../resources/CometChatLocalize/cometchat-localize";
 import { CometChatTextFormatter } from "../../formatters/CometChatFormatters/CometChatTextFormatter";
 import { CometChatReactions } from "../Reactions/CometChatReactions/CometChatReactions";
 import { CometChatDate } from "../BaseComponents/CometChatDate/CometChatDate";
@@ -38,10 +38,11 @@ import { CometChatCallEvents } from "../../events/CometChatCallEvents";
 import { CometChatMessageEvents, IMessages } from "../../events/CometChatMessageEvents";
 import { CometChatGroupEvents, IGroupLeft, IGroupMemberAdded, IGroupMemberKickedBanned, IGroupMemberScopeChanged } from "../../events/CometChatGroupEvents";
 import CometChatToast from "../BaseComponents/CometChatToast/CometChatToast";
-import { getThemeMode } from "../../utils/util";
+import { getThemeMode, sanitizeCalendarObject } from "../../utils/util";
 import { CometChatSoundManager } from "../../resources/CometChatSoundManager/CometChatSoundManager";
 import { CometChatConversationStarter } from "../BaseComponents/CometChatConversationStarter/CometChatConversationStarter";
 import { CometChatSmartReplies } from "../BaseComponents/CometChatSmartReplies/CometChatSmartReplies";
+import { CalendarObject } from "../../utils/CalendarObject";
 
 /**
  * Props for the MessageList component.
@@ -183,17 +184,6 @@ interface MessageListProps {
    * @default MessageListAlignment.standard
    */
   messageAlignment?: MessageListAlignment;
-
-  /**
-   * User-defined time format for displaying message timestamps.
-   */
-  timePattern?: DatePatterns;
-
-  /**
-   * User-defined date format for displaying message timestamps.
-   */
-  datePattern?: DatePatterns;
-
   /**
    * Automatically scrolls the message list to the bottom when a new message arrives.
    * @default false
@@ -281,11 +271,26 @@ interface MessageListProps {
    * A custom header view component for the message list.
    */
   headerView?: JSX.Element;
-
   /**
    * A custom footer view component for the message list.
    */
   footerView?: JSX.Element;
+    /**
+   * Format for the date separators in the message list. 
+   */
+  separatorDateTimeFormat?: CalendarObject;
+   /**
+   * Format for sticky date headers displayed in the message list.
+   */
+  stickyDateTimeFormat?: CalendarObject;
+    /**
+   * Format for the timestamp displayed next to messages.
+   */
+  messageSentAtDateTimeFormat?: CalendarObject;
+    /**
+   * Format for timestamps displayed in message details (e.g., delivery or read time).
+   */
+  messageInfoDateTimeFormat?: CalendarObject;
 
 }
 
@@ -300,8 +305,6 @@ const defaultProps: MessageListProps = {
   loadingView: undefined,
   hideReceipts: false,
   messageAlignment: MessageListAlignment.standard,
-  timePattern: DatePatterns.time,
-  datePattern: DatePatterns.DayDate,
   hideDateSeparator: false,
   templates: [],
   messagesRequestBuilder: undefined,
@@ -345,8 +348,6 @@ const CometChatMessageList = (props: MessageListProps) => {
     loadingView,
     hideReceipts,
     messageAlignment,
-    timePattern,
-    datePattern,
     hideDateSeparator,
     templates,
     messagesRequestBuilder,
@@ -378,6 +379,10 @@ const CometChatMessageList = (props: MessageListProps) => {
     showSmartReplies,
     smartRepliesKeywords,
     smartRepliesDelayDuration,
+    messageInfoDateTimeFormat,
+    messageSentAtDateTimeFormat,
+    separatorDateTimeFormat,
+    stickyDateTimeFormat,
   } = { ...defaultProps, ...props };
   /**
    * All the useState useCometChatMessageList are declaired here. These trigger a rerender when updated.
@@ -566,10 +571,10 @@ const CometChatMessageList = (props: MessageListProps) => {
           </img>
           <div className='cometchat-message-list__error-state-view-body'>
             <div className='cometchat-message-list__error-state-view-body-title'>
-              {localize("OOPS!")}
+              {getLocalizedString("message_list_error_title")}
             </div>
             <div className='cometchat-message-list__error-state-view-body-description'>
-              {localize("LOOKS_LIKE_SOMETHING_WENT_WRONG")}
+              {getLocalizedString("message_list_error_subtitle")}
             </div>
           </div>
         </div>
@@ -678,6 +683,50 @@ const CometChatMessageList = (props: MessageListProps) => {
     }, []
   )
 
+
+
+  /**
+  * Function for the date separators in the message list. 
+  * @returns CalendarObject
+  */
+  function getSeparatorDateFormat() {
+    const defaultFormat = {
+      yesterday: getLocalizedString("yesterday"),
+      otherDays: `DD MMM, YYYY`,
+      today: getLocalizedString("today")
+    };
+
+        var globalCalendarFormat = sanitizeCalendarObject(CometChatLocalize.calendarObject)
+        var componentCalendarFormat = sanitizeCalendarObject(separatorDateTimeFormat)
+  
+    const finalFormat = {
+      ...defaultFormat,
+      ...globalCalendarFormat,
+      ...componentCalendarFormat
+    };
+    return finalFormat;
+  }
+  /**
+   * Function for displaying sticky date headers  in the message list.
+   * @returns CalendarObject
+    */
+  function getStickyDateFormat() {
+    const defaultFormat = {
+      yesterday: getLocalizedString("yesterday"),
+      otherDays: `DD MMM, YYYY`,
+      today: getLocalizedString("today")
+    };
+
+    var globalCalendarFormat = sanitizeCalendarObject(CometChatLocalize.calendarObject)
+    var componentCalendarFormat = sanitizeCalendarObject(stickyDateTimeFormat)
+  
+    const finalFormat = {
+      ...defaultFormat,
+      ...globalCalendarFormat,
+      ...componentCalendarFormat
+    };
+    return finalFormat;
+  }
   /*
     * isPartOfCurrentChatForSDKEvent: To check if the message belongs for this list and is not part of thread even for current list
       it only runs for SDK event because it needs senderId to check if the message is sent by the same user
@@ -1098,7 +1147,7 @@ const CometChatMessageList = (props: MessageListProps) => {
           ) {
             text = getMentionsTextWithoutStyle(message);
           }
-          toastTextRef.current = localize("MESSAGE_COPIED");
+          toastTextRef.current = getLocalizedString("message_list_message_copied");
           setShowToast(true);
           navigator?.clipboard?.writeText(text);
         }
@@ -1198,7 +1247,7 @@ const CometChatMessageList = (props: MessageListProps) => {
             (deletedMessage: CometChat.BaseMessage) => {
               replaceUpdatedMessage(deletedMessage)
               CometChatMessageEvents.ccMessageDeleted.next(deletedMessage);
-              toastTextRef.current = localize("MESSAGE_DELETED_TEXT");
+              toastTextRef.current = getLocalizedString("message_list_message_deleted");
               setShowToast(true);
             },
             (error: CometChat.CometChatException) => {
@@ -1943,8 +1992,8 @@ const CometChatMessageList = (props: MessageListProps) => {
               setScrollListToBottom(false);
             }
             let countText = UnreadMessagesRef.current.length > 1
-              ? localize("NEW_MESSAGES")
-              : localize("NEW_MESSAGE");
+              ? getLocalizedString("message_list_new_messages")
+              : getLocalizedString("message_list_new_message");
             UnreadMessagesRef.current.push(...messages);
             newMessageTextRef.current =
               + UnreadMessagesRef.current.length + " " + countText;
@@ -2235,8 +2284,8 @@ const CometChatMessageList = (props: MessageListProps) => {
     try {
       if (!isOnBottomRef.current && message.getSender() && message.getSender().getUid() != loggedInUserRef.current?.getUid()) {
         let countText = UnreadMessagesRef.current.length > 1
-          ? localize("NEW_MESSAGES")
-          : localize("NEW_MESSAGE");
+          ? getLocalizedString("message_list_new_messages")
+          : getLocalizedString("message_list_new_message");
         UnreadMessagesRef.current.push(message);
         newMessageTextRef.current =
           + UnreadMessagesRef.current.length + " " + countText;
@@ -2871,7 +2920,7 @@ const CometChatMessageList = (props: MessageListProps) => {
         (obj: IMessages) => {
           if (obj?.status === MessageStatus.success) {
             if (isPartOfCurrentChatForUIEvent(obj.message)) {
-              toastTextRef.current = localize("MESSAGE_EDITED");
+              toastTextRef.current = getLocalizedString("message_list_message_edited");
               setShowToast(true);
               updateMessage(obj.message, false);
             }
@@ -2883,7 +2932,7 @@ const CometChatMessageList = (props: MessageListProps) => {
         (obj: IMessages) => {
           if (obj?.status === MessageStatus.success) {
             if (isPartOfCurrentChatForSDKEvent(obj.message)) {
-              toastTextRef.current = localize("MESSAGE_TRANSLATED");
+              toastTextRef.current = getLocalizedString("message_list_message_translated");
               setShowToast(true);
               updateMessage(obj.message, false);
               setTimeout(() => {
@@ -2963,20 +3012,6 @@ const CometChatMessageList = (props: MessageListProps) => {
       const onMessageEdited = CometChatMessageEvents.onMessageEdited.subscribe((editedMessage: CometChat.BaseMessage) => {
         replaceUpdatedMessage(editedMessage);
       });
-      const onTransientMessageReceived = CometChatMessageEvents.onTransientMessageReceived.subscribe((transientMessage: CometChat.TransientMessage) => {
-        let message: CometChat.TransientMessage =
-          transientMessage as CometChat.TransientMessage;
-        let liveReaction: any = message.getData();
-        if (
-          validateTransientMessage(transientMessage)
-          && liveReaction["type"] == "live_reaction"
-        ) {
-          CometChatMessageEvents.ccLiveReaction.next(
-            liveReaction["reaction"]
-          );
-        }
-      });
-
       let onMessageReactionAdded: Subscription, onMessageReactionRemoved: Subscription;
 
       onMessageReactionAdded = CometChatMessageEvents.onMessageReactionAdded.subscribe((reactionReceipt) => {
@@ -3015,7 +3050,6 @@ const CometChatMessageList = (props: MessageListProps) => {
           onMessagesReadByAll?.unsubscribe();
           onMessageDeleted?.unsubscribe();
           onMessageEdited?.unsubscribe();
-          onTransientMessageReceived?.unsubscribe();
           onMessageReactionAdded?.unsubscribe();
           onMessageReactionRemoved?.unsubscribe();
         } catch (error: any) {
@@ -3206,12 +3240,12 @@ const CometChatMessageList = (props: MessageListProps) => {
         <>
           <CometChatDate
             timestamp={item.getSentAt()}
-            pattern={timePattern}
+            calendarObject={getSeparatorDateFormat()}
           ></CometChatDate>
         </>
       );
     },
-    [timePattern]
+    [separatorDateTimeFormat]
   );
 
   /**
@@ -3371,8 +3405,8 @@ const CometChatMessageList = (props: MessageListProps) => {
             item,
             _alignment,
             hideReceipts,
-            timePattern
-          );
+            messageSentAtDateTimeFormat
+            );
         } else {
           return null;
         }
@@ -3386,6 +3420,7 @@ const CometChatMessageList = (props: MessageListProps) => {
       messagesTypesMap,
       errorHandler,
       setBubbleAlignment,
+      messageSentAtDateTimeFormat
     ]
   );
 
@@ -3452,8 +3487,8 @@ const CometChatMessageList = (props: MessageListProps) => {
             key={`${item.getId()}-${item.getSentAt()}`}
           >
             <CometChatDate
+              calendarObject={getSeparatorDateFormat()}
               timestamp={item.getSentAt()}
-              pattern={datePattern}
             ></CometChatDate>
           </div>
         );
@@ -3469,7 +3504,6 @@ const CometChatMessageList = (props: MessageListProps) => {
       }
     },
     [
-      datePattern,
       messageList,
       isDateDifferent,
       hideDateSeparator
@@ -3617,7 +3651,7 @@ const CometChatMessageList = (props: MessageListProps) => {
  */
   const getThreadCount: (message: CometChat.BaseMessage) => string = (message: CometChat.BaseMessage) => {
     const replyCount = message?.getReplyCount() || 0;
-    const suffix = replyCount === 1 ? localize("REPLY") : localize("REPLIES");
+    const suffix = replyCount === 1 ? getLocalizedString("message_list_thread_reply") : getLocalizedString("message_list_thread_replies");
     return `${replyCount} ${suffix}`;
   };
 
@@ -3745,8 +3779,8 @@ const CometChatMessageList = (props: MessageListProps) => {
             className='cometchat-message-list__date-header'
           >
             <CometChatDate
-              timestamp={stickyDateHeaderRef.current}
-              pattern={datePattern}
+              timestamp={dateHeader}
+              calendarObject={getStickyDateFormat()}
             ></CometChatDate>
           </div> : null}
 
@@ -3810,6 +3844,8 @@ const CometChatMessageList = (props: MessageListProps) => {
           <CometChatMessageInformation
             message={activeMessageInfo}
             onClose={hideMessageInformation}
+            messageInfoDateTimeFormat={messageInfoDateTimeFormat}
+            messageSentAtDateTimeFormat={messageSentAtDateTimeFormat}
           />
         </div>
       )}

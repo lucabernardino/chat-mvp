@@ -2,7 +2,7 @@
 import { CometChat } from "@cometchat/chat-sdk-javascript";
 import { CometChatUIKitConstants } from "../constants/CometChatUIKitConstants";
 import { CometChatOption } from "../modals";
-import { localize } from "../resources/CometChatLocalize/cometchat-localize";
+import {getLocalizedString} from "../resources/CometChatLocalize/cometchat-localize";
 
 /**
  * A utility class for handling group member-related actions and options within CometChat.
@@ -30,21 +30,21 @@ export class GroupMemberUtils {
       if (isKickAllowed) {
         options.push(new CometChatOption({
           id: CometChatUIKitConstants.GroupMemberOptions.kick,
-          title: localize("REMOVE")
+          title: getLocalizedString("members_remove")
 
         }))
       }
       if (isBanAllowed) {
         options.push(new CometChatOption({
           id: CometChatUIKitConstants.GroupMemberOptions.ban,
-          title: localize("BLOCK")
+          title: getLocalizedString("members_block")
 
         }))
       }
       if (ischangeScopeAllowed) {
         options.push(new CometChatOption({
           id: CometChatUIKitConstants.GroupMemberOptions.changeScope,
-          title: localize("CHANGE_ROLE")
+          title: getLocalizedString("members_change_role")
 
         }))
       }

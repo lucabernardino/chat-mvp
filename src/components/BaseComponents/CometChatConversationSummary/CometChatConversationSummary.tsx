@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import React, { useContext, useEffect, useState } from 'react';
-import { localize } from '../../../resources/CometChatLocalize/cometchat-localize';
+import {getLocalizedString} from '../../../resources/CometChatLocalize/cometchat-localize';
 import { States } from '../../../Enums/Enums';
 
 interface CometChatConversationSummaryProps {
@@ -26,9 +26,9 @@ const CometChatConversationSummary = (props: CometChatConversationSummaryProps) 
     const [activeView, setActiveView] = useState<JSX.Element | null>(null);
 
 
-    const errorStateText: string = localize("LOOKS_LIKE_SOMETHING_WENT_WRONG");
-    const emptyStateText: string = localize("NO_SUMMARY_AVAILABLE");
-    const titleText: string = localize("CONVERSATION_SUMMARY");
+    const errorStateText: string = getLocalizedString("ai_conversation_summary_error");
+    const emptyStateText: string = getLocalizedString("ai_conversation_summary_empty");
+    const titleText: string = getLocalizedString("ai_conversation_summary_title");
 
     useEffect(() => {
         fetchButtonContent();

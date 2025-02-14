@@ -7,7 +7,7 @@ import { Call, Conversation, Group, User } from "@cometchat/chat-sdk-javascript"
 import "../../styles/CometChatSelector/CometChatSelector.css";
 import { CometChatJoinGroup } from "../CometChatJoinGroup/CometChatJoinGroup";
 import CometChatCreateGroup from "../CometChatCreateGroup/CometChatCreateGroup";
-import { CometChatButton, CometChatCallLogs, CometChatConversations, CometChatGroups, CometChatOption, CometChatUIKit, CometChatUIKitLoginListener, CometChatUsers, localize } from "@cometchat/chat-uikit-react";
+import { CometChatButton, CometChatCallLogs, CometChatConversations, CometChatGroups, CometChatOption, CometChatUIKit, CometChatUIKitLoginListener, CometChatUsers, getLocalizedString } from "@cometchat/chat-uikit-react";
 import { CometChatContextMenu, Placement } from "@cometchat/chat-uikit-react";
 import { useNavigate } from "react-router-dom";
 import { AppContext } from "../../context/AppContext";
@@ -60,7 +60,7 @@ export const CometChatSelector = (props: SelectorProps) => {
             }),
             new CometChatOption({
                 id: "create-conversation",
-                title: localize("CREATE_CONVERSATION"),
+                title: getLocalizedString("create_conversation"),
                 iconURL: chatIcon,
                 onClick: () => {
                     onNewChatClicked()
@@ -68,7 +68,7 @@ export const CometChatSelector = (props: SelectorProps) => {
             }),
             new CometChatOption({
                 id: "log-out",
-                title: localize("LOG_OUT"),
+                title: getLocalizedString("log_out"),
                 iconURL: logoutIcon,
                 onClick: () => {
                     logOut();
@@ -91,7 +91,7 @@ export const CometChatSelector = (props: SelectorProps) => {
         return (
             <div className="cometchat-conversations-header">
                 <div className="cometchat-conversations-header__title">
-                    {localize("CHATS")}
+                    {getLocalizedString("conversation_chat_title")}
                 </div>
                 <div className="chat-menu">
                     <CometChatContextMenu
@@ -116,7 +116,7 @@ export const CometChatSelector = (props: SelectorProps) => {
         return (
             <div className="cometchat-groups-header" >
                 <div className="cometchat-groups-header__title" >
-                    {localize("GROUPS")}
+                    {getLocalizedString("group_title")}
                 </div>
                 < CometChatButton onClick={() => {
                     setShowCreateGroup(true)

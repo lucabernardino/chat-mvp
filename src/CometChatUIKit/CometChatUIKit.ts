@@ -94,12 +94,13 @@ class CometChatUIKit {
 
         const appSettings = appSettingsBuilder.build();
         if (CometChat.setSource) {
-            CometChat.setSource("uikit-v5", "web", "reactjs");
+            CometChat.setSource("uikit-v6", "web", "reactjs");
         }
+        CometChatLocalize.setCurrentLanguage(CometChatLocalize.getBrowserLanguage());
         return new Promise((resolve, reject) => {
             window.CometChatUiKit = {
                 name: "@cometchat/chat-uikit-react",
-                version: "5.0.3",
+                version: "6.0.0",
             };
             CometChat.init(uiKitSettings?.appId, appSettings).then(() => {
                 CometChat.getLoggedinUser().then((user: CometChat.User | null) => {

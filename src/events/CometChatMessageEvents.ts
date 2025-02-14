@@ -10,7 +10,6 @@ export class CometChatMessageEvents {
     static ccMessageSent: Subject<IMessages> = new Subject<IMessages>();
     static ccMessageEdited: Subject<IMessages> = new Subject<IMessages>();
     static ccMessageTranslated: Subject<IMessages> = new Subject<IMessages>();
-    static ccLiveReaction: Subject<string> = new Subject<string>();
     static ccMessageRead: Subject<CometChat.BaseMessage> = new Subject<CometChat.BaseMessage>();
     static ccMessageDeleted: Subject<CometChat.BaseMessage> = new Subject<CometChat.BaseMessage>();
     /**
@@ -37,7 +36,6 @@ export class CometChatMessageEvents {
     static onMessagesReadByAll: Subject<CometChat.MessageReceipt> = new Subject<CometChat.MessageReceipt>();
     static onMessageEdited: Subject<CometChat.BaseMessage> = new Subject<CometChat.BaseMessage>();
     static onMessageDeleted: Subject<CometChat.BaseMessage> = new Subject<CometChat.BaseMessage>();
-    static onTransientMessageReceived: Subject<CometChat.TransientMessage> = new Subject<CometChat.TransientMessage>();
     static onMessageReactionAdded: Subject<CometChat.ReactionEvent> = new Subject<CometChat.ReactionEvent>();
     static onMessageReactionRemoved: Subject<CometChat.ReactionEvent> = new Subject<CometChat.ReactionEvent>();
 }

@@ -1,4 +1,4 @@
-import { localize } from "../../../resources/CometChatLocalize/cometchat-localize";
+import {getLocalizedString} from "../../../resources/CometChatLocalize/cometchat-localize";
 import { CometChatUIKitConstants } from "../../../constants/CometChatUIKitConstants";
 
 export function isSentByMe(call: CometChat.Call | any, loggedInUser: CometChat.User) {
@@ -42,67 +42,7 @@ export function verifyCallUser(call: any, loggedInUser: CometChat.User) {
   }
 }
 
-export function getCallStatusWithType(
-  call: any,
-  loggedInUser: CometChat.User,
-  includeType: boolean = false
-): string {
-  if (!call || !loggedInUser) {
-    return "";
-  }
 
-  let callMessageText = "";
-  const callStatus = call.getStatus();
-  const sentByMe = isSentByMe(call, loggedInUser);
-  const missedCall = isMissedCall(call, loggedInUser);
-  const callTypeKey = "_";
-
-  if (missedCall) {
-    callMessageText = `MISSED${callTypeKey}CALL`;
-  } else {
-    switch (callStatus) {
-      case CometChatUIKitConstants.calls.initiated:
-        callMessageText = sentByMe
-          ? `OUTGOING${callTypeKey}CALL`
-          : `INCOMING${callTypeKey}CALL`;
-        break;
-      case CometChatUIKitConstants.calls.ongoing:
-        callMessageText = sentByMe
-          ? `ONGOING${callTypeKey}CALL`
-          : `ONGOING${callTypeKey}CALL`;
-        break;
-      case CometChatUIKitConstants.calls.ended:
-        callMessageText = sentByMe
-          ? `OUTGOING${callTypeKey}CALL`
-          : `INCOMING${callTypeKey}CALL`;
-        break;
-      case CometChatUIKitConstants.calls.unanswered:
-        callMessageText = sentByMe
-          ? `UNANSWERED${callTypeKey}CALL`
-          : `MISSED${callTypeKey}CALL`;
-        break;
-      case CometChatUIKitConstants.calls.cancelled:
-        callMessageText = sentByMe
-          ? `CANCELLED${callTypeKey}CALL`
-          : `MISSED${callTypeKey}CALL`;
-        break;
-      case CometChatUIKitConstants.calls.rejected:
-        callMessageText = sentByMe
-          ? `REJECTED${callTypeKey}CALL`
-          : `MISSED${callTypeKey}CALL`;
-        break;
-      case CometChatUIKitConstants.calls.busy:
-        callMessageText = sentByMe
-          ? `UNANSWERED${callTypeKey}CALL`
-          : `MISSED${callTypeKey}CALL`;
-        break;
-      default:
-        callMessageText = `INCOMING${callTypeKey}CALL`;
-    }
-  }
-
-  return localize(callMessageText);
-}
 
 export function convertMinutesToHoursMinutesSeconds(minutes: number): string {
   const hours = Math.floor(minutes / 60);

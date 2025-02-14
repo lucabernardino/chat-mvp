@@ -1,6 +1,7 @@
 import { CometChat } from "@cometchat/chat-sdk-javascript";
 import { CometChatMessageOption } from "./CometChatMessageOption";
-import { DatePatterns, MessageBubbleAlignment } from "../Enums/Enums";
+import { MessageBubbleAlignment } from "../Enums/Enums";
+import { CalendarObject } from "../utils/CalendarObject";
 
 /**
  * CometChatMessageTemplate is a pre-defined structure for creating message views 
@@ -55,7 +56,7 @@ class CometChatMessageTemplate {
      * By default, it displays the receipt and the timestamp.
      * @type {(message:CometChat.BaseMessage,alignment:MessageBubbleAlignment)=> Element | JSX.Element | null}
      */
-    statusInfoView: ((message: CometChat.BaseMessage, alignment: MessageBubbleAlignment, hideReceipt?: boolean, datePattern?: DatePatterns) => Element | JSX.Element | null) | null = null;
+    statusInfoView: ((message: CometChat.BaseMessage, alignment: MessageBubbleAlignment, hideReceipt?: boolean, messageSentAtDateTimeFormat?:CalendarObject) => Element | JSX.Element | null) | null = null;
 
     /**
      * List of available actions that any user can perform on a message, like reacting, 

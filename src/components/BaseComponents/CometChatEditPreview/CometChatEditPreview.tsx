@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import { localize } from '../../../resources/CometChatLocalize/cometchat-localize';
+import {getLocalizedString} from '../../../resources/CometChatLocalize/cometchat-localize';
 
 /**
  * Interface for the props used in the CometChatEditPreview component.
@@ -21,7 +21,7 @@ interface EditPreviewProps {
  * @returns {JSX.Element} A JSX element displaying the edit preview UI.
  */
 const CometChatEditPreview: FC<EditPreviewProps> = ({
-    previewTitle = localize("EDIT_MESSAGE"),
+    previewTitle = getLocalizedString("message_composer_edit_message"),
     previewSubtitle = "",
     onClose,
 }) => {

@@ -6,7 +6,7 @@
     flex-direction: column;
 }
 
-.cometchat-threaded-message .cometchat-threaded-message-preview__header {
+.cometchat-threaded-message .cometchat-thread-header__top-bar {
     height: 65px;
     border-left: none;
 }
@@ -54,7 +54,7 @@ font:var(--cometchat-font-body-regular);
 }
 
 .side-component-wrapper>.cometchat,
-.side-component-wrapper .cometchat-threaded-message-preview {
+.side-component-wrapper .cometchat-thread-header {
     width: 100%;
 }
 

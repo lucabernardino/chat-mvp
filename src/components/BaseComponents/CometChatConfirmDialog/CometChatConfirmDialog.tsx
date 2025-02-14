@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { localize } from "../../../resources/CometChatLocalize/cometchat-localize";
+import { getLocalizedString } from "../../../resources/CometChatLocalize/cometchat-localize";
 import { CometChatButton } from "../CometChatButton/CometChatButton";
 
 interface ConfirmDialogProps {
@@ -26,10 +26,10 @@ interface ConfirmDialogProps {
 */
 const CometChatConfirmDialog = (props: ConfirmDialogProps) => {
     const {
-        title = localize("DELETE_CHAT"),
-        messageText = localize("SURE_TO_DELETE_CHAT"),
-        cancelButtonText = localize('CANCEL'),
-        confirmButtonText = localize("DELETE"),
+        title = getLocalizedString("conversation_delete_title"),
+        messageText = getLocalizedString("conversation_delete_subtitle"),
+        cancelButtonText = getLocalizedString('conversation_delete_confirm_no'),
+        confirmButtonText = getLocalizedString("conversation_delete_confirm_yes"),
         onSubmitClick,
         onCancelClick,
     } = props;
@@ -57,7 +57,7 @@ if(onSubmitClick){
     return (
         <div className="cometchat" style={{width:"fit-content" , height:"fit-content"}}>
                   {isError ?   <div className="cometchat-dialog-error-view cometchat-confirm-dialog-error-view">
-                    {localize("SOMETHING_WRONG")}
+                    {getLocalizedString("conversation_delete_error")}
                 </div> : null}
             <div className="cometchat-confirm-dialog" >
                 <div className="cometchat-confirm-dialog__icon-wrapper">

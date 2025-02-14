@@ -1,15 +1,4 @@
 /**
- * This is used for providing the required date configs.
- * It is used in components where the date field is present. 
- */
-export enum DatePatterns {
-  time,
-  DayDate,
-  DayDateTime,
-  DateTime,
-}
-
-/**
  * It is used for specifying the position of the auxiliary buttons.
  * It is used in CometChatMessageComposer component.
  */

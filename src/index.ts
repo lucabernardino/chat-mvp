@@ -100,7 +100,8 @@ export { CallingConfiguration } from './components/Calling/CallingConfiguration'
 export { CometChatCallButtons } from './components/Calling/CometChatCallButtons/CometChatCallButtons'
 export { OutgoingCallConfiguration } from './components/Calling/OutgoingCallConfiguration'
 export * from './components/Calling/Utils/utils'
-
+export * from './utils/Interface'
+export {CalendarObject} from './utils/CalendarObject'
 
 export { CometChatAudioBubble } from './components/BaseComponents/CometChatAudioBubble/CometChatAudioBubble';
 export { CometChatAvatar } from './components/BaseComponents/CometChatAvatar/CometChatAvatar';
@@ -139,8 +140,8 @@ export { MessageReceiptUtils } from './utils/MessageReceiptUtils';
 export { MessageUtils } from './utils/MessageUtils';
 export * from './utils/util';
 export * from './utils/Storage';
-
-export { CometChatThreadedMessagePreview } from './components/CometChatThreadedMessagePreview/CometChatThreadedMessagePreview'
+export * from './utils/Interface'
+export { CometChatThreadHeader } from './components/CometChatThreadHeader/CometChatThreadHeader'
 export * from "./components/Calling/Utils/utils"
 export { CometChatUIKitLoginListener } from './CometChatUIKit/CometChatUIKitLoginListener';
 export { CometChatUIKitUtility } from './CometChatUIKit/CometChatUIKitUtility';

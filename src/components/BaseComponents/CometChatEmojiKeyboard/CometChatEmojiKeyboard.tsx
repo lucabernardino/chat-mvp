@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef } from "react";
 import { useCometChatEmojiKeyboard } from "./useCometChatEmojiKeyboard";
 import { CometChatEmoji, CometChatEmojiCategory } from "./CometChatEmoji";
-import { localize } from "../../../resources/CometChatLocalize/cometchat-localize";
+import {getLocalizedString} from "../../../resources/CometChatLocalize/cometchat-localize";
 import { CometChatSearchBar } from "../CometChatSearchBar/CometChatSearchBar";
 
 interface EmojiKeyboardProps {
@@ -107,10 +107,10 @@ const CometChatEmojiKeyboard = (props: EmojiKeyboardProps) => {
                         <div
                             key={counter + emoji.id}
                             onClick={() => { scrollToElement(emoji.id) }}
-                            title={emoji.name}
+                            title={getLocalizedString(emoji.name)}
                             className={activeCategory == emoji.id ? "cometchat-emoji-keyboard__tab-active cometchat-emoji-keyboard__tab" : "cometchat-emoji-keyboard__tab"}
                         >
-                            <div title={emoji.name}>
+                            <div title={getLocalizedString(emoji.name)}>
                                 <div
                                     style={emoji.symbolURL ? { WebkitMask: `url(${emoji.symbolURL}) center center no-repeat` } : undefined}
                                     className={`cometchat-emoji-keyboard__tab-icon`}
@@ -120,7 +120,7 @@ const CometChatEmojiKeyboard = (props: EmojiKeyboardProps) => {
                 </div>
                 <div className="cometchat-emoji-keyboard__search">
                     <CometChatSearchBar
-                        placeholderText={localize("SEARCH_EMOJI")}
+                        placeholderText={getLocalizedString("emoji_search_placeholder")}
                         onChange={filterEmojis}
                         searchText={searchString}
                     />
@@ -134,7 +134,7 @@ const CometChatEmojiKeyboard = (props: EmojiKeyboardProps) => {
                         {emojiDataState.map((emoji: CometChatEmojiCategory) =>
                             <div className="cometchat-emoji-keyboard__list-content" key={emoji.id}>
                                 <div className="cometchat-emoji-keyboard__list-title" id={emoji.id}>
-                                    <div title={emoji.name} >{emoji.name}</div>
+                                    <div title={getLocalizedString(emoji.name)} >{getLocalizedString(emoji.name)}</div>
                                 </div>
                                 {getEmojiListComponent(emoji.emojies)}
                             </div>

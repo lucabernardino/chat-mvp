@@ -7,8 +7,9 @@ import { CometChatTextFormatter } from "../formatters/CometChatFormatters/CometC
 import { CometChatUrlsFormatter } from "../formatters/CometChatFormatters/CometChatUrlsFormatter/CometChatUrlsFormatter";
 import { additionalParams } from "./ConversationUtils";
 import { CometChatActionsIcon, CometChatActionsView, CometChatMessageComposerAction, CometChatMessageTemplate } from "../modals/";
-import { DatePatterns, MessageBubbleAlignment } from "../Enums/Enums";
+import {  MessageBubbleAlignment } from "../Enums/Enums";
 import { ComposerId } from "./MessagesDataSource";
+import { CalendarObject } from "./CalendarObject";
 /**
  * Class for providing message options and views.
  * It is used in AI and calling module and utils related to messages.
@@ -52,7 +53,7 @@ export abstract class DataSource {
     message: CometChat.BaseMessage,
     alignment: MessageBubbleAlignment,
     hideReceipt?: boolean,
-    datePattern?: DatePatterns
+    messageSentAtDateTimeFormat?:CalendarObject
   ): Element | JSX.Element | null;
   abstract getTextMessageContentView(
     message: CometChat.TextMessage,

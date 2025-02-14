@@ -1,4 +1,4 @@
-import  { useState, useRef, useEffect, ReactNode, useCallback, forwardRef, useImperativeHandle, CSSProperties, useLayoutEffect } from 'react';
+import { useState, useRef, useEffect, ReactNode, useCallback, forwardRef, useImperativeHandle, CSSProperties, useLayoutEffect } from 'react';
 
 export enum Placement {
     top = 'top',
@@ -41,57 +41,56 @@ const CometChatPopover = forwardRef<{
         const [positionStyleState, setPositionStyleState] = useState<CSSProperties>({});
         const popoverRef = useRef<HTMLDivElement>(null);
         const childRef = useRef<HTMLDivElement>(null);
-
         useImperativeHandle(ref, () => ({
             openPopover() {
                 getPopoverPositionStyle();
                 setIsOpen(true);
             },
             closePopover() {
-                
                 setIsOpen(false);
             },
         }));
-   
-        const handleWindowChange = debounce(() => {
-            if (!popoverRef.current) return;
-
-            if (!isOpen) return;
-
-            if (childRef.current && !isElementVisibleWithScrollableAncestor(childRef.current)) {
-                setIsOpen(false);
-                return;
-            }
-        }, 100);
-
         const togglePopover = useCallback((e?: any) => {
             setIsOpen(prev => !prev);
         }, []);
-
+        const handleClickOutside = (event: MouseEvent) => {
+            if (popoverRef.current && !popoverRef.current.contains(event.target as Node)) {
+                setIsOpen(false);
+                if (onOutsideClick) {
+                    onOutsideClick()
+                }
+            }
+        };
         useEffect(() => {
-            if (closeOnOutsideClick) {
-                const handleClickOutside = (event: MouseEvent) => {
-                    if (popoverRef.current && !popoverRef.current.contains(event.target as Node)) {
-                        setIsOpen(false);
-                        if (onOutsideClick) {
-                            onOutsideClick()
-                        }
-                    }
-                };
+            if (closeOnOutsideClick && isOpen) {
                 document.addEventListener('click', handleClickOutside);
                 return () => document.removeEventListener('click', handleClickOutside);
             }
-        }, [closeOnOutsideClick]);
+        }, [closeOnOutsideClick, isOpen]);
 
         useEffect(() => {
-            window.addEventListener('resize', handleWindowChange);
-            window.addEventListener('scroll', handleWindowChange, true);
+            const handleScroll = () => {
+                if (!isOpen || !childRef.current) return;
+                const rect = childRef.current.getBoundingClientRect();
+                if (
+                    rect.top < 0 ||
+                    rect.left < 0 ||
+                    rect.bottom > window.innerHeight ||
+                    rect.right > window.innerWidth
+                ) {
+                    setIsOpen(false);
+                    if (onOutsideClick) {
+                        onOutsideClick()
+                    }
+                }
+            };
+            window.addEventListener('resize', handleScroll);
+            window.addEventListener('scroll', handleScroll, true);
             return () => {
-                window.removeEventListener('resize', handleWindowChange);
-                window.removeEventListener('scroll', handleWindowChange, true);
+                window.removeEventListener('resize', handleScroll);
+                window.removeEventListener('scroll', handleScroll);
             };
         }, [isOpen]);
-
         /**
          * Updates the popover's position when opened and resets it when closed.
          * Uses useLayoutEffect to ensure the position is set before the browser repaints, 
@@ -104,123 +103,11 @@ const CometChatPopover = forwardRef<{
          */
         useLayoutEffect(() => {
             if (isOpen) {
-    getPopoverPositionStyle()
+                getPopoverPositionStyle()
             } else {
                 setPositionStyleState({});
             }
         }, [content, isOpen]);
-
-        /**
-         * Debounces a function, ensuring it is only executed after a specified wait time has passed since the last invocation.
-         * @param func The function to debounce.
-         * @param wait The wait time in milliseconds.
-         * @returns A debounced version of the function.
-         */
-        function debounce<T extends (...args: any[]) => any>(
-            func: T,
-            wait: number
-        ) {
-            let timeout: ReturnType<typeof setTimeout>;
-            return function executedFunction(this: any, ...args: Parameters<T>) {
-                const later = () => {
-                    clearTimeout(timeout);
-                    func.apply(this, args);
-                };
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-            };
-        }
-
-        /**
-         * Checks if an element is scrollable.
-         * @param ele - The HTML element to check.
-         * @returns True if the element is scrollable, false otherwise.
-         */
-        function isScrollable(ele: HTMLElement) {
-            const hasScrollableContent =
-                ele.scrollHeight > ele.clientHeight || ele.scrollWidth > ele.clientWidth;
-
-            // Check for overflow styles and handle potential edge cases
-            const overflowYStyle = window.getComputedStyle(ele).overflowY;
-            const overflowXStyle = window.getComputedStyle(ele).overflowX;
-            const isOverflowHidden =
-                overflowYStyle.indexOf("hidden") !== -1 ||
-                overflowXStyle.indexOf("hidden") !== -1;
-            const isOverflowAuto =
-                (overflowYStyle === "auto" || overflowXStyle === "auto") &&
-                hasScrollableContent;
-
-            // Consider potential non-standard overflow values and nested overflow
-            const isNonStandardOverflow =
-                (overflowYStyle !== "visible" &&
-                    overflowYStyle !== "hidden" &&
-                    overflowYStyle !== "scroll") ||
-                (overflowXStyle !== "visible" &&
-                    overflowXStyle !== "hidden" &&
-                    overflowXStyle !== "scroll");
-
-            // Return true if scrollable content exists and overflow is not primarily hidden
-            return (
-                (hasScrollableContent && !isOverflowHidden) ||
-                isOverflowAuto ||
-                isNonStandardOverflow
-            );
-        }
-
-        /**
-         * Returns the closest scrollable ancestor of the given element.
-         * If no scrollable ancestor is found, the document element is returned as the default fallback.
-         * @param ele - The element for which to find the closest scrollable ancestor.
-         * @returns The closest scrollable ancestor element or the document element if none is found.
-         */
-        function getClosestScrollableAncestor(ele: HTMLElement | null) {
-            while (ele) {
-                // Get the root node of the current element
-                const rootNode = ele.getRootNode();
-
-                // Check if the root node is a shadow root
-                if (rootNode instanceof ShadowRoot) {
-                    // If the root node is a shadow root, traverse to its host
-                    ele = rootNode.host as HTMLElement;
-                } else {
-                    // If not in shadow DOM, move to the parent element
-                    ele = ele.parentElement;
-                }
-
-                // Check if the current element is scrollable
-                if (ele && isScrollable(ele)) {
-                    return ele; // Return the scrollable element
-                }
-            }
-
-            // No scrollable ancestor found, return document as default fallback
-            return document.documentElement;
-        }
-
-        /**
-         * Checks if an element is visible within its scrollable ancestor.
-         *
-         * @param element - The element to check visibility for.
-         * @returns A boolean indicating whether the element is visible.
-         */
-        function isElementVisibleWithScrollableAncestor(element: HTMLElement) {
-            // Get closest scrollable ancestor
-            const scrollableAncestor = getClosestScrollableAncestor(element);
-
-            const elemRect = element.getBoundingClientRect();
-            const contRect = scrollableAncestor.getBoundingClientRect();
-
-            // Check visibility within the scrollable ancestor, considering potential edge cases
-            const isVisible =
-                elemRect.top >= contRect.top && // Top within scrollable area
-                elemRect.left >= contRect.left && // Left within scrollable area
-                elemRect.bottom <= contRect.bottom && // Bottom within scrollable area
-                elemRect.right <= contRect.right && // Right within scrollable area
-                elemRect.bottom > contRect.top && // Some element height within view
-                elemRect.right > contRect.left; // Some element width within view
-
-            return isVisible;
-        }
 
         const getPopoverPositionStyle = useCallback(() => {
             const height = popoverRef.current?.scrollHeight!;
@@ -230,7 +117,6 @@ const CometChatPopover = forwardRef<{
                 x_right = rect?.right!,
                 y_bot = rect?.bottom!,
                 y_top = rect?.top!;
-
             const positionStyle = { top: "", right: "", bottom: "", left: "", };
             const viewportHeight = window.innerHeight, viewportWidth = window.innerWidth;
             if (Object.keys(positionStyleState).length == 0) {
@@ -248,7 +134,6 @@ const CometChatPopover = forwardRef<{
                             positionStyle["top"] = `${y_bot + 10}px`;
                         }
                     }
-
                     if (((x_left + width) - 10) > viewportWidth) {
                         positionStyle["left"] = `${viewportWidth - width - 10}px`;
                     } else {
@@ -268,7 +153,6 @@ const CometChatPopover = forwardRef<{
                             positionStyle["left"] = `${x_right + 10}px`;
                         }
                     }
-
                     if (((y_top + height) - 10) > viewportHeight) {
                         positionStyle["top"] = `${viewportHeight - height - 10}px`;
                     } else {
@@ -321,7 +205,7 @@ const CometChatPopover = forwardRef<{
                         }}
                         className="cometchat-popover__button"
                         onMouseEnter={onPopoverMouseEnter}
-                        onMouseLeave={onPopoverMouseLeave }
+                        onMouseLeave={onPopoverMouseLeave}
                     >
                         {children}
                     </div>

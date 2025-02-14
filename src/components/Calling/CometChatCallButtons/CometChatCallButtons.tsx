@@ -7,7 +7,7 @@ import { useCometChatErrorHandler, useRefSync } from "../../../CometChatCustomHo
 import { CometChatUIKitCalls } from "../../../CometChatUIKit/CometChatCalls";
 import { CometChatSoundManager } from "../../../resources/CometChatSoundManager/CometChatSoundManager";
 import { CometChatUIKitUtility } from "../../../CometChatUIKit/CometChatUIKitUtility";
-import { localize } from "../../../resources/CometChatLocalize/cometchat-localize";
+import {getLocalizedString} from "../../../resources/CometChatLocalize/cometchat-localize";
 import { CometChatUIKitConstants } from "../../../constants/CometChatUIKitConstants";
 import { MessageStatus } from "../../../Enums/Enums";
 import { CometChatButton } from "../../BaseComponents/CometChatButton/CometChatButton";
@@ -443,7 +443,7 @@ const CometChatCallButtons = (props: CallButtonsPropsType) => {
           <div className="cometchat-call-button__voice">
             <CometChatButton
               {...ccBtnDisabledPropSpreadObject}
-              hoverText={localize("VOICE_CALL")}
+              hoverText={getLocalizedString("call_button_voice_hover")}
               iconURL={audioCall}
               onClick={audioCallButtonClicked}
             />
@@ -454,7 +454,7 @@ const CometChatCallButtons = (props: CallButtonsPropsType) => {
           <div className="cometchat-call-button__video">
             <CometChatButton
               {...ccBtnDisabledPropSpreadObject}
-              hoverText={localize("VIDEO_CALL")}
+              hoverText={getLocalizedString("call_button_video_hover")}
               iconURL={videoCall}
               onClick={videoCallButtonClicked}
             />

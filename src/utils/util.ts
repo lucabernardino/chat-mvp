@@ -1,4 +1,5 @@
 import WaveSurfer from "../components/BaseComponents/CometChatAudioBubble/src/wavesurfer";
+import { CalendarObject } from "./CalendarObject";
 
 interface MediaPlayer {
 video?:HTMLVideoElement | null,
@@ -215,4 +216,14 @@ export function formatDateFromTimestamp(timestamp:number) {
 
   export function isMobileDevice() {
     return /Mobi|Android|iPhone|iPad|iPod|BlackBerry|Windows Phone/i.test(navigator.userAgent);
+  }
+
+
+  export function sanitizeCalendarObject(calendarObject?:CalendarObject){
+    if(calendarObject && Object.keys(calendarObject).length > 0){
+      return Object.fromEntries(
+          Object.entries(calendarObject).filter(([_, value]) => value !== undefined)
+      );
+    }
+    else return {}
   }

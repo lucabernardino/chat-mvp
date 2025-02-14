@@ -1,4 +1,4 @@
-import { localize } from "../../../resources/CometChatLocalize/cometchat-localize";
+import {getLocalizedString} from "../../../resources/CometChatLocalize/cometchat-localize";
 interface DeleteBubbleProps {
     /* To provide sender or receiver styling to the bubble. */
     isSentByMe: boolean;
@@ -17,7 +17,7 @@ interface DeleteBubbleProps {
 const CometChatDeleteBubble = (props: DeleteBubbleProps) => {
     const {
         isSentByMe = false,
-        text= localize("DELETE_MSG_TEXT"),
+        text= getLocalizedString("message_deleted"),
     } = props;
 
     return (

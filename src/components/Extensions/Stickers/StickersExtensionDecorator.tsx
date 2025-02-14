@@ -10,7 +10,7 @@ import { StickersConstants } from "./StickersConstants";
 import { CometChatUIKitUtility } from "../../../CometChatUIKit/CometChatUIKitUtility";
 import { StickersKeyboard } from "./StickersKeyboard";
 import { CometChatUIKitLoginListener } from "../../../CometChatUIKit/CometChatUIKitLoginListener";
-import { localize } from "../../../resources/CometChatLocalize/cometchat-localize";
+import {getLocalizedString} from "../../../resources/CometChatLocalize/cometchat-localize";
 import { MessageBubbleAlignment, MessageStatus, Placement } from "../../../Enums/Enums";
 import { CometChatUIKitConstants } from "../../../constants/CometChatUIKitConstants";
 import { CometChatPopover } from "../../BaseComponents/CometChatPopover/CometChatPopover";
@@ -157,7 +157,7 @@ export class StickersExtensionDecorator extends DataSourceDecorator {
           }
         >
           <CometChatButton
-            hoverText={localize("STICKER")}
+            hoverText={getLocalizedString("message_composer_sticker_hover")}
             // Change the icon based on the state of showKeyboard
             iconURL={!showKeyboard ? openIconURL : closeIconURL}
             onClick={() => {
@@ -406,7 +406,7 @@ export class StickersExtensionDecorator extends DataSourceDecorator {
       message.getType() === StickersConstants.sticker &&
       message.getCategory() === CometChatUIKitConstants.MessageCategory.custom
     ) {
-      return localize("CUSTOM_MESSAGE_STICKER");
+      return getLocalizedString("conversation_subtitle_sticker");
     } else {
       return super.getLastConversationMessage(
         conversation,

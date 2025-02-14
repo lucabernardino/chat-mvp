@@ -7,7 +7,7 @@ import VideoCallIcon from "./assets/Video-call.svg";
 import { CometChatUIKitCalls } from "../../../CometChatUIKit/CometChatCalls";
 import { CometChatSoundManager } from "../../../resources/CometChatSoundManager/CometChatSoundManager";
 import { StorageUtils } from "../../../utils/Storage";
-import { localize } from "../../../resources/CometChatLocalize/cometchat-localize";
+import {getLocalizedString} from "../../../resources/CometChatLocalize/cometchat-localize";
 import { CometChatUIKitConstants } from "../../../constants/CometChatUIKitConstants";
 import { CometChatListItem } from "../../BaseComponents/CometChatListItem/CometChatListItem";
 import { CometChatAvatar } from "../../BaseComponents/CometChatAvatar/CometChatAvatar";
@@ -122,8 +122,8 @@ const CometChatIncomingCall = (props: IncomingCallProps) => {
   } = props;
   const errorHandler = useCometChatErrorHandler(onError);
 
-  const acceptButtonTextRef = useRef<string>(localize("ACCEPT"));
-  const declineButtonTextRef = useRef<string>(localize("DECLINE"));
+  const acceptButtonTextRef = useRef<string>(getLocalizedString("incoming_call_confirm_yes"));
+  const declineButtonTextRef = useRef<string>(getLocalizedString("incoming_call_confirm_no"));
   const [loggedInUser, setLoggedInuser] = useState<CometChat.User | null>(null);
   const [showIncomingCallScreen, setShowIncomingCallScreen] = useState(false);
   const [showOngoingCallScreen, setShowOngoingCallScreen] = useState(false);
@@ -136,7 +136,7 @@ const CometChatIncomingCall = (props: IncomingCallProps) => {
 
 
   let incomingcallListenerId: string = "incomingcall_" + new Date().getTime(),
-    subtitleText: string = localize("INCOMING_CALL");
+    subtitleText: string = getLocalizedString("incoming_call_subtitle");
 
   const playAudio = useCallback(() => {
     try {

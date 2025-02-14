@@ -1,5 +1,5 @@
 import { useCometChatChangeScope } from "./useCometChatChangeScope";
-import { localize } from "../../../resources/CometChatLocalize/cometchat-localize";
+import { getLocalizedString } from "../../../resources/CometChatLocalize/cometchat-localize";
 import { CometChatRadioButton } from "../CometChatRadioButton/CometChatRadioButton";
 import { CometChatButton } from "../CometChatButton/CometChatButton";
 import { useState } from "react";
@@ -28,8 +28,8 @@ interface ChangeScopeProps {
 */
 const CometChatChangeScope = (props: ChangeScopeProps) => {
     const {
-        title = localize("CHANGE_ROLE"),
-        buttonText = localize("SAVE"),
+        title = getLocalizedString("change_scope_title"),
+        buttonText = getLocalizedString("change_scope_confirm_yes"),
         options = [],
         defaultSelection = "",
         onScopeChanged,
@@ -72,14 +72,14 @@ const CometChatChangeScope = (props: ChangeScopeProps) => {
                         <label title={title} >{title}</label>
                     </div>
                     <div className="cometchat-change-scope__description">
-                        {localize("CHANGE_ROLE_DESCRIPTION")}
+                        {getLocalizedString("change_scope_subtitle")}
                     </div>
                 </div>
                 <div className="cometchat-change-scope__list">
                     {options.map((listItr, index) => (
                         <div key={index} className="cometchat-change-scope__list-item">
                             <div className="cometchat-change-scope__list-item-label">
-                                {localize(listItr.toUpperCase())}
+                            {getLocalizedString(`member_scope_${listItr?.toLowerCase()}`)}
                             </div>
                             <CometChatRadioButton
                                 name={CometChatUIKitConstants.radioNames.changeScope}
@@ -91,11 +91,11 @@ const CometChatChangeScope = (props: ChangeScopeProps) => {
                     ))}
                 </div>
                 {isError ? <div className="cometchat-change-scope__error-view">
-                    {localize("SOMETHING_WRONG")}
+                    {getLocalizedString("change_scope_error")}
                 </div> : null}
                 <div className="cometchat-change-scope__button-container">
                     <div className="cometchat-change-scope__cancel-button">
-                        <CometChatButton text={localize("CANCEL")} onClick={onCloseClick} />
+                        <CometChatButton text={getLocalizedString("change_scope_confirm_no")} onClick={onCloseClick} />
                     </div>
                     <div className={`cometchat-change-scope__submit-button ${defaultSelection == selectedValue ? "cometchat-change-scope__submit-button-disabled" : ""}`}>
                         <CometChatButton isLoading={defaultSelection !== selectedValue && isLoading} disabled={defaultSelection === selectedValue || isLoading} text={buttonText} onClick={scopeChangeClicked} />

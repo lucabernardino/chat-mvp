@@ -8,11 +8,12 @@ import { MessageUtils } from "../../utils/MessageUtils";
 import { CometChatUIKitLoginListener } from "../../CometChatUIKit/CometChatUIKitLoginListener";
 import { CometChatMessageTemplate } from "../../modals";
 import { CometChatUIKitConstants } from "../../constants/CometChatUIKitConstants";
-import { localize } from "../../resources/CometChatLocalize/cometchat-localize";
-import { DatePatterns, MessageBubbleAlignment, States } from "../../Enums/Enums";
+import {CometChatLocalize, getLocalizedString} from "../../resources/CometChatLocalize/cometchat-localize";
+import { MessageBubbleAlignment, States } from "../../Enums/Enums";
 import closeIcon from "../../assets/close.svg";
 import { CometChatDate } from "../BaseComponents/CometChatDate/CometChatDate";
 import { useCometChatErrorHandler } from "../../CometChatCustomHooks";
+import { CalendarObject } from "../../utils/CalendarObject";
 
 interface MessageInformationProps {
   message: CometChat.BaseMessage;
@@ -22,12 +23,22 @@ interface MessageInformationProps {
    * @param error - CometChatException object representing the error.
    */
   onError?: ((error: CometChat.CometChatException) => void) | null;
+  /**
+  * Format for timestamps displayed in message details (e.g., delivery or read time).
+  */
+  messageInfoDateTimeFormat?: CalendarObject;
+  /**
+   * Format for the timestamp displayed next to messages.
+   */
+  messageSentAtDateTimeFormat?: CalendarObject;
 }
 
 const CometChatMessageInformation = (props: MessageInformationProps) => {
   const {
     onClose,
     message,
+    messageSentAtDateTimeFormat,
+    messageInfoDateTimeFormat,
     onError = (error: CometChat.CometChatException) => {
       console.log(error);
     },
@@ -82,7 +93,7 @@ const CometChatMessageInformation = (props: MessageInformationProps) => {
       return (
         <CometChatButton
           iconURL={closeIcon}
-          hoverText={localize("CLOSE")}
+          hoverText={getLocalizedString("message_information_close_hover")}
           onClick={onClose}
         />
       );
@@ -112,7 +123,8 @@ const CometChatMessageInformation = (props: MessageInformationProps) => {
         const view = new MessageUtils().getMessageBubble(
           message,
           template,
-          alignment
+          alignment,
+          messageSentAtDateTimeFormat
         );
         return view;
       }
@@ -121,6 +133,25 @@ const CometChatMessageInformation = (props: MessageInformationProps) => {
       onErrorCallback(error, 'getBubbleView');
     }
   }, [message]);
+  /**
+  * Function for timestamps displayed in message details (e.g., delivery or read time).
+  * @returns CalendarObject
+  */
+    function getMessageInfoDateFormat() {
+      const defaultFormat = {
+        yesterday: `DD MMM, hh:mm A`,
+        otherDays: `DD MMM, hh:mm A`,
+        today: `DD MMM, hh:mm A`
+      };
+  
+      const finalFormat = {
+        ...defaultFormat,
+        ...CometChatLocalize.calendarObject,
+        ...messageInfoDateTimeFormat
+      };
+  
+      return finalFormat;
+    }
 
   /**
    * Creates subtitle receipt view for group.
@@ -133,18 +164,19 @@ const CometChatMessageInformation = (props: MessageInformationProps) => {
       return (
         <div className="cometchat-message-information__receipts-subtitle">
           {readAt && <div className="cometchat-message-information__receipts-subtitle-text">
-            {localize("READ")}
+            {getLocalizedString("message_information_read")}
             <CometChatDate
               timestamp={readAt}
-              pattern={DatePatterns.DateTime}
+              calendarObject={getMessageInfoDateFormat()}
+
             />
           </div>}
 
           <div className="cometchat-message-information__receipts-subtitle-text">
-            {localize("DELIVERED")}
+            {getLocalizedString("message_information_delivered")}
             <CometChatDate
               timestamp={deliveredAt}
-              pattern={DatePatterns.DateTime}
+              calendarObject={getMessageInfoDateFormat()}
             />
           </div>
         </div>
@@ -182,7 +214,7 @@ const CometChatMessageInformation = (props: MessageInformationProps) => {
     <div className="cometchat cometchat-message-information">
       <div className="cometchat-message-information__header">
         <div className="cometchat-message-information__header-title">
-          {localize("MESSAGE_INFORMATION")}
+          {getLocalizedString("message_information_title")}
         </div>
         <div className="cometchat-message-information__header-close">
           {getCloseBtnView()}
@@ -205,18 +237,18 @@ const CometChatMessageInformation = (props: MessageInformationProps) => {
             </div>) :
               state === States.error ? (<div className="cometchat-message-information__error-state">
                 <div>
-                  {localize("ERROR_TEXT")}
+                  {getLocalizedString("message_information_error")}
                 </div>
               </div>) :
                 <div className="cometchat-message-information__receipts">
                   <CometChatListItem
-                    title={localize("READ")}
+                    title={getLocalizedString("message_information_read")}
                     subtitleView={(
                       <div className="cometchat-message-information__receipts-subtite-text">
                         {message.getReadAt() ?
                           <CometChatDate
                             timestamp={message.getReadAt()}
-                            pattern={DatePatterns.DateTime}
+                            calendarObject={getMessageInfoDateFormat()}
                           /> :
                           "----"
                         }
@@ -225,13 +257,13 @@ const CometChatMessageInformation = (props: MessageInformationProps) => {
                     avatarURL=""
                   />
                   <CometChatListItem
-                    title={localize("DELIVERED")}
+                    title={getLocalizedString("message_information_delivered")}
                     subtitleView={(
                       <div className="cometchat-message-information__receipts-subtite-text">
                         {message.getDeliveredAt() ?
                           <CometChatDate
                             timestamp={message.getDeliveredAt()}
-                            pattern={DatePatterns.DateTime}
+                            calendarObject={getMessageInfoDateFormat()}
                           /> :
                           "----"
                         }
@@ -257,7 +289,7 @@ const CometChatMessageInformation = (props: MessageInformationProps) => {
             </div>) :
               state === States.error ? (<div className="cometchat-message-information__error-state">
                 <div>
-                  {localize("ERROR_TEXT")}
+                  {getLocalizedString("message_information_error")}
                 </div>
               </div>) :
                 <div className="cometchat-message-information__receipts">
@@ -277,7 +309,7 @@ const CometChatMessageInformation = (props: MessageInformationProps) => {
                   {messageReceipts.length <= 0 && (
                     <div className="cometchat-message-information__receipts-empty">
                       <div>
-                        {localize("GROUP_MSG_INFO_EMPTY_STATE_MESSAGE")}
+                        {getLocalizedString("message_information_group_message_receipt_empty")}
                       </div>
                     </div>
                   )}

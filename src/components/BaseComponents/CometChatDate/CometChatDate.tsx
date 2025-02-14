@@ -1,12 +1,11 @@
-import { DatePatterns } from "../../../Enums/Enums";
-import { useCometChatDate } from "./useCometChatDate";
+import { useCallback } from "react";
+import { CometChatLocalize } from "../../../resources/CometChatLocalize/cometchat-localize";
+import { CalendarObject } from "../../../utils/CalendarObject";
 interface DateProps {
     /* Timestamp of the time to be displayed in the component. */
     timestamp: number;
-    /* Pattern in which the time should be displayed. */
-    pattern?: DatePatterns;
-    /* time string to be displayed as it is in the component. */
-    customDateString?: string | null;
+    /* configuration for date customization */
+    calendarObject:CalendarObject
 }
 
 /**
@@ -17,13 +16,15 @@ interface DateProps {
 const CometChatDate = (props: DateProps) => {
     const {
         timestamp,
-        pattern = DatePatterns.time,
-        customDateString = null,
+        calendarObject
     } = props;
     /**
     * Retrieves the converted timestamp value based on the provided date pattern.
-  */
-    const { getFormattedDate } = useCometChatDate({ timestamp, pattern, customDateString });
+   */
+    const getFormattedDate = useCallback(()=>{
+            return CometChatLocalize.formatDate(timestamp,calendarObject)
+        
+    },[calendarObject,timestamp])
 
     return (
         <div className="cometchat">

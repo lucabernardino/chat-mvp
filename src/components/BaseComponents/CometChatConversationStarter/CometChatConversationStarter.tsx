@@ -1,6 +1,6 @@
 import  {useEffect, useState } from 'react';
 import { States } from '../../../Enums/Enums';
-import { localize } from '../../../resources/CometChatLocalize/cometchat-localize';
+import {getLocalizedString} from '../../../resources/CometChatLocalize/cometchat-localize';
 interface CometChatConversationStarterProps {
     getConversationStarters?: () => Promise<string[]>
     onSuggestionClicked?: (reply: string) => void
@@ -18,7 +18,7 @@ const CometChatConversationStarter = (props: CometChatConversationStarterProps) 
 
     const [state, seState] = useState<States>(States.loading);
     const [activeView, setActiveView] = useState<JSX.Element | null>(null);
-    const errorStateText: string = localize("LOOKS_LIKE_SOMETHING_WENT_WRONG")
+    const errorStateText: string = getLocalizedString("ai_conversation_starter_error")
     useEffect(() => {
         fetchContent();
     }, []);

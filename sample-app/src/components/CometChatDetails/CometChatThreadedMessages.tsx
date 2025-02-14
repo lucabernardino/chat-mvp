@@ -1,5 +1,5 @@
 import "../../styles/CometChatDetails/CometChatThreadedMessages.css";
-import { CometChatMessageComposer, CometChatMessageList, CometChatThreadedMessagePreview, CometChatUserEvents, localize } from "@cometchat/chat-uikit-react";
+import { CometChatMessageComposer, CometChatMessageList, CometChatThreadHeader, CometChatUserEvents, getLocalizedString } from "@cometchat/chat-uikit-react";
 import {CometChat} from '@cometchat/chat-sdk-javascript'
 interface ThreadProps {
     message: CometChat.BaseMessage;
@@ -22,7 +22,7 @@ export const CometChatThreadedMessages = (props: ThreadProps) => {
     return (
         <div className="cometchat-threaded-message">
             <div className="cometchat-threaded-message-header">
-                <CometChatThreadedMessagePreview parentMessage={message} onClose={onClose} />
+                <CometChatThreadHeader parentMessage={message} onClose={onClose} />
             </div>
             {requestBuilderState?.parentMessageId === message.getId() &&
                 <>
@@ -49,7 +49,7 @@ export const CometChatThreadedMessages = (props: ThreadProps) => {
                }
             }}>
                <div className="message-composer-blocked__text">
-                {localize("CANNOT_SEND_MESSAGE_TO_BLOCKED_USER")} <a>   {localize("CLICK_TO_UNBLOCK")}</a>
+                {getLocalizedString("cannot_send_to_blocked_user")} <a>   {getLocalizedString("click_to_unblock")}</a>
                </div>
             </div>}
                 </>}

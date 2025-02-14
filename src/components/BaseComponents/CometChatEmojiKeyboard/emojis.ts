@@ -7,13 +7,11 @@ import travelIcon from '../../../assets/travel_places.svg';
 import objectsIcon from '../../../assets/objects.svg';
 import symbolsIcon from '../../../assets/symbols.svg';
 import flagsIcon from '../../../assets/flags.svg';
-import { localize } from '../../../resources/CometChatLocalize/cometchat-localize';
-
 export const Emojis = [
   {
     people: {
       id: "people",
-      name:  localize("SMILEY_PEOPLE"),
+      name:  "emoji_smiley_people",
       symbol: smileyIcon,
       emojis: {
         grinning: {
@@ -2074,7 +2072,7 @@ export const Emojis = [
   {
     animals_and_nature: {
       id: "animals_and_nature",
-      name: localize("ANIMALES_NATURE"),
+      name: "emoji_animals_nature",
       symbol: animalsIcon,
       emojis: {
         dog: {
@@ -3014,7 +3012,7 @@ export const Emojis = [
   {
     food_and_drink: {
       id: "food_and_drink",
-      name:localize("FOOD_DRINK"),
+      name:"emoji_food_drinks",
       symbol: foodIcon,
       emojis: {
         green_apple: {
@@ -3549,7 +3547,7 @@ export const Emojis = [
   {
     activity: {
       id: "activity",
-      name: localize("ACTIVITY"),
+      name: "emoji_activity",
       symbol: activityIcon,
       emojis: {
         soccer: {
@@ -4031,7 +4029,7 @@ export const Emojis = [
   {
     travel_and_places: {
       id: "travel_and_places",
-      name: localize("TRAVEL_PLACES"),
+      name: "emoji_travel_places",
       symbol: travelIcon,
       emojis: {
         red_car: {
@@ -4589,7 +4587,7 @@ export const Emojis = [
   {
     objects: {
       id: "objects",
-      name: localize("OBJECTS"),
+      name: "emoji_objects",
       symbol: objectsIcon,
       emojis: {
         watch: {
@@ -5536,7 +5534,7 @@ export const Emojis = [
   {
     symbols: {
       id: "symbols",
-      name: localize("SYMBOLS"),
+      name: "emoji_symbols",
       symbol: symbolsIcon,
       emojis: {
         heart: {
@@ -6853,7 +6851,7 @@ export const Emojis = [
   {
     flags: {
       id: "flags",
-      name: localize("FLAGS"),
+      name: "emoji_flags",
       symbol: flagsIcon,
       emojis: {
         afghanistan: {

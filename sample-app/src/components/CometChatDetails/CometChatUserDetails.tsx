@@ -1,4 +1,4 @@
-import { CometChatAvatar, localize } from "@cometchat/chat-uikit-react";
+import { CometChatAvatar, getLocalizedString } from "@cometchat/chat-uikit-react";
 import "../../styles/CometChatDetails/CometChatUserDetails.css";
 
 interface UserDetailProps {
@@ -27,7 +27,7 @@ export const CometChatUserDetails = (props: UserDetailProps) => {
     return (
         <>
             <div className="cometchat-user-details__header">
-                <div className="cometchat-user-details__header-text">{localize("USER_INFO")}</div>
+                <div className="cometchat-user-details__header-text">{getLocalizedString("user_info")}</div>
                 <div className="cometchat-user-details__header-icon" onClick={onHide} />
             </div>
             <div className="cometchat-user-details__content">
@@ -42,7 +42,7 @@ export const CometChatUserDetails = (props: UserDetailProps) => {
                         {user.getName()}
                     </div>
                     {showStatus && <div className="cometchat-user-details__content-description">
-                        {localize(user.getStatus?.().toUpperCase())}
+                        {getLocalizedString(`message_header_status_${user.getStatus?.().toLowerCase()}`)}
                     </div>}
                 </div>
 

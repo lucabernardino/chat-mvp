@@ -3,7 +3,7 @@ import endCallIcon from '../../../assets/call_end.svg'
 import { CometChat } from "@cometchat/chat-sdk-javascript";
 import { useCometChatOutgoingCall } from "./useCometChatOutgoingCall";
 import { CometChatUIKitConstants } from "../../../constants/CometChatUIKitConstants";
-import { localize } from "../../../resources/CometChatLocalize/cometchat-localize";
+import {getLocalizedString} from "../../../resources/CometChatLocalize/cometchat-localize";
 import { CometChatButton } from "../../BaseComponents/CometChatButton/CometChatButton";
 import { CometChatAvatar } from "../../BaseComponents/CometChatAvatar/CometChatAvatar";
 import { CometChatSoundManager } from "../../../resources/CometChatSoundManager/CometChatSoundManager";
@@ -87,7 +87,7 @@ const CometChatOutgoingCall = (props: OutgoingCallProps) => {
     const errorHandler = useCometChatErrorHandler(onError);
     const callRef = useRef<CometChat.Call | null>(null);
     callRef.current = call!;
-    let subtitleText: string = localize("CALLING");
+    let subtitleText: string = getLocalizedString("calls_outgoing");
     /**
        * Handles the logic to close the outgoing call and stops the sound.
        */

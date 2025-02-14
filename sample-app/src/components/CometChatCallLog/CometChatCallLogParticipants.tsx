@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from "react";
 import "../../styles/CometChatCallLog/CometChatCallLogParticipants.css";
-import { CometChatDate, CometChatList, CometChatListItem, DatePatterns, States } from "@cometchat/chat-uikit-react";
+import { CalendarObject, CometChatDate, CometChatList, CometChatListItem, CometChatLocalize, States } from "@cometchat/chat-uikit-react";
 
 export const CometChatCallDetailsParticipants = (props: { call: any }) => {
     const { call } = props;
@@ -40,12 +40,24 @@ export const CometChatCallDetailsParticipants = (props: { call: any }) => {
             return convertMinutesToHoursMinutesSeconds(0);
         }
     }
-
+    function getDateFormat():CalendarObject{
+        const defaultFormat = {
+          yesterday: `DD MMM, hh:mm A`,
+          otherDays: `DD MMM, hh:mm A`,
+          today: `DD MMM, hh:mm A`
+        };
+    
+        const finalFormat = {
+          ...defaultFormat,
+          ...CometChatLocalize.calendarObject    };
+    
+        return finalFormat;
+      }
     const getListItemSubtitleView = useCallback((item: any): JSX.Element => {
         return (
             <CometChatDate
                 timestamp={call.initiatedAt}
-                pattern={DatePatterns.DateTime}
+                calendarObject={getDateFormat()}
             />
         );
     }, [call])

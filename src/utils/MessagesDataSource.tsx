@@ -8,9 +8,9 @@ import { CometChatMentionsFormatter } from "../formatters/CometChatFormatters/Co
 import { CometChatUrlsFormatter } from "../formatters/CometChatFormatters/CometChatUrlsFormatter/CometChatUrlsFormatter";
 import { CometChatTextFormatter } from "../formatters/CometChatFormatters/CometChatTextFormatter";
 import { CometChatActionsIcon, CometChatActionsView, CometChatMessageComposerAction, CometChatMessageTemplate } from "../modals";
-import { localize } from "../resources/CometChatLocalize/cometchat-localize";
+import {CometChatLocalize, getLocalizedString} from "../resources/CometChatLocalize/cometchat-localize";
 import { CometChatUIKitConstants } from "../constants/CometChatUIKitConstants";
-import { DatePatterns, MentionsTargetElement, MessageBubbleAlignment, Receipts } from "../Enums/Enums";
+import {MentionsTargetElement, MessageBubbleAlignment, Receipts } from "../Enums/Enums";
 import { CometChatFullScreenViewer } from "../components/BaseComponents/CometChatFullScreenViewer/CometChatFullScreenViewer";
 import { CometChatImageBubble } from "../components/BaseComponents/CometChatImageBubble/CometChatImageBubble";
 
@@ -47,6 +47,7 @@ import { CometChatUIEvents } from "../events/CometChatUIEvents";
 import { CometChatDate } from "../components/BaseComponents/CometChatDate/CometChatDate";
 import { MessageReceiptUtils } from "./MessageReceiptUtils";
 import { isMobileDevice } from "./util";
+import { CalendarObject } from "./CalendarObject";
 export type ComposerId = { parentMessageId: number | null, user: string | null, group: string | null };
 /**
  * Utility class that extends DataSource and provides getters for message options.
@@ -68,7 +69,7 @@ export class MessagesDataSource implements DataSource {
   getEditOption(): CometChatActionsIcon {
     return new CometChatActionsIcon({
       id: CometChatUIKitConstants.MessageOption.editMessage,
-      title: localize("EDIT"),
+      title: getLocalizedString("message_list_option_edit"),
       iconURL: EditIcon,
       onClick: undefined as unknown as (id: number) => void,
     });
@@ -77,7 +78,7 @@ export class MessagesDataSource implements DataSource {
   getDeleteOption(): CometChatActionsIcon {
     return new CometChatActionsIcon({
       id: CometChatUIKitConstants.MessageOption.deleteMessage,
-      title: localize("DELETE"),
+      title: getLocalizedString("message_list_option_delete"),
       iconURL: DeleteIcon,
       onClick: undefined as unknown as (id: number) => void,
     });
@@ -86,7 +87,7 @@ export class MessagesDataSource implements DataSource {
   getReactionOption(): CometChatActionsView {
     return new CometChatActionsView({
       id: CometChatUIKitConstants.MessageOption.reactToMessage,
-      title: localize("REACT"),
+      title: getLocalizedString("message_list_option_react"),
       iconURL: ReactionIcon,
       customView: undefined,
     });
@@ -95,7 +96,7 @@ export class MessagesDataSource implements DataSource {
   getReplyInThreadOption(): CometChatActionsIcon {
     return new CometChatActionsIcon({
       id: CometChatUIKitConstants.MessageOption.replyInThread,
-      title: localize("REPLY"),
+      title: getLocalizedString("message_list_option_reply"),
       iconURL: ThreadIcon,
       onClick: undefined as unknown as (id: number) => void,
     });
@@ -104,7 +105,7 @@ export class MessagesDataSource implements DataSource {
   getSendMessagePrivatelyOption(): CometChatActionsIcon {
     return new CometChatActionsIcon({
       id: CometChatUIKitConstants.MessageOption.sendMessagePrivately,
-      title: localize("MESSAGE_PRIVATELY"),
+      title: getLocalizedString("message_list_option_message_privately"),
       iconURL: PrivateMessageIcon,
       onClick: undefined as unknown as (id: number) => void,
     });
@@ -113,7 +114,7 @@ export class MessagesDataSource implements DataSource {
   getCopyOption(): CometChatActionsIcon {
     return new CometChatActionsIcon({
       id: CometChatUIKitConstants.MessageOption.copyMessage,
-      title: localize("COPY"),
+      title: getLocalizedString("message_list_option_copy"),
       iconURL: CopyIcon,
       onClick: undefined as unknown as (id: number) => void,
     });
@@ -122,7 +123,7 @@ export class MessagesDataSource implements DataSource {
   getMessageInfoOption(): CometChatActionsIcon {
     return new CometChatActionsIcon({
       id: CometChatUIKitConstants.MessageOption.messageInformation,
-      title: localize("INFO"),
+      title: getLocalizedString("message_list_option_info"),
       iconURL: InformationIcon,
       onClick: undefined as unknown as (id: number) => void,
     });
@@ -295,13 +296,32 @@ export class MessagesDataSource implements DataSource {
         return null;
       }
     }
+      /**
+  * Function for displaying the timestamp  next to messages.
+  * @returns CalendarObject
+  */
+   getMessageSentAtDateFormat(messageSentAtDateTimeFormat?:CalendarObject) {
+    const defaultFormat = {
+      yesterday: `hh:mm A`,
+      otherDays: `hh:mm A`,
+      today: `hh:mm A`
+    };
+
+    const finalFormat = {
+      ...defaultFormat,
+      ...CometChatLocalize.calendarObject,
+      ...messageSentAtDateTimeFormat
+    };
+
+    return finalFormat;
+  }
   /**
 * Function to get status and date for message bubble
 * @param {CometChat.BaseMessage} item - The message bubble for which the information needs to be fetched
 * @returns {JSX.Element | null} Returns JSX.Element for status and date of a message bubble or null
 */
-  getBubbleStatusInfoDate: (item: CometChat.BaseMessage, datePattern?: DatePatterns) => JSX.Element | null =
-    (item: CometChat.BaseMessage, datePattern: DatePatterns = DatePatterns.time) => {
+  getBubbleStatusInfoDate: (item: CometChat.BaseMessage,messageSentAtDateTimeFormat?:CalendarObject) => JSX.Element | null =
+    (item: CometChat.BaseMessage,messageSentAtDateTimeFormat?:CalendarObject) => {
       if (
         item?.getCategory() !==
         CometChatUIKitConstants.MessageCategory.action &&
@@ -310,7 +330,7 @@ export class MessagesDataSource implements DataSource {
         return (
           <CometChatDate
             timestamp={item.getSentAt()}
-            pattern={datePattern}
+            calendarObject={this.getMessageSentAtDateFormat(messageSentAtDateTimeFormat)}
           ></CometChatDate>
         );
       } else {
@@ -318,15 +338,16 @@ export class MessagesDataSource implements DataSource {
       }
     }
   getStatusInfoView = (_messageObject: CometChat.BaseMessage,
-    _alignment: MessageBubbleAlignment, hideReceipt?: boolean, datePattern?: DatePatterns) => {
+    _alignment: MessageBubbleAlignment, hideReceipt?: boolean,messageSentAtDateTimeFormat?:CalendarObject
+    ) => {
     if (!(_messageObject instanceof CometChat.Action) && !(_messageObject instanceof CometChat.Call) && (_messageObject.getType() != "meeting" || (_messageObject.getType() == "meeting" && _messageObject.getDeletedAt()))) {
       return (
         <div
           className="cometchat-message-bubble__status-info-view"
         >
-          <span className="cometchat-message-bubble__status-info-view-helper-text">   {!_messageObject.getDeletedAt() && _messageObject.getType() == CometChatUIKitConstants.MessageTypes.text && _messageObject.getEditedAt() ? localize("EDITED") : null}</span>
+          <span className="cometchat-message-bubble__status-info-view-helper-text">   {!_messageObject.getDeletedAt() && _messageObject.getType() == CometChatUIKitConstants.MessageTypes.text && _messageObject.getEditedAt() ? getLocalizedString("message_list_action_edited") : null}</span>
 
-          {this.getBubbleStatusInfoDate(_messageObject, datePattern)}
+          {this.getBubbleStatusInfoDate(_messageObject, messageSentAtDateTimeFormat)}
           {this.getBubbleStatusInfoReceipt(_messageObject, hideReceipt)}
         </div>
       );
@@ -853,27 +874,27 @@ export class MessagesDataSource implements DataSource {
         : "";
     switch (message.action) {
       case CometChatUIKitConstants.groupMemberAction.ADDED:
-        actionMessage = `${byString} ${localize("ADDED")} ${forString}`;
+        actionMessage = `${byString} ${getLocalizedString("message_list_action_added")} ${forString}`;
         break;
       case CometChatUIKitConstants.groupMemberAction.JOINED:
-        actionMessage = `${byString} ${localize("JOINED")}`;
+        actionMessage = `${byString} ${getLocalizedString("message_list_action_joined")}`;
         break;
       case CometChatUIKitConstants.groupMemberAction.LEFT:
-        actionMessage = `${byString} ${localize("LEFT")}`;
+        actionMessage = `${byString} ${getLocalizedString("message_list_action_left")}`;
         break;
       case CometChatUIKitConstants.groupMemberAction.KICKED:
-        actionMessage = `${byString} ${localize("KICKED")} ${forString}`;
+        actionMessage = `${byString} ${getLocalizedString("message_list_action_kicked")} ${forString}`;
         break;
       case CometChatUIKitConstants.groupMemberAction.BANNED:
-        actionMessage = `${byString} ${localize("BANNED")} ${forString}`;
+        actionMessage = `${byString} ${getLocalizedString("message_list_action_banned")} ${forString}`;
         break;
       case CometChatUIKitConstants.groupMemberAction.UNBANNED:
-        actionMessage = `${byString} ${localize("UNBANNED")} ${forString}`;
+        actionMessage = `${byString} ${getLocalizedString("message_list_action_unbanned")} ${forString}`;
         break;
       case CometChatUIKitConstants.groupMemberAction.SCOPE_CHANGE: {
         const newScope = message["data"]["extras"]["scope"]["new"];
-        actionMessage = `${byString} ${localize(
-          "MADE"
+        actionMessage = `${byString} ${getLocalizedString(
+          "message_list_action_made"
         )} ${forString} ${newScope}`;
         break;
       }
@@ -1124,7 +1145,7 @@ export class MessagesDataSource implements DataSource {
   imageAttachmentOption(): CometChatMessageComposerAction {
     return new CometChatMessageComposerAction({
       id: CometChatUIKitConstants.MessageTypes.image,
-      title: localize("ATTACH_IMAGE"),
+      title: getLocalizedString("message_composer_attach_image"),
       iconURL: ImageIcon,
       onClick: null
     });
@@ -1133,7 +1154,7 @@ export class MessagesDataSource implements DataSource {
   videoAttachmentOption(): CometChatMessageComposerAction {
     return new CometChatMessageComposerAction({
       id: CometChatUIKitConstants.MessageTypes.video,
-      title: localize("ATTACH_VIDEO"),
+      title: getLocalizedString("message_composer_attach_video"),
       iconURL: VideoIcon,
       onClick: null
     });
@@ -1142,7 +1163,7 @@ export class MessagesDataSource implements DataSource {
   audioAttachmentOption(): CometChatMessageComposerAction {
     return new CometChatMessageComposerAction({
       id: CometChatUIKitConstants.MessageTypes.audio,
-      title: localize("ATTACH_AUDIO"),
+      title: getLocalizedString("message_composer_attach_audio"),
       iconURL: AudioIcon,
       onClick: null
     });
@@ -1151,7 +1172,7 @@ export class MessagesDataSource implements DataSource {
   fileAttachmentOption(): CometChatMessageComposerAction {
     return new CometChatMessageComposerAction({
       id: CometChatUIKitConstants.MessageTypes.file,
-      title: localize("ATTACH_FILE"),
+      title: getLocalizedString("message_composer_attach_file"),
       iconURL: FileIcon,
       onClick: null
     });

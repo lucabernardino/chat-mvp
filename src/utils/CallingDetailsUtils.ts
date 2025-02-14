@@ -1,5 +1,5 @@
 import { CometChatUIKitConstants } from "../constants/CometChatUIKitConstants"
-import { localize } from "../resources/CometChatLocalize/cometchat-localize"
+import {getLocalizedString} from "../resources/CometChatLocalize/cometchat-localize"
 
 /**
  * Utility class for handling call-related details in CometChat.
@@ -67,39 +67,39 @@ export class CallingDetailsUtils {
     if (isSentByMe) {
       switch (callStatus) {
         case CometChatUIKitConstants.calls.initiated:
-          return localize("OUTGOING_CALL");
+          return getLocalizedString("conversation_subtitle_outgoing_call");
         case CometChatUIKitConstants.calls.cancelled:
-          return localize("CALL_CANCELLED");
+          return getLocalizedString("conversation_subtitle_cancelled_call");
         case CometChatUIKitConstants.calls.rejected:
-          return localize("CALL_REJECTED");
+          return getLocalizedString("conversation_subtitle_rejected_call");
         case CometChatUIKitConstants.calls.busy:
-          return localize("MISSED_CALL");
+          return getLocalizedString("conversation_subtitle_missed_call");
         case CometChatUIKitConstants.calls.ended:
-          return localize("CALL_ENDED");
+          return getLocalizedString("conversation_subtitle_ended_call");
         case CometChatUIKitConstants.calls.ongoing:
-          return localize("CALL_ANSWERED");
+          return getLocalizedString("conversation_subtitle_answered_call");
         case CometChatUIKitConstants.calls.unanswered:
-          return localize("CALL_UNANSWERED");
+          return getLocalizedString("conversation_subtitle_unasnwered_call");
         default:
-          return localize("OUTGOING_CALL");
+          return getLocalizedString("conversation_subtitle_outgoing_call");
       }
     } else {
       switch (callStatus) {
         case CometChatUIKitConstants.calls.initiated:
-          return localize("INCOMING_CALL");
+          return getLocalizedString("conversation_subtitle_incoming_call");
         case CometChatUIKitConstants.calls.ongoing:
-          return localize("CALL_ANSWERED");
+          return getLocalizedString("conversation_subtitle_answered_call");
         case CometChatUIKitConstants.calls.ended:
-          return localize("CALL_ENDED");
+          return getLocalizedString("conversation_subtitle_ended_call");
         case CometChatUIKitConstants.calls.unanswered:
         case CometChatUIKitConstants.calls.cancelled:
-          return localize("MISSED_CALL");
+          return getLocalizedString("conversation_subtitle_missed_call");
         case CometChatUIKitConstants.calls.busy:
-          return localize("CALL_BUSY");
+          return getLocalizedString("conversation_subtitle_busy_call");
         case CometChatUIKitConstants.calls.rejected:
-          return localize("CALL_REJECTED");
+          return getLocalizedString("conversation_subtitle_rejected_call");
         default:
-          return localize("OUTGOING_CALL");
+          return getLocalizedString("conversation_subtitle_outgoing_call");
       }
     }
   }

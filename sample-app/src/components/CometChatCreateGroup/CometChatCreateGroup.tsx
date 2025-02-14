@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 import "../../styles/CometChatCreateGroup/CometChatCreateGroup.css";
 import { CometChat, Group } from '@cometchat/chat-sdk-javascript';
 import { AppContext } from '../../context/AppContext';
-import { CometChatGroupEvents, localize } from '@cometchat/chat-uikit-react';
+import { CometChatGroupEvents, getLocalizedString } from '@cometchat/chat-uikit-react';
 
 
 interface CreateGroupProps {
@@ -39,33 +39,33 @@ const CometChatCreateGroup = ({ setShowCreateGroup, onGroupCreated = () => { } }
   return (
     <div className='cometchat-create-group__backdrop'>
       <form className='cometchat-create-group' onSubmit={handleSubmit}>
-        <div className='cometchat-create-group__title'>{localize("NEW__GROUP")}</div>
+        <div className='cometchat-create-group__title'>{getLocalizedString("new_group")}</div>
         <div className='cometchat-create-group__content'>
           <div
             className='cometchat-create-group__type-wrapper'
           >
-            <span className='cometchat-create-group__type-text'>{localize("TYPE")}</span>
+            <span className='cometchat-create-group__type-text'>{getLocalizedString("type")}</span>
             <div className='cometchat-create-group__type-content'>
               <div
                 className={`cometchat-create-group__type ${groupType === "public" ? "cometchat-create-group__type-selected" : ""}`}
                 onClick={() => setGroupType("public")}>
-                {localize("PUBLIC")}
+                {getLocalizedString("create_group_public")}
               </div>
               <div
                 className={`cometchat-create-group__type ${groupType === "private" ? "cometchat-create-group__type-selected" : ""}`}
                 onClick={() => setGroupType("private")}>
-                    {localize("PRIVATE")}
+                    {getLocalizedString("create_group_private")}
               </div>
               <div
                 className={`cometchat-create-group__type ${groupType === "password" ? "cometchat-create-group__type-selected" : ""}`}
                 onClick={() => setGroupType("password")}>
-                 {localize("PASSWORD")}
+                 {getLocalizedString("create_group_password")}
               </div>
             </div>
           </div>
 
           <div className='cometchat-create-group__name-wrapper'>
-          {localize("NAME")}
+          {getLocalizedString("name")}
             <input
               type="text"
               className='cometchat-create-group__input'
@@ -77,7 +77,7 @@ const CometChatCreateGroup = ({ setShowCreateGroup, onGroupCreated = () => { } }
           </div>
           {groupType === "password" && (
             <div className='cometchat-create-group__password-wrapper'>
-                 {localize("PASSWORD")}
+                 {getLocalizedString("create_group_password")}
               <input
                 type="password"
                 className='cometchat-create-group__input'
@@ -90,7 +90,7 @@ const CometChatCreateGroup = ({ setShowCreateGroup, onGroupCreated = () => { } }
           )}
         </div>
         <button className='cometchat-create-group__submit-button' type='submit'>
-        {localize("CREATE_GROUP")}
+        {getLocalizedString("create_group")}
         </button>
         <div className='cometchat-create-group__close-button' onClick={() => setShowCreateGroup(false)} />
 

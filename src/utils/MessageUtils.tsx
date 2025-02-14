@@ -3,8 +3,9 @@ import { CometChatMessageBubble } from "../components/BaseComponents/CometChatMe
 import { CometChatUIKitConstants } from "../constants/CometChatUIKitConstants";
 import { MessageBubbleAlignment } from "../Enums/Enums";
 import { CometChat } from "@cometchat/chat-sdk-javascript";
-import { localize } from "../resources/CometChatLocalize/cometchat-localize";
+import {getLocalizedString} from "../resources/CometChatLocalize/cometchat-localize";
 import { CometChatMessageTemplate } from "../modals";
+import { CalendarObject } from "./CalendarObject";
 
 /**
  * Utility class for handling message display and styling.
@@ -58,7 +59,8 @@ export class MessageUtils {
   getStatusInfoView(
     message: CometChat.BaseMessage,
     template: CometChatMessageTemplate,
-    alignment?: MessageBubbleAlignment
+    alignment?: MessageBubbleAlignment,
+    messageSentAtDateTimeFormat?:CalendarObject
   ) {
     let view;
     const messageTypesMap: any = {};
@@ -71,7 +73,7 @@ export class MessageUtils {
     ) {
       view = messageTypesMap[
         `${message?.getCategory()}_${message?.getType()}`
-      ]?.statusInfoView(message, alignment);
+      ]?.statusInfoView(message, alignment,messageSentAtDateTimeFormat);
       if (typeof view === "string") {
         return {
           html: view,
@@ -126,11 +128,12 @@ export class MessageUtils {
   getMessageBubble(
     baseMessage: CometChat.BaseMessage,
     template: CometChatMessageTemplate,
-    alignment: MessageBubbleAlignment
+    alignment: MessageBubbleAlignment,
+    messageSentAtDateTimeFormat?:CalendarObject
   ) {
     return this.getBubbleWrapper(baseMessage, template)
       ? this.getBubbleWrapper(baseMessage, template)
-      : <CometChatMessageBubble bottomView={null} headerView={null} options={[]} footerView={null} leadingView={null} statusInfoView={this.getStatusInfoView(baseMessage, template, alignment)} contentView={this.getContentView(baseMessage, template,alignment)} replyView={null} threadView={null} alignment={alignment} id={baseMessage?.getId() || baseMessage?.getMuid()} />
+      : <CometChatMessageBubble bottomView={null} headerView={null} options={[]} footerView={null} leadingView={null} statusInfoView={this.getStatusInfoView(baseMessage, template, alignment,messageSentAtDateTimeFormat)} contentView={this.getContentView(baseMessage, template,alignment)} replyView={null} threadView={null} alignment={alignment} id={baseMessage?.getId() || baseMessage?.getMuid()} />
   }
   /**
    *
@@ -212,27 +215,27 @@ export class MessageUtils {
         : "";
     switch (message.getAction()) {
       case CometChatUIKitConstants.groupMemberAction.ADDED:
-        actionMessage = `${byString} ${localize("ADDED")} ${forString}`;
+        actionMessage = `${byString} ${getLocalizedString("message_list_action_added")} ${forString}`;
         break;
       case CometChatUIKitConstants.groupMemberAction.JOINED:
-        actionMessage = `${byString} ${localize("JOINED")}`;
+        actionMessage = `${byString} ${getLocalizedString("message_list_action_joined")}`;
         break;
       case CometChatUIKitConstants.groupMemberAction.LEFT:
-        actionMessage = `${byString} ${localize("LEFT")}`;
+        actionMessage = `${byString} ${getLocalizedString("message_list_action_left")}`;
         break;
       case CometChatUIKitConstants.groupMemberAction.KICKED:
-        actionMessage = `${byString} ${localize("KICKED")} ${forString}`;
+        actionMessage = `${byString} ${getLocalizedString("message_list_action_kicked")} ${forString}`;
         break;
       case CometChatUIKitConstants.groupMemberAction.BANNED:
-        actionMessage = `${byString} ${localize("BANNED")} ${forString}`;
+        actionMessage = `${byString} ${getLocalizedString("message_list_action_banned")} ${forString}`;
         break;
       case CometChatUIKitConstants.groupMemberAction.UNBANNED:
-        actionMessage = `${byString} ${localize("UNBANNED")} ${forString}`;
+        actionMessage = `${byString} ${getLocalizedString("message_list_action_unbanned")} ${forString}`;
         break;
       case CometChatUIKitConstants.groupMemberAction.SCOPE_CHANGE: {
         const newScope = message["data"]["extras"]["scope"]["new"];
-        actionMessage = `${byString} ${localize(
-          "MADE"
+        actionMessage = `${byString} ${getLocalizedString(
+          "message_list_action_made"
         )} ${forString} ${newScope}`;
         break;
       }

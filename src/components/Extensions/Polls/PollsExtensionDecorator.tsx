@@ -11,7 +11,7 @@ import { CreatePoll } from "./CreatePolls";
 import { CometChatUIKitConstants } from "../../../constants/CometChatUIKitConstants";
 import { MessageBubbleAlignment } from "../../../Enums/Enums";
 import { CometChatMessageComposerAction, CometChatMessageTemplate } from "../../../modals";
-import { localize } from "../../../resources/CometChatLocalize/cometchat-localize";
+import {getLocalizedString} from "../../../resources/CometChatLocalize/cometchat-localize";
 import { CometChatUIEvents } from "../../../events/CometChatUIEvents";
 import { ComposerId } from "../../../utils/MessagesDataSource";
 
@@ -211,7 +211,7 @@ export class PollsExtensionDecorator extends DataSourceDecorator {
       let newAction: CometChatMessageComposerAction =
         new CometChatMessageComposerAction({
           id: PollsConstants.extension_poll,
-          title: localize("POLLS"),
+          title: getLocalizedString("message_composer_polls"),
           iconURL: this.configuration?.getOptionIconURL()
             ? this.configuration?.getOptionIconURL()
             : PollsIcon,
@@ -298,7 +298,7 @@ export class PollsExtensionDecorator extends DataSourceDecorator {
       message.getType() === PollsConstants.extension_poll &&
       message.getCategory() === CometChatUIKitConstants.MessageCategory.custom
     ) {
-      return localize("CUSTOM_MESSAGE_POLL");
+      return getLocalizedString("conversation_subtitle_poll");
     } else {
       return super.getLastConversationMessage(
         conversation,

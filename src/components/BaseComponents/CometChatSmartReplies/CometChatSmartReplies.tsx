@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 import React, { useContext, useEffect, useState } from 'react';
-import { localize } from '../../../resources/CometChatLocalize/cometchat-localize';
+import {getLocalizedString} from '../../../resources/CometChatLocalize/cometchat-localize';
 import { States } from '../../../Enums/Enums';
 
 interface CometChatSmartRepliesProps {
@@ -27,8 +27,8 @@ const CometChatSmartReplies = (props: CometChatSmartRepliesProps) => {
     const [state, setState] = useState<States>(States.loading);
     const [activeView, setActiveView] = useState<JSX.Element | null>(null);
 
-    const errorStateText: string = localize("LOOKS_LIKE_SOMETHING_WENT_WRONG");
-    const titleText: string = localize("SMART_REPLIES");
+    const errorStateText: string = getLocalizedString("ai_smart_replies_error");
+    const titleText: string = getLocalizedString("ai_smart_replies_title");
 
     useEffect(() => {
         fetchContent();
@@ -85,7 +85,7 @@ const CometChatSmartReplies = (props: CometChatSmartRepliesProps) => {
     function getEmptyView(): JSX.Element {
         return (
             <div className="cometchat-smart-replies__empty-view">
-                {localize("NO_SUMMARY_AVAILABLE")}
+                {getLocalizedString("ai_smart_replies_empty")}
             </div>
         );
     }

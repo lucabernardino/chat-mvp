@@ -154,36 +154,36 @@ export class ConversationsManager {
      * @returns - Function to remove the added SDK message receipt listener
      */
     static attachMessageReceiptListener(callback: (receipt: CometChat.MessageReceipt, updateReadAt: boolean) => void) {
-      try {
-           const onMessagesDelivered = CometChatMessageEvents.onMessagesDelivered.subscribe((messageReceipt: CometChat.MessageReceipt) => {
-                  if (messageReceipt.getReceiverType() == CometChatUIKitConstants.MessageReceiverType.user) {
-                    callback(messageReceipt, false);
-                }
-                });
-                const onMessagesRead = CometChatMessageEvents.onMessagesRead.subscribe((messageReceipt: CometChat.MessageReceipt) => {
-                  if (messageReceipt.getReceiverType() == CometChatUIKitConstants.MessageReceiverType.user) {
-                    callback(messageReceipt, true);
-                }
-                });
-                const onMessagesDeliveredToAll = CometChatMessageEvents.onMessagesDeliveredToAll.subscribe((messageReceipt: CometChat.MessageReceipt) => {
-                    callback(messageReceipt, false);
-
-                });
-                const onMessagesReadByAll = CometChatMessageEvents.onMessagesReadByAll.subscribe((messageReceipt: CometChat.MessageReceipt) => {
-                    callback(messageReceipt, true);
-
-                });
-
-        return () => {
-            onMessagesDelivered?.unsubscribe();
-            onMessagesRead?.unsubscribe();
-            onMessagesDeliveredToAll?.unsubscribe();
-            onMessagesReadByAll?.unsubscribe();
-        };
-      } catch (error) {
-        ConversationsManager.errorHandler(error,"attachMessageReceiptListener")
+        try {
+             const onMessagesDelivered = CometChatMessageEvents.onMessagesDelivered.subscribe((messageReceipt: CometChat.MessageReceipt) => {
+                    if (messageReceipt.getReceiverType() == CometChatUIKitConstants.MessageReceiverType.user) {
+                      callback(messageReceipt, false);
+                  }
+                  });
+                  const onMessagesRead = CometChatMessageEvents.onMessagesRead.subscribe((messageReceipt: CometChat.MessageReceipt) => {
+                    if (messageReceipt.getReceiverType() == CometChatUIKitConstants.MessageReceiverType.user) {
+                      callback(messageReceipt, true);
+                  }
+                  });
+                  const onMessagesDeliveredToAll = CometChatMessageEvents.onMessagesDeliveredToAll.subscribe((messageReceipt: CometChat.MessageReceipt) => {
+                      callback(messageReceipt, false);
+  
+                  });
+                  const onMessagesReadByAll = CometChatMessageEvents.onMessagesReadByAll.subscribe((messageReceipt: CometChat.MessageReceipt) => {
+                      callback(messageReceipt, true);
+  
+                  });
+  
+          return () => {
+              onMessagesDelivered?.unsubscribe();
+              onMessagesRead?.unsubscribe();
+              onMessagesDeliveredToAll?.unsubscribe();
+              onMessagesReadByAll?.unsubscribe();
+          };
+        } catch (error) {
+          ConversationsManager.errorHandler(error,"attachMessageReceiptListener")
+        }
       }
-    }
 
     /**
      * Attaches an SDK message typing listener

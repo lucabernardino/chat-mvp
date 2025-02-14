@@ -6,11 +6,10 @@ import { CometChatListItem } from "../../BaseComponents/CometChatListItem/CometC
 import { useCometChatCallLogs } from "./useCometChatCallLogs";
 import {
   CallWorkflow,
-  DatePatterns,
   MessageStatus,
   States,
 } from "../../../Enums/Enums";
-import { localize } from "../../../resources/CometChatLocalize/cometchat-localize";
+import { CometChatLocalize, getLocalizedString } from "../../../resources/CometChatLocalize/cometchat-localize";
 import { CometChatUIKitCalls } from "../../../CometChatUIKit/CometChatCalls";
 import { CometChatDate } from "../../BaseComponents/CometChatDate/CometChatDate";
 import { CometChatUIKitConstants } from "../../../constants/CometChatUIKitConstants";
@@ -22,8 +21,9 @@ import emptyIcon from "../../../assets/call-logs_empty_state.svg";
 import emptyIconDark from "../../../assets/call-logs_empty_state_dark.svg";
 import errorIcon from "../../../assets/list_error_state_icon.svg"
 import errorIconDark from "../../../assets/list_error_state_icon_dark.svg"
-import { getThemeMode } from "../../../utils/util";
+import { getThemeMode, sanitizeCalendarObject } from "../../../utils/util";
 import { useCometChatErrorHandler } from "../../../CometChatCustomHooks";
+import { CalendarObject } from "../../../utils/CalendarObject";
 
 interface CallLogsProps {
   /**
@@ -38,10 +38,9 @@ interface CallLogsProps {
   callLogRequestBuilder?: any;
 
   /**
-   * Specifies the date format for rendering dates in the call logs.
-   */
-  datePattern?: DatePatterns;
-
+  *  Format for displaying the call initiation time in call logs.
+  */
+  callInitiatedDateTimeFormat?: CalendarObject,
   /**
    * Callback function triggered when a call log list item is clicked.
    * @returns void
@@ -132,7 +131,7 @@ const defaultProps: CallLogsProps = {
     console.log(error);
   },
   activeCall: undefined,
-  datePattern: DatePatterns.time,
+
 };
 
 const CometChatCallLogs = (props: CallLogsProps) => {
@@ -150,9 +149,9 @@ const CometChatCallLogs = (props: CallLogsProps) => {
     onItemClick,
     onCallButtonClicked,
     onError,
-    datePattern,
+    callInitiatedDateTimeFormat,
   } = { ...defaultProps, ...props, };
-  const titleRef = useRef<string>(localize("CALLS"));
+  const titleRef = useRef<string>(getLocalizedString("call_logs_title"));
 
   const [callList, setCallList] = useState<any[]>([]);
   const [loggedInUser, setLoggedInUser] = useState<CometChat.User | null>(null);
@@ -471,6 +470,27 @@ const CometChatCallLogs = (props: CallLogsProps) => {
       onErrorCallback(e, 'detachListeners');
     }
   }, [listenerId, onErrorCallback]);
+   /**
+    * Function for displaying the call initiation time in call logs.
+    * @returns CalendarObject
+     */
+   function getDateFormat():CalendarObject{
+    const defaultFormat = {
+      yesterday: `DD MMM, hh:mm A`,
+      otherDays: `DD MMM, hh:mm A`,
+      today: `DD MMM, hh:mm A`
+    };
+
+        var globalCalendarFormat = sanitizeCalendarObject(CometChatLocalize.calendarObject)
+        var componentCalendarFormat = sanitizeCalendarObject(callInitiatedDateTimeFormat)
+        
+          const finalFormat = {
+            ...defaultFormat,
+            ...globalCalendarFormat,
+            ...componentCalendarFormat
+          };
+          return finalFormat;
+  }
 
   /**
    * Creates a subtitle view for the default list item view
@@ -501,7 +521,7 @@ const CometChatCallLogs = (props: CallLogsProps) => {
                 {" "}
                 <CometChatDate
                   timestamp={item.initiatedAt}
-                  pattern={DatePatterns.DateTime}
+                  calendarObject={getDateFormat()}
                 />
               </div>
             </div>
@@ -537,7 +557,7 @@ const CometChatCallLogs = (props: CallLogsProps) => {
         return <></>;
       }
     },
-    [trailingView, datePattern, onCallButtonClicked, handleInfoClick]
+    [trailingView, onCallButtonClicked, handleInfoClick]
   );
 
   /**
@@ -640,10 +660,10 @@ const CometChatCallLogs = (props: CallLogsProps) => {
           </div>
           <div className='cometchat-call-logs__empty-state-view-body'>
             <div className='cometchat-call-logs__empty-state-view-body-title'>
-              {localize("NO_CALL_LOGS")}
+              {getLocalizedString("call_logs_empty_title")}
             </div>
             <div className='cometchat-call-logs__empty-state-view-body-description'>
-              {localize("CALL_LOGS_EMPTY_MESSAGE")}
+              {getLocalizedString("call_logs_empty_subtitle")}
             </div>
           </div>
         </div>
@@ -677,10 +697,10 @@ const CometChatCallLogs = (props: CallLogsProps) => {
           </div>
           <div className='cometchat-call-logs__error-state-view-body'>
             <div className='cometchat-call-logs__error-state-view-body-title'>
-              {localize("OOPS!")}
+              {getLocalizedString("call_logs_error_title")}
             </div>
             <div className='cometchat-call-logs__error-state-view-body-description'>
-              {localize("LOOKS_LIKE_SOMETHING_WENT_WRONG")}
+              {getLocalizedString("call_logs_error_subtitle")}
             </div>
           </div>
         </div>

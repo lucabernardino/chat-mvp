@@ -1,4 +1,4 @@
-import { CometChatButton, localize } from "@cometchat/chat-uikit-react";
+import { CometChatButton, getLocalizedString } from "@cometchat/chat-uikit-react";
 import "../../styles/CometChatAlertPopup/CometChatAlertPopup.css";
 
 export const CometChatAlertPopup = (props: { onConfirmClick?: () => void, title?: string, description?: string }) => {
@@ -22,7 +22,7 @@ export const CometChatAlertPopup = (props: { onConfirmClick?: () => void, title?
 
                     <div className="cometchat-alert-popup__button-wrapper">
                         <CometChatButton
-                            text={localize("UNDERSTOOD")}
+                            text={getLocalizedString("understood")}
                             onClick={onConfirmClick}
                         />
                     </div>

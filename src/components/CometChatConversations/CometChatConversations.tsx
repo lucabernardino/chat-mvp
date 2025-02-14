@@ -1,4 +1,3 @@
-
 import {
   JSX,
   useCallback,
@@ -6,11 +5,9 @@ import {
   useRef,
   useState,
 } from "react";
-
 import {
   useCometChatErrorHandler,
   useRefSync,
-  useStateRef,
 } from "../../CometChatCustomHooks";
 import { ChatConfigurator } from "../../utils/ChatConfigurator";
 import { CometChat } from "@cometchat/chat-sdk-javascript";
@@ -24,10 +21,10 @@ import { CometChatTextFormatter } from "../../formatters/CometChatFormatters/Com
 import { CometChatUIKitUtility } from "../../CometChatUIKit/CometChatUIKitUtility";
 import { MessageReceiptUtils, receipts } from "../../utils/MessageReceiptUtils";
 import { ConversationUtils } from "../../utils/ConversationUtils";
-import { DatePatterns, MentionsTargetElement, Placement, SelectionMode, States, TitleAlignment } from "../../Enums/Enums";
+import { MentionsTargetElement, Placement, SelectionMode, States, TitleAlignment } from "../../Enums/Enums";
 import { CometChatActionsIcon, CometChatOption } from "../../modals";
 import { CometChatUIKitConstants } from "../../constants/CometChatUIKitConstants";
-import { localize } from "../../resources/CometChatLocalize/cometchat-localize";
+import {getLocalizedString,CometChatLocalize} from "../../resources/CometChatLocalize/cometchat-localize";
 import { isMissedCall } from "../Calling/Utils/utils";
 import { CometChatDate } from "../BaseComponents/CometChatDate/CometChatDate";
 import { PollsConstants } from "../Extensions/Polls/PollsConstants";
@@ -41,11 +38,11 @@ import errorIconDark from "../../assets/list_error_state_icon_dark.svg"
 import { CometChatSoundManager } from "../../resources/CometChatSoundManager/CometChatSoundManager";
 import { CometChatConfirmDialog } from "../BaseComponents/CometChatConfirmDialog/CometChatConfirmDialog";
 import { CometChatContextMenu } from "../BaseComponents/CometChatContextMenu/CometChatContextMenu";
-import { getThemeMode, isURL } from "../../utils/util";
+import { getThemeMode, isURL, sanitizeCalendarObject } from "../../utils/util";
 import { CometChatConversationEvents } from "../../events/CometChatConversationEvents";
 import CometChatToast from "../BaseComponents/CometChatToast/CometChatToast";
-import { throwError } from "rxjs";
 import { CometChatUIKit } from "../../CometChatUIKit/CometChatUIKit";
+import { CalendarObject } from "../../utils/CalendarObject";
 type Message =
   | CometChat.TextMessage
   | CometChat.MediaMessage
@@ -122,11 +119,10 @@ interface ConversationsProps {
    * @returns An array of `CometChatOption` objects.
    */
   options?: ((conversation: CometChat.Conversation) => CometChatOption[]) | null;
-
   /**
-   * Specifies the format for displaying dates within the component.
+   * Format for displaying the timestamp of the last message in the conversations list.
    */
-  datePattern?: DatePatterns;
+  lastMessageDateTimeFormat?: CalendarObject;
 
   /**
    * Disables sound for incoming messages.
@@ -776,7 +772,6 @@ export function CometChatConversations(props: ConversationsProps) {
     selectionMode = SelectionMode.none,
     hideReceipts = false,
     options = null,
-    datePattern = DatePatterns.DayDateTime,
     loadingView,
     emptyView,
     errorView,
@@ -791,6 +786,7 @@ export function CometChatConversations(props: ConversationsProps) {
     hideGroupType = false,
     disableSoundForMessages = false,
     customSoundForMessages = null,
+    lastMessageDateTimeFormat
   } = props;
 
   const [state, dispatch] = useReducer(stateReducer, {
@@ -803,11 +799,11 @@ export function CometChatConversations(props: ConversationsProps) {
     unreadMentions: false,
   });
   const [showToast, setShowToast] = useState<boolean>(false);
-  const confirmDialogTitleRef = useRef<string>(localize("DELETE_CONVERSATION"));
-  const confirmDialogMessageRef = useRef<string>(localize("WOULD__YOU_LIKE_TO_DELETE_THIS_CONVERSATION"));
-  const cancelButtonTextRef = useRef<string>(localize("CANCEL"));
-  const confirmButtonTextRef = useRef<string>(localize("DELETE"));
-  const titleRef = useRef<string>(localize("CHATS"));
+  const confirmDialogTitleRef = useRef<string>(getLocalizedString("conversation_delete_title"));
+  const confirmDialogMessageRef = useRef<string>(getLocalizedString("conversation_delete_subtitle"));
+  const cancelButtonTextRef = useRef<string>(getLocalizedString("conversation_delete_confirm_no"));
+  const confirmButtonTextRef = useRef<string>(getLocalizedString("conversation_delete_confirm_yes"));
+  const titleRef = useRef<string>(getLocalizedString("conversation_chat_title"));
 
   const conversationsManagerRef = useRef<ConversationsManager | null>(null);
   const fetchNextIdRef = useRef("");
@@ -822,6 +818,7 @@ export function CometChatConversations(props: ConversationsProps) {
       state.isFirstReload = false;
     }
   })();
+
   /**
    * Initiates a fetch request and appends the fetched conversations to the `conversationList` state
    *
@@ -1221,14 +1218,14 @@ export function CometChatConversations(props: ConversationsProps) {
             }
             {": "}
             {
-              localize(
-                "TYPING"
+              getLocalizedString(
+                "conversation_subtitle_typing"
               )
             }
           </div>;
         } else {
 
-          return <div className="cometchat-conversations__subtitle-typing">{localize("TYPING")}</div>;
+          return <div className="cometchat-conversations__subtitle-typing">{getLocalizedString("conversation_subtitle_typing")}</div>;
         }
       }
       if (state.loggedInUser) {
@@ -1236,7 +1233,7 @@ export function CometChatConversations(props: ConversationsProps) {
         const lastMessage = conversation.getLastMessage();
         const isGroupSubtitle = lastMessage && conversation?.getConversationType() != CometChat.RECEIVER_TYPE.USER;
         const isMessageFromLoggedInUser = lastMessage?.getSender().getUid() == state.loggedInUser?.getUid();
-        const getLastMessageSenderName = isMessageFromLoggedInUser ? localize("YOU") : lastMessage?.getSender().getName()
+        const getLastMessageSenderName = isMessageFromLoggedInUser ? getLocalizedString("conversation_subtitle_you_message") : lastMessage?.getSender().getName()
 
         let subtitle =
           ChatConfigurator.getDataSource().getLastConversationMessage(
@@ -1255,9 +1252,9 @@ export function CometChatConversations(props: ConversationsProps) {
           iconName = getIconNameByCallType(lastMessage)
 
           if (iconName.includes("video")) {
-            subtitle = localize("VIDEO_CALL")
+            subtitle = getLocalizedString("conversation_subtitle_video_call")
           } else {
-            subtitle = localize("VOICE_CALL")
+            subtitle = getLocalizedString("conversation_subtitle_voice_call")
           }
         }
 
@@ -1270,7 +1267,7 @@ export function CometChatConversations(props: ConversationsProps) {
         }
 
         if (lastMessage?.getDeletedAt()) {
-          subtitle = localize("MESSAGE_IS_DELETED");
+          subtitle = getLocalizedString("conversation_subtitle_deleted_message");
         }
 
         return (
@@ -1495,6 +1492,28 @@ export function CometChatConversations(props: ConversationsProps) {
       errorHandler(error, "getListItemMenuView")
     }
   }
+/**
+ * Function for displaying the timestamp of the last message in the conversations list.
+ * @returns CalendarObject
+ */
+  function getDateFormat():CalendarObject{
+    const defaultFormat = {
+      today: `hh:mm A`,
+      yesterday: `[${getLocalizedString("yesterday")}]`,
+      otherDays: "DD/MM/YYYY",
+    };
+
+    var globalCalendarFormat = sanitizeCalendarObject(CometChatLocalize.calendarObject)
+    var componentCalendarFormat = sanitizeCalendarObject(lastMessageDateTimeFormat)
+  
+    const finalFormat = {
+      ...defaultFormat,
+      ...globalCalendarFormat,
+      ...componentCalendarFormat
+    };
+    return finalFormat;
+
+  }
 
   /**
    * Creates tail content view for the default list item view
@@ -1518,7 +1537,7 @@ export function CometChatConversations(props: ConversationsProps) {
               className='cometchat-conversations__trailing-view'
             >
               <div className="cometchat-conversations__trailing-view-date">
-                <CometChatDate timestamp={lastMessage.getSentAt()} pattern={datePattern} />
+                <CometChatDate timestamp={lastMessage.getSentAt()}  calendarObject={getDateFormat()}/>
               </div>
               <div
                 className="cometchat-conversations__trailing-view-badge"
@@ -1718,10 +1737,10 @@ export function CometChatConversations(props: ConversationsProps) {
         </div>
         <div className='cometchat-conversations__empty-state-view-body'>
           <div className='cometchat-conversations__empty-state-view-body-title'>
-            {localize("NO_CONVERSATIONS")}
+            {getLocalizedString("conversation_empty_title")}
           </div>
           <div className='cometchat-conversations__empty-state-view-body-description'>
-            {localize("CONVERSATIONS_EMPTY_MESSAGE")}
+            {getLocalizedString("conversation_empty_subtitle")}
           </div>
         </div>
       </div>
@@ -1750,10 +1769,10 @@ export function CometChatConversations(props: ConversationsProps) {
         </div>
         <div className='cometchat-conversations__error-state-view-body'>
           <div className='cometchat-conversations__error-state-view-body-title'>
-            {localize("OOPS!")}
+            {getLocalizedString("conversation_error_title")}
           </div>
           <div className='cometchat-conversations__error-state-view-body-description'>
-            {localize("LOOKS_LIKE_SOMETHING_WENT_WRONG")}
+            {getLocalizedString("conversation_error_subtitle")}
           </div>
         </div>
       </div>
@@ -1797,7 +1816,6 @@ export function CometChatConversations(props: ConversationsProps) {
           }
           showSectionHeader={false}
           state={state.fetchState}
-
           loadingView={getLoadingView()}
           emptyView={getEmptyView()}
           errorView={getErrorView()}
@@ -1805,7 +1823,7 @@ export function CometChatConversations(props: ConversationsProps) {
           headerView={headerView}
         />
         {getConversationDeleteView()}
-        {showToast ? <CometChatToast text={localize("CONVERSATION_DELETED")} onClose={closeToast} /> : null}
+        {showToast ? <CometChatToast text={getLocalizedString("conversation_deleted")} onClose={closeToast} /> : null}
       </div>
     </div>
   );

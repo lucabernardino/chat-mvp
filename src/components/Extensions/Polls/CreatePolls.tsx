@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { CometChat } from '@cometchat/chat-sdk-javascript';
 import { PollsConstants } from './PollsConstants';
-import { localize } from '../../../resources/CometChatLocalize/cometchat-localize';
+import {getLocalizedString} from '../../../resources/CometChatLocalize/cometchat-localize';
 import { CometChatUIKitConstants } from '../../../constants/CometChatUIKitConstants';
 import { CometChatButton } from '../../BaseComponents/CometChatButton/CometChatButton';
 
@@ -81,16 +81,16 @@ interface CreatePollProps {
  * @returns {JSX.Element} The rendered CreatePoll component.
  */
 const CreatePoll: React.FC<CreatePollProps> = ({
-  title = localize('CREATE_POLL'),
+  title = getLocalizedString('polls_title'),
   user,
   group,
   ccCloseClicked,
   defaultAnswers = 2,
-  questionPlaceholderText = localize('ASK_QUESTION'),
-  answerPlaceholderText = localize('ADD'),
-  answerHelpText = localize('OPTIONS'),
-  addAnswerText = localize('ADD_OPTION'),
-  createPollButtonText = localize('CREATE'),
+  questionPlaceholderText = getLocalizedString('polls_question_placeholder'),
+  answerPlaceholderText = getLocalizedString('polls_add_placeholder'),
+  answerHelpText = getLocalizedString('polls_options'),
+  addAnswerText = getLocalizedString('polls_add_option_button'),
+  createPollButtonText = getLocalizedString('polls_create_button'),
 }) => {
   const [inputQuestion, setInputQuestion] = useState('');
   const [inputOptionItems, setInputOptionItems] = useState<{ key: string; value: string }[]>([]);
@@ -118,7 +118,7 @@ const CreatePoll: React.FC<CreatePollProps> = ({
 useEffect(()=> {
   if(inputOptionItems.length >=12) {
     setIsErrorOrWarning(true);
-    setErrorText(localize("REACHED_MAX_LIMIT"))
+    setErrorText(getLocalizedString("polls_limit_reached"))
   }else {
     setIsErrorOrWarning(false);
     setErrorText("")
@@ -161,7 +161,7 @@ useEffect(()=> {
     const inputValue = inputOptionItems.map((item) => item.value).filter((value) => value !== '');
     if (inputQuestion.trim().length === 0 || inputValue.length!==inputOptionItems.length) {
       setIsErrorOrWarning(true);
-      setErrorText(localize("REQUIRED_FIELDS_WARNING"))
+      setErrorText(getLocalizedString("polls_required_fields_warning"))
       return false;
     }
     setIsLoading(true)
@@ -191,7 +191,7 @@ useEffect(()=> {
       .catch(() => {
         setIsLoading(false)
         setIsErrorOrWarning(true);
-        setErrorText(localize("SOMETHING_WRONG"))
+        setErrorText(getLocalizedString("polls_error"))
       });
 
     return true;
@@ -212,7 +212,7 @@ useEffect(()=> {
         <div className="cometchat-create-poll__body">
           <div className="cometchat-create-poll__body-question">
             <div className="cometchat-create-poll__body-question-title">
-              {localize("QUESTIONS")}
+              {getLocalizedString("polls_question")}
             </div>
             <input
               className="cometchat-create-poll__body-question-input"

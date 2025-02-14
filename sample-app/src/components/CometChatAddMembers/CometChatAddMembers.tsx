@@ -7,7 +7,7 @@ import SearchIcon from "../../assets/search.svg";
 import SpinnerIcon from "../../assets/Spinner.svg";
 import backbutton from "../../assets/arrow_back.svg"
 import closeButton from "../../assets/close2x.svg";
-import { CometChatButton, CometChatGroupEvents, CometChatOption, CometChatUIKitConstants, CometChatUIKitUtility, CometChatUsers, SelectionMode, localize, useCometChatErrorHandler, useRefSync } from "@cometchat/chat-uikit-react";
+import { CometChatButton, CometChatGroupEvents, CometChatOption, CometChatUIKitConstants, CometChatUIKitUtility, CometChatUsers, SelectionMode, getLocalizedString, useCometChatErrorHandler, useRefSync } from "@cometchat/chat-uikit-react";
 
 interface IAddMembersProps {
     /**
@@ -30,12 +30,6 @@ interface IAddMembersProps {
      */
     onBack?: () => void,
     /**
-     * Title of the component
-     *
-     * @defaultValue `localize("ADD_MEMBERS")`
-    */
-    title?: string,
-    /**
      * Hide the search bar
      *
      * @defaulValue `false`
@@ -47,12 +41,6 @@ interface IAddMembersProps {
      * @defaultValue `./assets/search.svg`
      */
     searchIconURL?: string,
-    /**
-     * Text to be displayed when the search input has no value
-     *
-     * @defaultValue `localize("SEARCH")`
-     */
-    searchPlaceholderText?: string,
     /**
      * Show alphabetical header
      *
@@ -78,22 +66,11 @@ interface IAddMembersProps {
      * Custom view for the loading state of the component
      */
     loadingStateView?: JSX.Element,
-    /**
-     * Text to display in the default empty view
-     *
-     * @defaultValue `localize("NO_USERS_FOUND")`
-     */
-    emptyStateText?: string,
+
     /**
      * Custom view for the empty state of the component
      */
     emptyStateView?: JSX.Element,
-    /**
-     * Text to display in the default error view
-     *
-     * @defaultValue `localize("SOMETHING_WRONG")`
-     */
-    errorStateText?: string,
     /**
      * Custom view for the error state of the component
      */
@@ -193,7 +170,7 @@ interface IAddMembersProps {
     /**
      * Text to display for the default add button
      *
-     * @defaultValue `localize("ADD_MEMBERS")`
+     * @defaultValue `getLocalizedString("add_members")`
      */
     buttonText?: string,
     /**
@@ -217,26 +194,16 @@ interface IAddMembersProps {
  */
 export function CometChatAddMembers(props: IAddMembersProps) {
     const {
-        backButtonIconURL = backbutton,
         showBackButton = false,
         onBack,
-        title = localize("ADD_MEMBERS"),
         hideSearch = false,
-        searchIconURL = SearchIcon,
-        searchPlaceholderText = localize("SEARCH"),
         showSectionHeader = false,
         sectionHeaderField = "getName",
-        loadingIconURL = SpinnerIcon,
         loadingStateView,
-        emptyStateText = localize("NO_USERS_FOUND"),
         emptyStateView,
-        errorStateText = localize("SOMETHING_WRONG"),
         errorStateView,
         hideError = false,
-        disableUsersPresence = false,
-        hideSeparator = false,
         onError,
-        menus,
         options,
         selectionMode = SelectionMode.multiple,
         onSelect,
@@ -246,10 +213,7 @@ export function CometChatAddMembers(props: IAddMembersProps) {
         subtitleView,
         group,
         onAddMembersButtonClick = null,
-        buttonText = localize("ADD_MEMBERS"),
-        closeButtonIconURL = closeButton,
-        onClose,
-        statusIndicatorStyle,
+        buttonText = getLocalizedString("add_members"),
     } = props;
 
     const membersToAddRef = useRef<CometChat.GroupMember[]>([]);
@@ -472,7 +436,7 @@ export function CometChatAddMembers(props: IAddMembersProps) {
 
             />
             {isError ? <div className="cometchat-add-members_error-view">
-                {localize("SOMETHING_WRONG")}
+                {getLocalizedString("member_error_subtitle")}
             </div> : null}
             {getAddMembersBtnView()}
             {getBackBtnView()}

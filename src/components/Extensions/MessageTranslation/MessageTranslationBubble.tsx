@@ -1,7 +1,7 @@
 import React, { ReactNode, useCallback, useEffect, useRef, useState } from 'react'
 import { MentionsTargetElement, MessageBubbleAlignment } from '../../../Enums/Enums'
 import { CometChatTextFormatter } from '../../../formatters/CometChatFormatters/CometChatTextFormatter'
-import { localize } from '../../../resources/CometChatLocalize/cometchat-localize'
+import {getLocalizedString} from '../../../resources/CometChatLocalize/cometchat-localize'
 interface IMessageTranslationBubbleProps {
   /** 
    * The text that has been translated.
@@ -41,7 +41,7 @@ interface IMessageTranslationBubbleProps {
 const defaultProps: Partial<IMessageTranslationBubbleProps> = {
   translatedText: "",
   alignment: MessageBubbleAlignment.right,
-  helpText: localize("TEXT_TRANSLATE"),
+  helpText: getLocalizedString("message_text_translated"),
   textFormatters: [],
   isSentByMe: true
 }

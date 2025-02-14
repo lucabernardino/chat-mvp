@@ -1,9 +1,7 @@
 
-import { CometChat } from '@cometchat/chat-sdk-javascript'
 import { CometChatTextFormatter } from '../formatters/CometChatFormatters/CometChatTextFormatter';
-import deleteIcon from '../assets/delete.svg';
 import { CometChatUIKitUtility } from '../CometChatUIKit/CometChatUIKitUtility';
-import { localize } from '../resources/CometChatLocalize/cometchat-localize';
+import {getLocalizedString} from '../resources/CometChatLocalize/cometchat-localize';
 import { MessageBubbleAlignment } from '../Enums/Enums';
 import { CometChatUIKitConstants } from '../constants/CometChatUIKitConstants';
 import {  CometChatOption } from '../modals';
@@ -39,7 +37,7 @@ export class ConversationUtils {
   static getDefaultOptions() {
     return [new CometChatOption({
       id: CometChatUIKitConstants.ConversationOptions.delete,
-      title: localize("DELETE"),
+      title: getLocalizedString("conversation_delete_icon_hover"),
       onClick: null,
     })]
   }
@@ -61,10 +59,10 @@ export class ConversationUtils {
 
     let message: string = "";
     if (!msgObject) {
-      message = localize("CLICK_TO_START_CONVERSATION");
+      message = getLocalizedString("conversation_start");
     }
     else if (msgObject?.getDeletedAt()) {
-      message = localize("MESSAGE_IS_DELETED");
+      message = getLocalizedString("conversation_message_deleted");
     }
     else if (msgObject?.getCategory() == CometChatUIKitConstants.MessageCategory.message && !msgObject?.getDeletedAt()) {
       message = this.getLastMessage(conversationObject)
@@ -105,16 +103,16 @@ export class ConversationUtils {
       }
         break;
       case CometChatUIKitConstants.MessageTypes.image:
-        message = localize("MESSAGE_IMAGE");
+        message = getLocalizedString("conversation_subtitle_image");
         break;
       case CometChatUIKitConstants.MessageTypes.file:
-        message = localize("MESSAGE_FILE");
+        message = getLocalizedString("conversation_subtitle_file");
         break;
       case CometChatUIKitConstants.MessageTypes.video:
-        message = localize("MESSAGE_VIDEO");
+        message = getLocalizedString("conversation_subtitle_video");
         break;
       case CometChatUIKitConstants.MessageTypes.audio:
-        message = localize("MESSAGE_AUDIO");
+        message = getLocalizedString("conversation_subtitle_audio");
         break;
       default:
         message = messageObject.getType();
@@ -176,26 +174,26 @@ export class ConversationUtils {
     const forString: string = message.getAction() !== CometChatUIKitConstants.groupMemberAction.JOINED && message.getAction() !== CometChatUIKitConstants.groupMemberAction.LEFT ? onEntity.name : "";
     switch (message.getAction()) {
       case CometChatUIKitConstants.groupMemberAction.ADDED:
-        actionMessage = `${byString} ${localize("ADDED")} ${forString}`;
+        actionMessage = `${byString} ${getLocalizedString("conversation_subtitle_added")} ${forString}`;
         break;
       case CometChatUIKitConstants.groupMemberAction.JOINED:
-        actionMessage = `${byString} ${localize("JOINED")}`;
+        actionMessage = `${byString} ${getLocalizedString("conversation_subtitle_joined")}`;
         break;
       case CometChatUIKitConstants.groupMemberAction.LEFT:
-        actionMessage = `${byString} ${localize("LEFT")}`;
+        actionMessage = `${byString} ${getLocalizedString("conversation_subtitle_left")}`;
         break;
       case CometChatUIKitConstants.groupMemberAction.KICKED:
-        actionMessage = `${byString} ${localize("KICKED")} ${forString}`;
+        actionMessage = `${byString} ${getLocalizedString("conversation_subtitle_kicked")} ${forString}`;
         break;
       case CometChatUIKitConstants.groupMemberAction.BANNED:
-        actionMessage = `${byString} ${localize("BANNED")} ${forString}`;
+        actionMessage = `${byString} ${getLocalizedString("conversation_subtitle_banned")} ${forString}`;
         break;
       case CometChatUIKitConstants.groupMemberAction.UNBANNED:
-        actionMessage = `${byString} ${localize("UNBANNED")} ${forString}`;
+        actionMessage = `${byString} ${getLocalizedString("conversation_subtitle_unbanned")} ${forString}`;
         break;
       case CometChatUIKitConstants.groupMemberAction.SCOPE_CHANGE: {
         const newScope = message["data"]["extras"]["scope"]["new"];
-        actionMessage = `${byString} ${localize("MADE")} ${forString} ${newScope}`;
+        actionMessage = `${byString} ${getLocalizedString("conversation_subtitle_made")} ${forString} ${newScope}`;
         break;
       }
       default:
@@ -217,9 +215,9 @@ export class ConversationUtils {
   static getLastMessageCall(conversation: CometChat.Conversation) {
     let messageObject: CometChat.Action = conversation?.getLastMessage()
     if (messageObject?.getType() === "audio") {
-      return localize("AUDIO_CALL")
+      return getLocalizedString("conversation_subtitle_voice_call")
     } else if (messageObject?.getType() === "video") {
-      return localize("VIDEO_CALL")
+      return getLocalizedString("conversation_subtitle_video_call")
     } else {
       return messageObject?.getType()
     }

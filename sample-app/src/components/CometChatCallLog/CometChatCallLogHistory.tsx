@@ -5,7 +5,7 @@ import incomingCallIcon from "../../assets/incomingCallIcon.svg";
 import incomingCallSuccessIcon from "../../assets/incomingCallSuccess.svg";
 import missedCallIcon from "../../assets/missedCallIcon.svg";
 import "../../styles/CometChatCallLog/CometChatCallLogHistory.css";
-import { CometChatDate, CometChatList, CometChatListItem, CometChatUIKit, CometChatUIKitCalls, CometChatUIKitConstants, DatePatterns, States, convertMinutesToHoursMinutesSeconds, localize } from "@cometchat/chat-uikit-react";
+import { CalendarObject, CometChatDate, CometChatList, CometChatListItem, CometChatLocalize, CometChatUIKit, CometChatUIKitCalls, CometChatUIKitConstants, States, convertMinutesToHoursMinutesSeconds, getLocalizedString } from "@cometchat/chat-uikit-react";
 
 export const CometChatCallDetailsHistory = (props: { call: any }) => {
     const { call } = props;
@@ -84,12 +84,26 @@ export const CometChatCallDetailsHistory = (props: { call: any }) => {
             }
         }
     }, [fetchNextCallList, setCallList, setCallListState, callList])
+    
+   function getDateFormat():CalendarObject{
+    const defaultFormat = {
+      yesterday: `DD MMM, hh:mm A`,
+      otherDays: `DD MMM, hh:mm A`,
+      today: `DD MMM, hh:mm A`
+    };
+
+    const finalFormat = {
+      ...defaultFormat,
+      ...CometChatLocalize.calendarObject    };
+
+    return finalFormat;
+  }
 
     const getListItemSubtitleView = useCallback((item: any): JSX.Element => {
         return (
             <div className="cometchat-call-log-history__subtitle">
                 <CometChatDate
-                    pattern={DatePatterns.DateTime}
+                   calendarObject={getDateFormat()}
                     timestamp={item?.getInitiatedAt()}
                 ></CometChatDate>
             </div>
@@ -126,39 +140,39 @@ export const CometChatCallDetailsHistory = (props: { call: any }) => {
         if (isSentByMeFlag) {
             switch (callStatus) {
                 case CometChatUIKitConstants.calls.initiated:
-                    return localize("OUTGOING_CALL");
+                    return getLocalizedString("calls_outgoing_call");
                 case CometChatUIKitConstants.calls.cancelled:
-                    return localize("CANCELLED_CALL");
+                    return getLocalizedString("calls_cancelled_call");
                 case CometChatUIKitConstants.calls.rejected:
-                    return localize("REJECTED_CALL");
+                    return getLocalizedString("calls_rejected_call");
                 case CometChatUIKitConstants.calls.busy:
-                    return localize("MISSED_CALL");
+                    return getLocalizedString("calls_missed_call");
                 case CometChatUIKitConstants.calls.ended:
-                    return localize("CALL_ENDED");
+                    return getLocalizedString("calls_ended_call");
                 case CometChatUIKitConstants.calls.ongoing:
-                    return localize("CALL_ANSWERED");
+                    return getLocalizedString("calls_answered_call");
                 case CometChatUIKitConstants.calls.unanswered:
-                    return localize("UNANSWERED_CALL");
+                    return getLocalizedString("calls_unanswered_call");
                 default:
-                    return localize("OUTGOING_CALL");
+                    return getLocalizedString("calls_outgoing_call");
             }
         } else {
             switch (callStatus) {
                 case CometChatUIKitConstants.calls.initiated:
-                    return localize("INCOMING_CALL");
+                    return getLocalizedString("calls_incoming_call");
                 case CometChatUIKitConstants.calls.ongoing:
-                    return localize("CALL_ANSWERED");
+                    return getLocalizedString("calls_answered_call");
                 case CometChatUIKitConstants.calls.ended:
-                    return localize("CALL_ENDED");
+                    return getLocalizedString("calls_ended_call");
                 case CometChatUIKitConstants.calls.unanswered:
                 case CometChatUIKitConstants.calls.cancelled:
-                    return localize("MISSED_CALL");
+                    return getLocalizedString("calls_missed_call");
                 case CometChatUIKitConstants.calls.busy:
-                    return localize("CALL_BUSY");
+                    return getLocalizedString("calls_busy_call");
                 case CometChatUIKitConstants.calls.rejected:
-                    return localize("REJECTED_CALL");
+                    return getLocalizedString("calls_rejected_call");
                 default:
-                    return localize("OUTGOING_CALL");
+                    return getLocalizedString("calls_outgoing_call");
             }
         }
     }
@@ -172,46 +186,46 @@ export const CometChatCallDetailsHistory = (props: { call: any }) => {
         const callStatus = getCallStatus(call, loggedInUser!);
         if (isSentByMeFlag) {
             switch (callStatus) {
-                case localize("OUTGOING_CALL"):
+                case getLocalizedString("calls_outgoing_call"):
                     return outgoingCallSuccess;
-                case localize("INCOMING_CALL"):
+                case getLocalizedString("calls_incoming_call"):
                     return outgoingCallSuccess;
-                case localize("CANCELLED_CALL"):
+                case getLocalizedString("calls_cancelled_call"):
                     return outgoingCallSuccess;
-                case localize("REJECTED_CALL"):
+                case getLocalizedString("calls_rejected_call"):
                     return callRejectedIcon;
-                case localize("CALL_BUSY"):
+                case getLocalizedString("calls_busy_call"):
                     return missedCallIcon;
-                case localize("CALL_ENDED"):
+                case getLocalizedString("calls_ended_call"):
                     return outgoingCallSuccess;
-                case localize("CALL_ANSWERED"):
+                case getLocalizedString("calls_answered_call"):
                     return outgoingCallSuccess;
-                case localize("UNANSWERED_CALL"):
+                case getLocalizedString("calls_unanswered_call"):
                     return missedCallIcon;
-                case localize("MISSED_CALL"):
+                case getLocalizedString("calls_missed_call"):
                     return missedCallIcon;
                 default:
                     return "";
             }
         } else {
             switch (callStatus) {
-                case localize("OUTGOING_CALL"):
+                case getLocalizedString("calls_outgoing_call"):
                     return incomingCallSuccessIcon;
-                case localize("INCOMING_CALL"):
+                case getLocalizedString("calls_incoming_call"):
                     return incomingCallSuccessIcon;
-                case localize("CANCELLED_CALL"):
+                case getLocalizedString("calls_cancelled_call"):
                     return incomingCallIcon;
-                case localize("REJECTED_CALL"):
+                case getLocalizedString("calls_rejected_call"):
                     return callRejectedIcon;
-                case localize("CALL_BUSY"):
+                case getLocalizedString("calls_busy_call"):
                     return missedCallIcon;
-                case localize("CALL_ENDED"):
+                case getLocalizedString("calls_ended_call"):
                     return incomingCallSuccessIcon;
-                case localize("CALL_ANSWERED"):
+                case getLocalizedString("calls_answered_call"):
                     return incomingCallSuccessIcon;
-                case localize("UNANSWERED_CALL"):
+                case getLocalizedString("calls_unanswered_call"):
                     return missedCallIcon;
-                case localize("MISSED_CALL"):
+                case getLocalizedString("calls_missed_call"):
                     return missedCallIcon;
                 default:
                     return "";

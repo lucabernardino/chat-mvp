@@ -2,7 +2,7 @@ import { CometChat, Group, GroupType } from "@cometchat/chat-sdk-javascript";
 import { useContext, useState } from "react";
 import { AppContext } from "../../context/AppContext";
 import "../../styles/CometChatSelector/CometChatSelector.css";
-import { CometChatAvatar, CometChatButton, CometChatGroupEvents, CometChatUIKitLoginListener, localize } from "@cometchat/chat-uikit-react";
+import { CometChatAvatar, CometChatButton, CometChatGroupEvents, CometChatUIKitLoginListener, getLocalizedString } from "@cometchat/chat-uikit-react";
 
 interface joinPasswordGroupProps {
     group: Group;
@@ -57,7 +57,7 @@ export const CometChatJoinGroup = (props: joinPasswordGroupProps) => {
             <div className="join-group-password">
                 <div className="join-group-password__header">
                     <div className="join-group-password__header-title">
-                        {localize("GROUP_PASSWORD")}
+                        {getLocalizedString("group_password")}
                     </div>
                     <div className="join-group-password__header-close" onClick={() => { setAppState({ type: "updateShowJoinGroup", payload: false }); onHide() }} />
                 </div>
@@ -70,21 +70,21 @@ export const CometChatJoinGroup = (props: joinPasswordGroupProps) => {
                             {group.getName()}
                         </div>
                         <div className="join-group-password__content-text-subtitle">
-                            {group.getMembersCount() + localize("MEMBERS")}
+                            {group.getMembersCount() + getLocalizedString("group_members")}
                         </div>
                     </div>
                 </div>
                 <div className="join-group-password__input">
                     <div className="join-group-password__input-label">
-                        {localize("PASSWORD")}
+                        {getLocalizedString("group_password")}
                     </div>
-                    <input placeholder={localize("ENTER_YOUR_PASSWORD")} value={password} onChange={onPasswordChange} />
+                    <input placeholder={getLocalizedString("enter_your_password")} value={password} onChange={onPasswordChange} />
                     {showWrongPassword && <div className="join-group-password__input-wrong" >
-                        {localize("INVALID_PASSWORD")}
+                        {getLocalizedString("invalid_password")}
                     </div>}
                 </div>
                 <div className="join-group-password__button">
-                    <CometChatButton text={localize("CONTINUE")} onClick={joinPrivateGroup} />
+                    <CometChatButton text={getLocalizedString("continue")} onClick={joinPrivateGroup} />
                 </div>
             </div>
         </div>

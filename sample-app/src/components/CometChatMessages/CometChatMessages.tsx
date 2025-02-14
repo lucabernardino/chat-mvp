@@ -1,4 +1,4 @@
-import { CometChatMessageComposer, CometChatMessageHeader, CometChatMessageList, localize } from "@cometchat/chat-uikit-react";
+import { CometChatMessageComposer, CometChatMessageHeader, CometChatMessageList, getLocalizedString } from "@cometchat/chat-uikit-react";
 import "../../styles/CometChatMessages/CometChatMessages.css";
 import { useEffect, useState } from "react";
 import { CometChat } from "@cometchat/chat-sdk-javascript";
@@ -62,7 +62,7 @@ export const CometChatMessages = (props: MessagesViewProps) => {
                 }
             }}>
                 <div className="message-composer-blocked__text">
-                    {localize("CANNOT_SEND_MESSAGE_TO_BLOCKED_USER")} <a>   {localize("CLICK_TO_UNBLOCK")}</a>
+                    {getLocalizedString("cannot_send_to_blocked_user")} <a>   {getLocalizedString("click_to_unblock")}</a>
                 </div>
             </div>}
         </div>

@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { CometChat } from '@cometchat/chat-sdk-javascript';
 import { StickersConstants } from './StickersConstants';
-import { localize } from '../../../resources/CometChatLocalize/cometchat-localize';
+import {getLocalizedString} from '../../../resources/CometChatLocalize/cometchat-localize';
 import { States } from '../../../Enums/Enums';
 import React from 'react';
 
@@ -50,8 +50,8 @@ interface StickersKeyboardProps {
 }
 
 const defaultProps: Partial<StickersKeyboardProps> = {
-  errorStateText: localize('LOOKS_LIKE_SOMETHING_WENT_WRONG'),
-  emptyStateText: localize('NO_STICKERS_AVAILABLE'),
+  errorStateText: getLocalizedString('sticker_error'),
+  emptyStateText: getLocalizedString('sticker_empty'),
 }
 
 /**

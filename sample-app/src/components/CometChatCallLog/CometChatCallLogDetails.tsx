@@ -5,11 +5,11 @@ import { CometChatCallDetailsInfo } from "./CometChatCallLogInfo";
 import { CometChatCallDetailsParticipants } from "./CometChatCallLogParticipants";
 import { CometChatCallDetailsRecording } from "./CometChatCallLogRecordings";
 import { CometChatCallDetailsHistory } from "./CometChatCallLogHistory";
-import { ChatConfigurator, CometChatListItem, CometChatMessageHeader, CometChatUIKitConstants, CometChatUIKitLoginListener, localize, MessageUtils } from "@cometchat/chat-uikit-react";
+import { ChatConfigurator, CometChatListItem, CometChatMessageHeader, CometChatUIKitConstants, CometChatUIKitLoginListener, getLocalizedString, MessageUtils } from "@cometchat/chat-uikit-react";
 
 export const CometChatCallDetails = (props: { selectedItem: any, onBack?: () => void }) => {
     const { selectedItem, onBack } = props;
-    const callDetailTabItems = [localize("PARTICIPANTS"), localize("RECORDING"), localize("HISTORY")];
+    const callDetailTabItems = [getLocalizedString("participants"), getLocalizedString("recording"), getLocalizedString("history")];
     const [activeTab, setActiveTab] = useState("Participants");
     const [user, setUser] = useState<User>();
     const [subtitleText, setSubtitleText] = useState<string>();
@@ -74,7 +74,7 @@ export const CometChatCallDetails = (props: { selectedItem: any, onBack?: () => 
         <div className="cometchat-call-log-details">
             <div className="cometchat-call-log-details__header">
                 <div className="cometchat-call-log-details__header-back" onClick={onBack} />
-                {localize("CALL_DETAILS")}
+                {getLocalizedString("call_details")}
             </div>
             <div className="cometchat-call-log-details__call-log-item">
             <CometChatListItem avatarName={user?.getName()}

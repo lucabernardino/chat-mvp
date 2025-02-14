@@ -3,7 +3,8 @@ import { useCometChatErrorHandler, useRefSync } from "../../CometChatCustomHooks
 import { CometChat } from "@cometchat/chat-sdk-javascript";
 import { useCometChatMessageHeader } from "./useCometChatMessageHeader";
 import { ChatConfigurator } from '../../utils/ChatConfigurator';
-import { localize } from '../../resources/CometChatLocalize/cometchat-localize';
+import { CometChatLocalize } from '../../resources/CometChatLocalize/cometchat-localize';
+import {getLocalizedString} from '../../resources/CometChatLocalize/cometchat-localize';
 import { MessageUtils } from "../../utils/MessageUtils";
 import { CometChatListItem } from '../BaseComponents/CometChatListItem/CometChatListItem';
 import { CometChatUIKitConstants } from "../../constants/CometChatUIKitConstants";
@@ -13,6 +14,8 @@ import ConversationSummaryIcon from '../../assets/conversation_summary.svg';
 import { CometChatUIEvents } from "../../events/CometChatUIEvents";
 import { CometChatConversationSummary } from "../BaseComponents/CometChatConversationSummary/CometChatConversationSummary";
 import { PanelAlignment } from "../../Enums/Enums";
+import { CalendarObject } from "../../utils/CalendarObject";
+import { sanitizeCalendarObject } from "../../utils/util";
 
 /**
  * Interface for the props accepted by the CometChatMessageHeader component.
@@ -116,6 +119,10 @@ interface MessageHeaderProps {
      * A function that renders a JSX element to display the trailing view.
      */
     trailingView?: JSX.Element;
+    /**
+    * Format for displaying the "last active" timestamp in the message header.
+    */
+    lastActiveAtDateTimeFormat?:CalendarObject
   }
 
 /** Functional component for rendering the CometChatMessageHeader */
@@ -140,7 +147,8 @@ export const CometChatMessageHeader = (props: MessageHeaderProps) => {
         hideUserStatus = false,
         showConversationSummaryButton = false,
         enableAutoSummaryGeneration = false,
-        summaryGenerationMessageCount = 1000
+        summaryGenerationMessageCount = 1000,
+        lastActiveAtDateTimeFormat
     } = props;
 
     /** States and ref used in the component */
@@ -151,6 +159,31 @@ export const CometChatMessageHeader = (props: MessageHeaderProps) => {
     const classNameRef = useRef("");
     const isTypingRef = useRef(false);
     const onErrorCallback = useCometChatErrorHandler(onError);
+    /**
+     * Function for displaying the "last active" timestamp in the message header.
+     * @returns CalendarObject
+     */
+    function getDateFormat():CalendarObject{
+        const defaultFormat = {
+            today:`[${getLocalizedString("message_header_last_seen")} DD MMM ${getLocalizedString("message_header_at")}] hh:mm A`,
+            yesterday: `[${getLocalizedString("message_header_last_seen")} DD MMM ${getLocalizedString("message_header_at")}] hh:mm A`,
+            otherDays: `[${getLocalizedString("message_header_last_seen")} DD MMM ${getLocalizedString("message_header_at")}] hh:mm A`,
+            relativeTime:{
+              hour:`${getLocalizedString("message_header_last_seen")}  %d ${getLocalizedString("message_header_hour_ago")}`,
+              minute:`${getLocalizedString("message_header_last_seen")}  %d ${getLocalizedString("message_header_minute_ago")}`,
+              minutes:`${getLocalizedString("message_header_last_seen")}  %d ${getLocalizedString("message_header_minutes_ago")}`
+            },
+          };
+        var globalCalendarFormat = sanitizeCalendarObject(CometChatLocalize.calendarObject)
+        var componentCalendarFormat = sanitizeCalendarObject(lastActiveAtDateTimeFormat)
+        
+          const finalFormat = {
+            ...defaultFormat,
+            ...globalCalendarFormat,
+            ...componentCalendarFormat
+          };
+          return finalFormat;
+      }
 
     const updateSubtitle = useCallback(() => {
         try {
@@ -161,7 +194,7 @@ export const CometChatMessageHeader = (props: MessageHeaderProps) => {
             }
             else if (group) {
                 const count = group.getMembersCount();
-                const membersText = localize(count > 1 ? "MEMBERS" : "MEMBER");
+                const membersText = getLocalizedString(count > 1 ? "message_header_members" : "message_header_member");
                 setSubtitleText(`${count} ${membersText}`);
             }
             else if(!isTypingRef.current && hideUserStatus){
@@ -265,35 +298,14 @@ export const CometChatMessageHeader = (props: MessageHeaderProps) => {
     const updateLastActiveInfo = (user: CometChat.User) => {
         try {
             if (user.getStatus() === CometChatUIKitConstants.userStatusType.online) {
-                setSubtitleText(localize(user.getStatus().toUpperCase()));
+                setSubtitleText(getLocalizedString(`message_header_status_${user.getStatus().toLowerCase()}`));
             } else {
                 if (user.getLastActiveAt()) {
-                    const date = user.getLastActiveAt().toString().length === 10 ? new Date(user.getLastActiveAt() * 1000) : new Date(user.getLastActiveAt());
-                    const timeDifferenceInMinutes = (new Date().getTime() - date.getTime()) / 1000 / 60
-                    if (timeDifferenceInMinutes < 60) {
-                        if (Math.ceil(timeDifferenceInMinutes) == 0 || Math.ceil(timeDifferenceInMinutes) == 1) {
-                            setSubtitleText(`${localize("LAST_SEEN")} 1 minute ago`);
-                        } else {
-                            setSubtitleText(`${localize("LAST_SEEN")} ` + Math.ceil(timeDifferenceInMinutes) + " minutes ago");
-                        }
-                    } else if (timeDifferenceInMinutes == 60) {
-                        setSubtitleText(`${localize("LAST_SEEN")} 1 hour ago`)
-                    } else {
-                        const dateString = date.getDate();
-                        const monthString = date.toLocaleString('en-Us', { month: "short" });
-                        let timeString: number | string = date.getHours();
-                        let postString = "AM";
-                        if (timeString > 11) {
-                            postString = "PM";
-                            timeString = timeString !== 12 ? timeString % 12 : timeString;
-                        }
-                        if (timeString < 10) {
-                            timeString = `0${timeString}`;
-                        }
-                        setSubtitleText(`${localize("LAST_SEEN")} ` + dateString + " " + monthString + ` ${localize("AT")} ` + timeString + ":" + getMinute(date) + " " + postString);
-                    }
+                    const date = user.getLastActiveAt().toString().length === 10 ? user.getLastActiveAt() :   Math.floor(user.getLastActiveAt() / 1000);
+                    let formattedDate = CometChatLocalize.formatDate(date,getDateFormat());
+                    setSubtitleText(formattedDate);
                 } else {
-                    setSubtitleText(localize(user.getStatus().toUpperCase()));
+                    setSubtitleText(getLocalizedString(`message_header_status_${user.getStatus().toLowerCase()}`));
                 }
             }
         } catch (error) {
@@ -339,11 +351,11 @@ export const CometChatMessageHeader = (props: MessageHeaderProps) => {
                         return;
                     }
                     isTypingRef.current = true;
-                    setSubtitleText(localize("TYPING"));
+                    setSubtitleText(getLocalizedString("message_header_typing"));
                 }
                 if (groupRef?.current?.getGuid() === receiverId) {
                     isTypingRef.current = true;
-                    setSubtitleText(`${sender?.getName()}: ${localize("TYPING")}`);
+                    setSubtitleText(`${sender?.getName()}: ${getLocalizedString("message_header_typing")}`);
                 }
             }
 

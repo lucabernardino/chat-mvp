@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef, useCallback, UIEvent } from "react"
 import { CometChat, ReactionCount } from "@cometchat/chat-sdk-javascript";
 import { CometChatListItem } from "../../BaseComponents/CometChatListItem/CometChatListItem";
 import { States } from "../../../Enums/Enums";
-import { localize } from "../../../resources/CometChatLocalize/cometchat-localize";
+import {getLocalizedString} from "../../../resources/CometChatLocalize/cometchat-localize";
 import { CometChatUIKitConstants } from "../../../constants/CometChatUIKitConstants";
 import { CometChatUIKitLoginListener } from "../../../CometChatUIKit/CometChatUIKitLoginListener";
 import { useCometChatErrorHandler } from "../../../CometChatCustomHooks";
@@ -34,9 +34,9 @@ export const CometChatReactionList: React.FC<ReactionListProps> = ({
     const [isFirstRender, setIsFirstRender] = useState<boolean>(true);
     const selectedRecRef = useRef<string>();
 
-    const allText = localize("ALL");
-    const subtitleText = localize("CLICK_TO_REMOVE");
-    const youText = localize("YOU");
+    const allText = getLocalizedString("reaction_list_all");
+    const subtitleText = getLocalizedString("reaction_list_click_to_remove");
+    const youText = getLocalizedString("reaction_list_you");
     const limit = CometChatUIKitConstants.requestBuilderLimits.reactionListLimit;
     const loggedInUser = CometChatUIKitLoginListener.getLoggedInUser();
     const parentRef = useRef<HTMLDivElement | null>(null);
@@ -319,7 +319,7 @@ export const CometChatReactionList: React.FC<ReactionListProps> = ({
                     </>
                 ) : state === States.error ? (
                     <div className="cometchat-reaction-list__error">
-                        {localize("ERROR_TEXT")}
+                        {getLocalizedString("reaction_list_error")}
                     </div>
                 ) : state == States.loaded ? (
                     <div className="cometchat-reaction-container">

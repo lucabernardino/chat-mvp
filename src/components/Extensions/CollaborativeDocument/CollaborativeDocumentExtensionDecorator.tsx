@@ -7,7 +7,7 @@ import { CollaborativeDocumentConstants } from "./CollaborativeDocumentConstants
 import { CometChatUIKitUtility } from "../../../CometChatUIKit/CometChatUIKitUtility";
 import { CometChatUIKitConstants } from "../../../constants/CometChatUIKitConstants";
 import { MessageBubbleAlignment } from "../../../Enums/Enums";
-import { localize } from "../../../resources/CometChatLocalize/cometchat-localize";
+import {getLocalizedString} from "../../../resources/CometChatLocalize/cometchat-localize";
 import { CometChatMessageComposerAction, CometChatMessageTemplate } from "../../../modals";
 import { CometChatDocumentBubble } from "../../BaseComponents/CometChatDocumentBubble/CometChatDocumentBubble";
 import bannerImageUrlLight from "../../../assets/Collaborative_Document_Light.png";
@@ -194,9 +194,9 @@ export class CollaborativeDocumentExtensionDecorator extends DataSourceDecorator
   getDocumentContentView(
     documentMessage: CometChat.CustomMessage,alignment?:MessageBubbleAlignment) {
     const documentURL = this.getDocumentURL(documentMessage);
-    const documentTitle = localize("COLLABORATIVE_DOCUMENT");
-    const documentButtonText = localize("OPEN_DOCUMENT");
-    const documentSubitle = localize("DRAW_DOCUMENT_TOGETHER");
+    const documentTitle = getLocalizedString("message_list_collaborative_document_title");
+    const documentButtonText = getLocalizedString("message_list_collaborative_document_open");
+    const documentSubitle = getLocalizedString("message_list_collaborative_document_subtitile");
     const isSentByMe = isMessageSentByMe(documentMessage, this.loggedInUser!)
 
     const isDarkMode = getThemeMode() == "dark" ? true : false;
@@ -275,7 +275,7 @@ export class CollaborativeDocumentExtensionDecorator extends DataSourceDecorator
       let newAction: CometChatMessageComposerAction =
         new CometChatMessageComposerAction({
           id: CollaborativeDocumentConstants.document,
-          title: localize("COLLABORATIVE_DOCUMENT"),
+          title: getLocalizedString("messsage_composer_collaborative_document"),
           iconURL: this.configuration?.getOptionIconURL()
             ? this.configuration?.getOptionIconURL()
             : DocumentIcon,
@@ -318,7 +318,7 @@ export class CollaborativeDocumentExtensionDecorator extends DataSourceDecorator
       message.getType() === CollaborativeDocumentConstants.extension_document &&
       message.getCategory() === CometChatUIKitConstants.MessageCategory.custom
     ) {
-      return localize("CUSTOM_MESSAGE_DOCUMENT");
+      return getLocalizedString("conversation_subtitle_collaborative_document");
     } else {
       return super.getLastConversationMessage(
         conversation,

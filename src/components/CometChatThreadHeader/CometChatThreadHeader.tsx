@@ -1,8 +1,8 @@
-import { localize } from "../../resources/CometChatLocalize/cometchat-localize";
+import { CometChatLocalize,getLocalizedString } from "../../resources/CometChatLocalize/cometchat-localize";
 import { CometChatButton } from "../BaseComponents/CometChatButton/CometChatButton";
 import closeIcon from "../../assets/close.svg";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { DatePatterns, MessageBubbleAlignment, MessageStatus } from "../../Enums/Enums";
+import {  MessageBubbleAlignment, MessageStatus } from "../../Enums/Enums";
 import { CometChatUIKitLoginListener } from "../../CometChatUIKit/CometChatUIKitLoginListener";
 import { MessageUtils } from "../../utils/MessageUtils";
 import { CometChatMessageTemplate } from "../../modals";
@@ -14,8 +14,9 @@ import { CollaborativeWhiteboardConstants } from "../Extensions/CollaborativeWhi
 import { StickersConstants } from "../Extensions/Stickers/StickersConstants";
 import { CometChatMessageEvents, IMessages } from "../../events/CometChatMessageEvents";
 import { useCometChatErrorHandler } from "../../CometChatCustomHooks";
-
-interface ThreadedMessagePreviewProps {
+import { CalendarObject } from "../../utils/CalendarObject";
+import { sanitizeCalendarObject } from "../../utils/util";
+interface CometChatThreadHeaderProps {
     /**
      * Hides the visibility of the date header.
      * @default false
@@ -50,7 +51,7 @@ interface ThreadedMessagePreviewProps {
      * @param messageObject - The message to be rendered.
      * @returns A JSX Element to be rendered as message bubble view.
      */
-    messageBubbleView?: (messageObject: CometChat.BaseMessage) => JSX.Element;
+    messageBubbleView?: JSX.Element;
   
     /**
      * Callback function triggered when an error occurs.
@@ -59,9 +60,17 @@ interface ThreadedMessagePreviewProps {
      * @returns void
      */
     onError?: ((error: CometChat.CometChatException) => void) | null;
+    /**
+     * Format for the date separators in threaded message preview.
+     */
+    separatorDateTimeFormat?: CalendarObject;
+    /**
+   * Format for the timestamp displayed next to messages.
+   */
+    messageSentAtDateTimeFormat?: CalendarObject,
 }
 
-const CometChatThreadedMessagePreview = (props: ThreadedMessagePreviewProps) => {
+const CometChatThreadHeader = (props: CometChatThreadHeaderProps) => {
     const {
         parentMessage,
         messageBubbleView,
@@ -71,6 +80,8 @@ const CometChatThreadedMessagePreview = (props: ThreadedMessagePreviewProps) => 
         },
         hideDate = false,
         hideReplyCount = false,
+        separatorDateTimeFormat,
+        messageSentAtDateTimeFormat
     } = props;
 
     const loggedInUser = useRef<CometChat.User | null>(null);
@@ -92,6 +103,27 @@ const CometChatThreadedMessagePreview = (props: ThreadedMessagePreviewProps) => 
             onErrorCallback(error, 'useEffect');
         }
     }, []);
+     /**
+    * Function for the date separators in threaded message previews.
+    * @returns CalendarObject
+     */
+     function getDateFormat():CalendarObject{
+        const defaultFormat = {
+            yesterday: ` [${getLocalizedString("yesterday")}]`,
+            otherDays: ` DD MMM, YYYY`,
+            today: `[${getLocalizedString("today")}]`
+          };
+      
+          var globalCalendarFormat = sanitizeCalendarObject(CometChatLocalize.calendarObject)
+          var componentCalendarFormat = sanitizeCalendarObject(separatorDateTimeFormat)
+        
+          const finalFormat = {
+            ...defaultFormat,
+            ...globalCalendarFormat,
+            ...componentCalendarFormat
+          };
+          return finalFormat;
+      }
 
     const addListener = useCallback(() => {
         try {
@@ -184,7 +216,7 @@ const CometChatThreadedMessagePreview = (props: ThreadedMessagePreviewProps) => 
             return (
                 <CometChatButton
                     iconURL={closeIcon}
-                    hoverText={localize("CLOSE")}
+                    hoverText={getLocalizedString("thread_close_hover")}
                     onClick={onClose}
                 />
             );
@@ -198,7 +230,7 @@ const CometChatThreadedMessagePreview = (props: ThreadedMessagePreviewProps) => 
         try {
             let alignment = MessageBubbleAlignment.right;
             if (parentMessage && loggedInUser.current) {
-                if (messageBubbleView) return messageBubbleView(parentMessage);
+                if (messageBubbleView) return messageBubbleView;
                 else {
                     const templatesArray = CometChatUIKit.getDataSource()?.getAllMessageTemplates();
                     const template = templatesArray?.find((template: CometChatMessageTemplate) => template.type === parentMessage.getType() && template.category === parentMessage.getCategory());
@@ -214,7 +246,8 @@ const CometChatThreadedMessagePreview = (props: ThreadedMessagePreviewProps) => 
                     const view = new MessageUtils().getMessageBubble(
                         parentMessage,
                         template,
-                        alignment
+                        alignment,
+                        messageSentAtDateTimeFormat
                     );
                     return view;
                 }
@@ -224,12 +257,12 @@ const CometChatThreadedMessagePreview = (props: ThreadedMessagePreviewProps) => 
             onErrorCallback(error, 'getBubbleView');
         }
         return null;
-    }, [parentMessage, messageBubbleView]);
+    }, [parentMessage, messageBubbleView,messageSentAtDateTimeFormat]);
 
     const getAdditionalClassName = useCallback(() => {
         try {
             const messageTypes = [CometChatUIKitConstants.MessageTypes.audio, CometChatUIKitConstants.MessageTypes.file, CometChatUIKitConstants.MessageTypes.text, CollaborativeDocumentConstants.extension_document, CollaborativeWhiteboardConstants.extension_whiteboard, StickersConstants.sticker];
-            if (parentMessage && messageTypes.includes(parentMessage.getType())) return "cometchat-threaded-message-preview__message-small";
+            if (parentMessage && messageTypes.includes(parentMessage.getType())) return "cometchat-thread-header__message-small";
         } catch (error) {
             onErrorCallback(error, 'getAdditionalClassName');
         }
@@ -238,35 +271,35 @@ const CometChatThreadedMessagePreview = (props: ThreadedMessagePreviewProps) => 
 
     return (
         <div className="cometchat">
-            <div className="cometchat-threaded-message-preview">
-                <div className="cometchat-threaded-message-preview__header">
-                    <div className="cometchat-threaded-message-preview__header-title">
-                        {localize("THREAD")}
+            <div className="cometchat-thread-header">
+                <div className="cometchat-thread-header__top-bar">
+                    <div className="cometchat-thread-header__top-bar-title">
+                        {getLocalizedString("thread_title")}
                     </div>
-                    <div className="cometchat-threaded-message-preview__header-close">
+                    <div className="cometchat-thread-header__top-bar-close">
                         {getCloseBtnView()}
                     </div>
 
                 </div>
-                <div className="cometchat-threaded-message-preview__content">
-                    {!hideDate && <div className="cometchat-threaded-message-preview__content-time">
+                <div className="cometchat-thread-header__body">
+                    {!hideDate && <div className="cometchat-thread-header__body-timestamp">
                         <CometChatDate
                             timestamp={parentMessage.getSentAt()}
-                            pattern={DatePatterns.DayDate}
+                            calendarObject={getDateFormat()}
                         ></CometChatDate>
                     </div>}
-                    <div className={`cometchat-threaded-message-preview__message ${parentMessage.getSender()?.getUid() !== loggedInUser.current?.getUid() ? "cometchat-threaded-message-preview__message-incoming" : "cometchat-threaded-message-preview__message-outgoing"} ${getAdditionalClassName()}`}>
+                    <div className={`cometchat-thread-header__message ${parentMessage.getSender()?.getUid() !== loggedInUser.current?.getUid() ? "cometchat-thread-header__message-incoming" : "cometchat-thread-header__message-outgoing"} ${getAdditionalClassName()}`}>
                         {getBubbleView()}
                     </div>
 
-                    <div className="cometchat-threaded-message-preview__footer">
-                        {!hideReplyCount && <div className="cometchat-threaded-message-preview__footer-reply-count">
+                    <div className="cometchat-thread-header__reply-bar">
+                        {!hideReplyCount && <div className="cometchat-thread-header__reply-bar-count">
                             {replyCount + " "}
                             {
-                                (replyCount === 0 || replyCount > 1) ? localize("REPLIES") : localize("REPLY")
+                                (replyCount === 0 || replyCount > 1) ? getLocalizedString("thread_replies") : getLocalizedString("thread_reply")
                             }
                         </div>}
-                        <div className="cometchat-threaded-message-preview__footer-divider" />
+                        <div className="cometchat-thread-header__reply-bar-divider" />
                     </div>
                 </div>
             </div>
@@ -274,4 +307,4 @@ const CometChatThreadedMessagePreview = (props: ThreadedMessagePreviewProps) => 
     )
 }
 
-export { CometChatThreadedMessagePreview }
+export { CometChatThreadHeader }

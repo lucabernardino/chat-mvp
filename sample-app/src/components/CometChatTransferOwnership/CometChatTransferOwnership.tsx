@@ -4,19 +4,13 @@ import { useCometChatTransferOwnership } from "./useCometChatTransferOwnership";
 import SearchIcon from "../../assets/search.svg";
 import SpinnerIcon from "../../assets/spinnerIcon.svg";
 import '../../styles/CometChatTransferOwnership/CometChatTransferOwnership.css';
-import { CometChatButton, CometChatGroupEvents, CometChatGroupMembers, CometChatOption, CometChatRadioButton, CometChatUIKitConstants, CometChatUIKitUtility, SelectionMode, TitleAlignment, localize, useCometChatErrorHandler, useRefSync } from "@cometchat/chat-uikit-react";
+import { CometChatButton, CometChatGroupEvents, CometChatGroupMembers, CometChatOption, CometChatRadioButton, CometChatUIKitConstants, CometChatUIKitUtility, SelectionMode, TitleAlignment, getLocalizedString, useCometChatErrorHandler, useRefSync } from "@cometchat/chat-uikit-react";
 
 interface ITransferOwnershipProps {
     /**
      * Group to transfer ownership of
      */
     group: CometChat.Group,
-    /**
-     * Title of the component
-     *
-     * @defaultValue `localize("TRANSFER_OWNERSHIP")`
-    */
-    title?: string,
     /**
      * Alignment of the `title` text
      *
@@ -29,12 +23,6 @@ interface ITransferOwnershipProps {
      * @defaultValue `../../assets/search.svg`
      */
     searchIconURL?: string,
-    /**
-     * Text to be displayed when the search input has no value
-     *
-     * @defaultValue `localize("SEARCH")`
-     */
-    searchPlaceholderText?: string,
     /**
      * Hide the search bar
      *
@@ -70,21 +58,9 @@ interface ITransferOwnershipProps {
      */
     loadingStateView?: JSX.Element,
     /**
-     * Text to display in the default empty view
-     *
-     * @defaultValue `localize("NO_USERS_FOUND")`
-     */
-    emptyStateText?: string,
-    /**
      * Custom view for the empty state of the component
      */
     emptyStateView?: JSX.Element,
-    /**
-     * Text to display in the default error view
-     *
-     * @defaultValue `localize("SOMETHING_WRONG")`
-     */
-    errorStateText?: string,
     /**
      * Custom view for the error state of the component
      */
@@ -149,29 +125,20 @@ interface ITransferOwnershipProps {
 export function CometChatTransferOwnership(props: ITransferOwnershipProps) {
     const {
         group,
-        title = localize("TRANSFER_OWNERSHIP"),
-        titleAlignment = TitleAlignment.center,
-        searchIconURL = SearchIcon,
-        searchPlaceholderText = localize("SEARCH"),
         hideSearch = false,
         groupMembersRequestBuilder,
         searchRequestBuilder,
         loadingIconURL = SpinnerIcon,
         loadingStateView,
-        emptyStateText = localize("NO_USERS_FOUND"),
         emptyStateView,
-        errorStateText = localize("SOMETHING_WRONG"),
         errorStateView,
         onError,
-        hideSeparator = false,
-        disableUsersPresence = false,
-        closeButtonIconURL,
         onClose,
         listItemView,
         subtitleView,
-        transferButtonText = localize("TRANSFER"),
+        transferButtonText = getLocalizedString("transfer"),
         onTransferOwnership,
-        cancelButtonText = localize("CANCEL"),
+        cancelButtonText = getLocalizedString("cancel"),
         options,
     } = props;
 
@@ -206,7 +173,7 @@ export function CometChatTransferOwnership(props: ITransferOwnershipProps) {
                     <CometChatRadioButton
                         name={"transfer-ownership"}
                         id={groupMember.getUid()}
-                        labelText={localize(scope.toUpperCase())}
+                        labelText={getLocalizedString(`member_scope_${scope.toLowerCase()}`)}
                         onRadioButtonChanged={() => onSelect(groupMember)}
                     />
                 </div>
@@ -308,7 +275,7 @@ export function CometChatTransferOwnership(props: ITransferOwnershipProps) {
          
             <div className="cometchat-transfer-ownership__buttons-wrapper">
             {isError ?   <div className="cometchat-transfer-ownership_error-view">
-                    {localize("SOMETHING_WRONG")}
+                    {getLocalizedString("error")}
                 </div> : null}
                <div className="cometchat-transfer-ownership__buttons">
                {getCancelButtonView()}

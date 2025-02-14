@@ -8,7 +8,7 @@ import { CollaborativeWhiteboardConstants } from "./CollaborativeWhiteboardConst
 import { CometChatUIKitUtility } from "../../../CometChatUIKit/CometChatUIKitUtility";
 import { CometChatUIKitConstants } from "../../../constants/CometChatUIKitConstants";
 import { DocumentIconAlignment, MessageBubbleAlignment } from "../../../Enums/Enums";
-import { localize } from "../../../resources/CometChatLocalize/cometchat-localize";
+import {getLocalizedString} from "../../../resources/CometChatLocalize/cometchat-localize";
 import { CometChatMessageComposerAction, CometChatMessageTemplate } from "../../../modals";
 import { CometChatDocumentBubble } from "../../BaseComponents/CometChatDocumentBubble/CometChatDocumentBubble";
 import bannerImageUrlLight from "../../../assets/Collaborative_Whiteboard_Light.png"
@@ -176,9 +176,9 @@ export class CollaborativeWhiteBoardExtensionDecorator extends DataSourceDecorat
     let documentBubbleAlignment: DocumentIconAlignment =
       DocumentIconAlignment.right;
     const whiteboardURL = this.getWhiteboardDocument(whiteboardMessage);
-    const whiteboardTitle = localize("COLLABORATIVE_WHITEBOARD");
-    const whiteboardButtonText = localize("OPEN_WHITEBOARD");
-    const whiteboardSubitle = localize("DRAW_WHITEBOARD_TOGETHER");
+    const whiteboardTitle = getLocalizedString("message_list_collaborative_whiteboard_title");
+    const whiteboardButtonText = getLocalizedString("messag_list_collaborative_whiteboard_open");
+    const whiteboardSubitle = getLocalizedString("message_collaborative_whiteboard_subtitile");
     const isSentByMe = isMessageSentByMe(whiteboardMessage, this.loggedInUser!)
     const isDarkMode = getThemeMode() == "dark" ? true : false;
     const bannerImage = !isDarkMode ? bannerImageUrlLight : bannerImageUrlDark
@@ -260,7 +260,7 @@ export class CollaborativeWhiteBoardExtensionDecorator extends DataSourceDecorat
       let newAction: CometChatMessageComposerAction =
         new CometChatMessageComposerAction({
           id: CollaborativeWhiteboardConstants.whiteboard,
-          title: localize("COLLABORATIVE_WHITEBOARD"),
+          title: getLocalizedString("messsage_composer_collaborative_whiteboard"),
           iconURL: this.configuration?.getOptionIconURL()
             ? this.configuration?.getOptionIconURL()
             : WhiteboardIcon,
@@ -307,7 +307,7 @@ export class CollaborativeWhiteBoardExtensionDecorator extends DataSourceDecorat
       CollaborativeWhiteboardConstants.extension_whiteboard &&
       message.getCategory() === CometChatUIKitConstants.MessageCategory.custom
     ) {
-      return localize("CUSTOM_MESSAGE_WHITEBOARD");
+      return getLocalizedString("conversation_subtitle_collaborative_whiteboard");
     } else {
       return super.getLastConversationMessage(
         conversation,

@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef, useCallback } from "react";
 import { CometChat, ReactionsRequestBuilder } from "@cometchat/chat-sdk-javascript";
 import { Placement, States } from "../../../Enums/Enums";
 import { CometChatUIKitLoginListener } from "../../../CometChatUIKit/CometChatUIKitLoginListener";
-import { localize } from "../../../resources/CometChatLocalize/cometchat-localize";
+import {getLocalizedString} from "../../../resources/CometChatLocalize/cometchat-localize";
 import { CometChatUIKitConstants } from "../../../constants/CometChatUIKitConstants";
 import { useCometChatErrorHandler } from "../../../CometChatCustomHooks";
 
@@ -33,10 +33,10 @@ export const CometChatReactionInfo: React.FC<ReactionInfoProps> = ({
     const loggedInUser = CometChatUIKitLoginListener.getLoggedInUser();
     const infoRef = useRef<HTMLDivElement>(null);
 
-    const reactedText = localize("REACTED");
-    const andText = localize("AND");
-    const othersText = localize("OTHERS");
-    const youText = localize("YOU");
+    const reactedText = getLocalizedString("reaction_reacted");
+    const andText = getLocalizedString("reaction_popup_and");
+    const othersText = getLocalizedString("reaction_popup_others");
+    const youText = getLocalizedString("reaction_popup_you");
     const limit = CometChatUIKitConstants.requestBuilderLimits.reactionInfoLimit;
     const errorHandler = useCometChatErrorHandler(onError);
 

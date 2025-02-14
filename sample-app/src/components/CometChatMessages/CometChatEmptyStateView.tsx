@@ -1,4 +1,4 @@
-import { localize } from "@cometchat/chat-uikit-react";
+import { getLocalizedString } from "@cometchat/chat-uikit-react";
 import "../../styles/CometChatMessages/CometChatEmptyStateView.css";
 
 export const CometChatEmptyStateView = (props: { activeTab?: string }) => {
@@ -10,13 +10,13 @@ export const CometChatEmptyStateView = (props: { activeTab?: string }) => {
             <div className="cometchat-empty-state-view__text">
                 <div className="cometchat-empty-state-view__text-title">
                     {activeTab !== "calls" ?
-                        localize("WELCOME_TO_CONVERSATION")
-                        : localize("NICE_TO_TALK")
+                        getLocalizedString("chat_empty_title")
+                        : getLocalizedString("call_empty_title")
                     }
                 </div>
                 {activeTab !== "calls" ?
-                  localize("SELECT_CHAT_TO_START")
-                    :     localize("PICK_USER_OR_GROUP")}
+                  getLocalizedString("chat_empty_subtitle")
+                    :     getLocalizedString("user_group_empty_state")}
             </div>
         </div>
     )

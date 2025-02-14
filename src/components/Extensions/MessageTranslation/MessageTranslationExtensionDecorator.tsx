@@ -10,7 +10,7 @@ import { CometChatMentionsFormatter } from "../../../formatters/CometChatFormatt
 import { CometChatUrlsFormatter } from "../../../formatters/CometChatFormatters/CometChatUrlsFormatter/CometChatUrlsFormatter";
 import { CometChatActionsIcon, CometChatActionsView } from "../../../modals";
 import { CometChatUIKitConstants } from "../../../constants/CometChatUIKitConstants";
-import { localize } from "../../../resources/CometChatLocalize/cometchat-localize";
+import {getLocalizedString} from "../../../resources/CometChatLocalize/cometchat-localize";
 import { MessageBubbleAlignment, MessageStatus } from "../../../Enums/Enums";
 import { CometChatTextBubble } from "../../BaseComponents/CometChatTextBubble/CometChatTextBubble";
 import { CometChatMessageEvents } from "../../../events/CometChatMessageEvents";
@@ -61,7 +61,7 @@ export class MessageTranslationExtensionDecorator extends DataSourceDecorator {
     ) {
       let newOption: CometChatActionsIcon = new CometChatActionsIcon({
         id: CometChatUIKitConstants.MessageOption.translateMessage,
-        title: localize("TRANSLATE"),
+        title: getLocalizedString("message_list_translate"),
         iconURL: TranslateIcon,
         onClick: function () {
           CometChat.callExtension(

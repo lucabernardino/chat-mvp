@@ -16,7 +16,7 @@ import { UsersManager } from "./controller";
 import { useCometChatErrorHandler } from "../../CometChatCustomHooks";
 import { SelectionMode, States } from "../../Enums/Enums";
 import { CometChatOption } from "../../modals/CometChatOption";
-import { localize } from "../../resources/CometChatLocalize/cometchat-localize";
+import {getLocalizedString} from "../../resources/CometChatLocalize/cometchat-localize";
 import { CometChatContextMenu } from "../BaseComponents/CometChatContextMenu/CometChatContextMenu";
 import { CometChatActionsIcon, CometChatActionsView } from "../../modals";
 import emptyIcon from "../../assets/user_empty.svg";
@@ -344,8 +344,8 @@ export function CometChatUsers(props: UsersProps) {
     isFirstReload: false,
     disableLoadingState: disableLoadingState,
   });
-  const titleRef = useRef<string>(localize("USERS"));
-  const searchPlaceholderTextRef = useRef<string>(localize("SEARCH"));
+  const titleRef = useRef<string>(getLocalizedString("user_title"));
+  const searchPlaceholderTextRef = useRef<string>(getLocalizedString("user_search_placeholder"));
   const errorHandler = useCometChatErrorHandler(onError);
   const usersManagerRef = useRef<UsersManager | null>(null);
   const fetchNextIdRef = useRef("");
@@ -641,8 +641,8 @@ export function CometChatUsers(props: UsersProps) {
             <img src={isDarkMode ? emptyIconDark : emptyIcon} alt="" />
           </div>
           <div className="cometchat-users__empty-state-view-body">
-            <div className="cometchat-users__empty-state-view-body-title">{localize("NO_USERS_FOUND")}</div>
-            <div className="cometchat-users__empty-state-view-body-description">{localize("USERS_EMPTY_STATE_MESSAGE")}</div>
+            <div className="cometchat-users__empty-state-view-body-title">{getLocalizedString("user_empty_title")}</div>
+            <div className="cometchat-users__empty-state-view-body-description">{getLocalizedString("user_empty_subtitle")}</div>
           </div>
         </div>
       )
@@ -673,8 +673,8 @@ export function CometChatUsers(props: UsersProps) {
             <img src={isDarkMode ? errorIconDark : errorIcon} alt="" />
           </div>
           <div className="cometchat-users__error-state-view-body">
-            <div className="cometchat-users__error-state-view-body-title">{localize("OOPS!")}</div>
-            <div className="cometchat-users__error-state-view-body-description">{localize("LOOKS_LIKE_SOMETHING_WENT_WRONG")}
+            <div className="cometchat-users__error-state-view-body-title">{getLocalizedString("user_error_title")}</div>
+            <div className="cometchat-users__error-state-view-body-description">{getLocalizedString("user_error_subtitle")}
             </div>
           </div>
         </div>

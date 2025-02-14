@@ -23,7 +23,7 @@ import { CometChatUIKitUtility } from "../../CometChatUIKit/CometChatUIKitUtilit
 import { GroupMemberUtils } from "../../utils/GroupMemberUtils";
 import { Placement, SelectionMode, States } from "../../Enums/Enums";
 import { CometChatActionsIcon, CometChatOption } from "../../modals";
-import { localize } from "../../resources/CometChatLocalize/cometchat-localize";
+import {getLocalizedString} from "../../resources/CometChatLocalize/cometchat-localize";
 import { CometChatUIKitConstants } from "../../constants/CometChatUIKitConstants";
 import { CometChatChangeScope, } from "../BaseComponents/CometChatChangeScope/CometChatChangeScope";
 import { CometChatContextMenu } from "../BaseComponents/CometChatContextMenu/CometChatContextMenu";
@@ -425,8 +425,7 @@ export function CometChatGroupMembers(props: GroupMembersProps) {
   const groupPropRef = useRefSync(group);
   const errorHandler = useCometChatErrorHandler(onError);
   const groupMembersSearchText = useRef<string>("");
-  const titleRef = useRef<string>(localize("GROUP_MEMBERS"));
-  const searchPlaceholderTextRef = useRef<string>(localize("SEARCH"));
+  const searchPlaceholderTextRef = useRef<string>(getLocalizedString("member_search_placeholder"));
   /**
    * Updates the `searchText` state
    */
@@ -785,12 +784,12 @@ export function CometChatGroupMembers(props: GroupMembersProps) {
       if (typeof groupMemberOptions === "string" && groupMemberOptions !== "participant") {
         return (
           <div className={`cometchat-group-members__trailing-view-options cometchat-group-members__trailing-view-options-${groupMemberOptions}`}>
-            {localize(groupMemberOptions.toUpperCase())}
+            {getLocalizedString(`member_scope_${groupMemberOptions.toLowerCase()}`)}
           </div>
         );
       }
 
-      return <div className={`cometchat-group-members__trailing-view-options cometchat-group-members__trailing-view-options-${groupMember?.getScope()}`}>{groupMember?.getScope() !== CometChatUIKitConstants.groupMemberScope.participant && localize(groupMember?.getScope().toUpperCase())}</div>
+      return <div className={`cometchat-group-members__trailing-view-options cometchat-group-members__trailing-view-options-${groupMember?.getScope()}`}>{groupMember?.getScope() !== CometChatUIKitConstants.groupMemberScope.participant && getLocalizedString(`member_scope_${groupMember?.getScope().toLowerCase()}`)}</div>
     } catch (error) {
       errorHandler(error, 'getDefaultTailOptionsView');
       return <></>;
@@ -980,8 +979,8 @@ export function CometChatGroupMembers(props: GroupMembersProps) {
             <img src={isDarkMode ? emptyIconDark : emptyIcon} alt="" />
           </div>
           <div className="cometchat-group-members__empty-state-view-body">
-            <div className="cometchat-group-members__empty-state-view-body-title">{localize("NO_GROUP_MEMBER_AVAILABLE")}</div>
-            <div className="cometchat-group-members__empty-state-view-body-description">{localize("GROUP_MEMBER_EMPTY_STATE_MESSAGE")}</div>
+            <div className="cometchat-group-members__empty-state-view-body-title">{getLocalizedString("member_empty_title")}</div>
+            <div className="cometchat-group-members__empty-state-view-body-description">{getLocalizedString("member_empty_subtitle")}</div>
           </div>
         </div>
       )
@@ -1012,8 +1011,8 @@ export function CometChatGroupMembers(props: GroupMembersProps) {
             <img src={isDarkMode ? errorIconDark : errorIcon} alt="" />
           </div>
           <div className="cometchat-group-members__error-state-view-body">
-            <div className="cometchat-group-members__error-state-view-body-title">{localize("OOPS!")}</div>
-            <div className="cometchat-group-members__error-state-view-body-description">{localize("LOOKS_LIKE_SOMETHING_WENT_WRONG")}
+            <div className="cometchat-group-members__error-state-view-body-title">{getLocalizedString("member_error_title")}</div>
+            <div className="cometchat-group-members__error-state-view-body-description">{getLocalizedString("member_error_subtitle")}
             </div>
           </div>
         </div>

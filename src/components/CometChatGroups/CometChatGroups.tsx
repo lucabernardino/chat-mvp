@@ -9,7 +9,7 @@ import { useCometChatGroups } from "./useCometChatGroups";
 import { useCometChatErrorHandler } from "../../CometChatCustomHooks";
 import { SelectionMode, States } from "../../Enums/Enums";
 import { CometChatOption } from "../../modals";
-import { localize } from "../../resources/CometChatLocalize/cometchat-localize";
+import {getLocalizedString} from "../../resources/CometChatLocalize/cometchat-localize";
 import { CometChatContextMenu } from "../BaseComponents/CometChatContextMenu/CometChatContextMenu";
 import emptyIcon from "../../assets/groups_empty_state.svg";
 import emptyIconDark from "../../assets/groups_empty_state_dark.svg";
@@ -311,8 +311,8 @@ export function CometChatGroups(props: GroupsProps) {
         titleView,
         trailingView
     } = props;
-    const titleRef = useRef<string>(localize("GROUPS"));
-    const searchPlaceholderTextRef = useRef<string>(localize("SEARCH"));
+    const titleRef = useRef<string>(getLocalizedString("group_title"));
+    const searchPlaceholderTextRef = useRef<string>(getLocalizedString("group_seach_placeholder"));
     const [state, dispatch] = useReducer(stateReducer, {
         searchText: "",
         groupList: [],
@@ -416,7 +416,7 @@ export function CometChatGroups(props: GroupsProps) {
                 <div
                     className="cometchat-groups__subtitle"
                 >
-                    {`${membersCount} ${membersCount > 1 ? localize("MEMBERS") : localize("MEMBER")}`}
+                    {`${membersCount} ${membersCount > 1 ? getLocalizedString("group_members") : getLocalizedString("group_member")}`}
                 </div>
             );
         } catch (error) {
@@ -574,8 +574,8 @@ export function CometChatGroups(props: GroupsProps) {
                         <img src={isDarkMode ? emptyIconDark : emptyIcon} alt="" />
                     </div>
                     <div className="cometchat-groups__empty-state-view-body">
-                        <div className="cometchat-groups__empty-state-view-body-title">{localize("NO_GROUPS_AVAILABLE")}</div>
-                        <div className="cometchat-groups__empty-state-view-body-description">{localize("GROUPS_EMPTY_STATE_MESSAGE")}</div>
+                        <div className="cometchat-groups__empty-state-view-body-title">{getLocalizedString("group_empty_title")}</div>
+                        <div className="cometchat-groups__empty-state-view-body-description">{getLocalizedString("group_empty_subtitle")}</div>
                     </div>
                 </div>
             )
@@ -606,8 +606,8 @@ export function CometChatGroups(props: GroupsProps) {
                         <img src={isDarkMode ? errorIconDark : errorIcon} alt="" />
                     </div>
                     <div className="cometchat-groups__error-state-view-body">
-                        <div className="cometchat-groups__error-state-view-body-title">{localize("OOPS!")}</div>
-                        <div className="cometchat-groups__error-state-view-body-description">{localize("LOOKS_LIKE_SOMETHING_WENT_WRONG")}
+                        <div className="cometchat-groups__error-state-view-body-title">{getLocalizedString("group_error_title")}</div>
+                        <div className="cometchat-groups__error-state-view-body-description">{getLocalizedString("group_error_subtitle")}
                         </div>
                     </div>
                 </div>
