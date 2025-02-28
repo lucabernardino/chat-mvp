@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, ReactNode, useCallback, forwardRef, useImperativeHandle, CSSProperties, useLayoutEffect } from 'react';
+import { isMobileDevice } from '../../../utils/util';
 
 export enum Placement {
     top = 'top',
@@ -54,11 +55,19 @@ const CometChatPopover = forwardRef<{
             setIsOpen(prev => !prev);
         }, []);
         const handleClickOutside = (event: MouseEvent) => {
-            if (popoverRef.current && !popoverRef.current.contains(event.target as Node)) {
-                setIsOpen(false);
-                if (onOutsideClick) {
-                    onOutsideClick()
-                }
+            if (popoverRef.current) {
+                    const popoverRect = popoverRef.current.getBoundingClientRect();
+                    const isInsideClick =
+                        event.clientX >= popoverRect.left &&
+                        event.clientX <= popoverRect.right &&
+                        event.clientY >= popoverRect.top &&
+                        event.clientY <= popoverRect.bottom;
+                    if (!popoverRef.current.contains(event.target as Node) && !isInsideClick) {
+                        setIsOpen(false);
+                        if (onOutsideClick) {
+                            onOutsideClick()
+                        }
+                    }
             }
         };
         useEffect(() => {
@@ -67,6 +76,18 @@ const CometChatPopover = forwardRef<{
                 return () => document.removeEventListener('click', handleClickOutside);
             }
         }, [closeOnOutsideClick, isOpen]);
+        useEffect(() => {
+            if (!popoverRef.current) return;
+            const observer = new MutationObserver(() => {
+                requestAnimationFrame(() => getPopoverPositionStyle());
+            });
+            observer.observe(popoverRef.current, {
+                childList: true,
+                subtree: true,
+                attributes: true,
+            });
+            return () => observer.disconnect();
+        }, [isOpen]);
 
         useEffect(() => {
             const handleScroll = () => {
@@ -109,50 +130,66 @@ const CometChatPopover = forwardRef<{
             }
         }, [content, isOpen]);
 
+        const getAvailablePlacement = useCallback((rect: DOMRect,height: number)=>{
+            const spaceAbove = rect.top;
+               if (isMobileDevice()) {
+                    if (spaceAbove >= height + 10) {
+                        return Placement.bottom;
+                    }
+                return Placement.top;
+                }
+                return placement
+            },[placement])
+
         const getPopoverPositionStyle = useCallback(() => {
             const height = popoverRef.current?.scrollHeight!;
             const width = popoverRef.current?.scrollWidth!;
             const rect = childRef.current?.getBoundingClientRect();
+            if(!rect) return;
             const x_left = rect?.left!,
                 x_right = rect?.right!,
                 y_bot = rect?.bottom!,
                 y_top = rect?.top!;
+
             const positionStyle = { top: "", right: "", bottom: "", left: "", };
             const viewportHeight = window.innerHeight, viewportWidth = window.innerWidth;
+            const availablePlacement = getAvailablePlacement(rect,height);
             if (Object.keys(positionStyleState).length == 0) {
-                if (placement === Placement.top || placement === Placement.bottom) {
-                    if (placement === Placement.top) {
+                if (availablePlacement === Placement.top || availablePlacement === Placement.bottom) {
+                    if (availablePlacement === Placement.top) {
                         if (y_top - height - 10 < 0) {
                             positionStyle["top"] = `${y_bot + 10}px`;
                         } else {
                             positionStyle["bottom"] = `${viewportHeight - y_top}px`;
                         }
-                    } else if (placement === Placement.bottom) {
+                    } else if (availablePlacement === Placement.bottom) {
                         if ((y_bot + height + 10) > viewportHeight) {
                             positionStyle["top"] = `${y_top - height - 10}px`;
                         } else {
                             positionStyle["top"] = `${y_bot + 10}px`;
                         }
                     }
+
                     if (((x_left + width) - 10) > viewportWidth) {
                         positionStyle["left"] = `${viewportWidth - width - 10}px`;
                     } else {
                         positionStyle["left"] = `${x_left - 10}px`;
                     }
-                } else if (placement === Placement.left || placement === Placement.right) {
-                    if (placement === Placement.left) {
+                } else if (availablePlacement === Placement.left || availablePlacement === Placement.right) {
+                    if (availablePlacement === Placement.left) {
                         if (x_left - width - 10 < 0) {
                             positionStyle["left"] = `${x_right + 10}px`;
                         } else {
                             positionStyle["left"] = `${x_left - width - 10}px`;
                         }
-                    } else if (placement === Placement.right) {
+                    } else if (availablePlacement === Placement.right) {
                         if (x_right + width + 10 > viewportWidth) {
                             positionStyle["left"] = `${x_left - width - 10}px`;
                         } else {
                             positionStyle["left"] = `${x_right + 10}px`;
                         }
                     }
+
                     if (((y_top + height) - 10) > viewportHeight) {
                         positionStyle["top"] = `${viewportHeight - height - 10}px`;
                     } else {

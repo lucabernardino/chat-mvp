@@ -115,6 +115,17 @@ class CometChatLocalize {
         return "";
     }
 
+    private static getDefaultTimeZone() {
+        try {
+            if (this.disableAutoDetection) {
+                return this.defaultTimezones[this.language || "UTC"];
+            }
+            return Intl.DateTimeFormat().resolvedOptions().timeZone;
+        } catch {
+            return this.defaultTimezones[this.language || "UTC"];
+        }
+    }
+
     /**
      * Initializes localization settings (v2).
      * @param {LocalizationSettings} settings - Localization settings.
@@ -129,7 +140,7 @@ class CometChatLocalize {
         else {
             this.language = settings.language;
         }
-        this.timezone = settings.timezone || this.defaultTimezones[this.language || "UTC"];
+        this.timezone = settings.timezone || this.getDefaultTimeZone();
 
         if (settings.calendarObject) {
             this.calendarObject = settings.calendarObject;

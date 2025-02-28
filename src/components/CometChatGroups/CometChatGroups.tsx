@@ -629,14 +629,13 @@ export function CometChatGroups(props: GroupsProps) {
         groupsSearchText,
         errorHandler,
     });
-
     return (
         <div className="cometchat" style={{ width: "100%", height: "100%" }}>
             <div
                 className="cometchat-groups">
                 <CometChatList
                     title={titleRef.current}
-                    searchPlaceholderText={searchPlaceholderTextRef.current}
+                    searchPlaceholderText={searchPlaceholderTextRef.current || getLocalizedString("group_search_placeholder")}
                     hideSearch={hideSearch}
                     searchText={state.searchText}
                     onSearch={onSearch}

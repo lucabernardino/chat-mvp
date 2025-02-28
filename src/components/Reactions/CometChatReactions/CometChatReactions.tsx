@@ -170,9 +170,10 @@ export const CometChatReactions: React.FC<ReactionsProps> = ({
     /* This function returns view component for reaction info as tooltip. */
     const showReactions = useCallback(
         () => {
-            return messageReactions.slice(0, maxVisibleEmojis).map((reaction) => {
+            return messageReactions.slice(0, maxVisibleEmojis).map((reaction,index) => {
                 return (
-                    <div className="cometchat-reactions-info-wrapper">
+                    <div className="cometchat-reactions-info-wrapper" key={`${reaction.getReaction()}-${index}`}
+>
                         <CometChatPopover
                             showOnHover={true}
                             debounceOnHover={hoverDebounceTime}
