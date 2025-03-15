@@ -269,5 +269,7 @@
     "month_september_full": "September",
     "month_october_full": "Oktober",
     "month_november_full": "November",
-    "month_december_full": "December"
+    "month_december_full": "December",
+    "message_type_not_supported": "Denna meddelandetyp stöds inte.",
+    "message_list_message_already_translated":"Det valda språket för översättning liknar språket i det ursprungliga meddelandet."
 }

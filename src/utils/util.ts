@@ -227,3 +227,8 @@ export function formatDateFromTimestamp(timestamp:number) {
     }
     else return {}
   }
+
+  export function fireClickEvent(){
+    if(window)
+     window.dispatchEvent(new CustomEvent('overlayclick'));
+}

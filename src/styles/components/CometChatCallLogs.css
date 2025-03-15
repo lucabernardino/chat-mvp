@@ -92,8 +92,8 @@
 }
 
 .cometchat-call-logs__list-item-subtitle-icon-incoming-call {
-  -webkit-mask: url("../../assets/call_received.svg") center center no-repeat;
-  mask: url("../../assets/call_received.svg") center center no-repeat;
+  -webkit-mask: url("../../assets/missedCallIcon.svg") center center no-repeat;
+  mask: url("../../assets/missedCallIcon.svg") center center no-repeat;
   background-color: var(--cometchat-success-color,#09C26F);
 
 }

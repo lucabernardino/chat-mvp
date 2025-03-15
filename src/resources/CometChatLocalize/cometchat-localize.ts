@@ -309,9 +309,14 @@ class CometChatLocalize {
      * @returns {string} Formatted date string.
      */
     static formatDate(timestamp: number, calendarObject: CalendarObject): string {
+        const timeZone = CometChatLocalize.timezone;
         const now = new Date();
         const date = new Date(timestamp * 1000);
-        const diffInSeconds = Math.floor((now.getTime() - timestamp * 1000) / 1000);
+        const nowFormatted = new Intl.DateTimeFormat("en-US", { timeZone, year: "numeric", month: "2-digit", day: "2-digit" }).format(now);
+        const dateFormatted = new Intl.DateTimeFormat("en-US", { timeZone, year: "numeric", month: "2-digit", day: "2-digit" }).format(date);
+        const nowTime = now.getTime();
+        const dateTime = date.getTime();
+        const diffInSeconds = Math.floor((nowTime - dateTime) / 1000);
         const diffInMinutes = Math.floor(diffInSeconds / 60);
         const diffInHours = Math.floor(diffInMinutes / 60);
         const diffInDays = Math.floor(diffInHours / 24);
@@ -325,7 +330,6 @@ class CometChatLocalize {
                     return this.formatDateFromPattern(date, calendarObject.today);
                 }
             }
-
             if (diffInMinutes < 60) {
                 if (calendarObject?.relativeTime?.minutes) {
                     return calendarObject?.relativeTime?.minutes.includes("%d")
@@ -335,34 +339,36 @@ class CometChatLocalize {
                     return this.formatDateFromPattern(date, calendarObject.today);
                 }
             }
-
             if (diffInHours < 24) {
-                if (diffInHours === 1 && calendarObject?.relativeTime?.hour) {
-                    return calendarObject?.relativeTime?.hour.includes("%d")
-                        ? `${calendarObject?.relativeTime?.hour.replace("%d", String(diffInHours))}`
-                        : calendarObject?.relativeTime?.hour;
-                } else if (diffInHours > 1 && calendarObject?.relativeTime?.hours) {
-                    return calendarObject?.relativeTime?.hours.includes("%d")
-                        ? `${calendarObject?.relativeTime?.hours.replace("%d", String(diffInHours))}`
-                        : calendarObject?.relativeTime?.hours;
-                } else if (calendarObject.today) {
-                    return this.formatDateFromPattern(date, calendarObject.today);
+                if (calendarObject.relativeTime?.hour && diffInHours === 1) {
+                    return calendarObject.relativeTime.hour.replace("%d", "1");
+                }
+                if (calendarObject.relativeTime?.hours) {
+                    return calendarObject.relativeTime.hours.replace("%d", String(diffInHours));
                 }
             }
-        }
 
-        if (diffInDays < 1 && calendarObject.today) {
+        }
+        if (nowFormatted === dateFormatted && calendarObject.today) {
             return this.formatDateFromPattern(date, calendarObject.today);
-        } else if (diffInDays === 1 && calendarObject.yesterday) {
+        } else if (this.isYesterday(timestamp, timeZone) && calendarObject.yesterday) {
             return this.formatDateFromPattern(date, calendarObject.yesterday);
         } else if (diffInDays <= 7 && calendarObject.lastWeek) {
             return this.formatDateFromPattern(date, calendarObject.lastWeek);
-        } else if (calendarObject.otherDays) {
-            return this.formatDateFromPattern(date, calendarObject.otherDays);
+        } else {
+            return this.formatDateFromPattern(date, calendarObject.otherDays || "DD/MM/YYYY");
         }
-
-        return date.toLocaleString(this.getDateLocaleLanguage());
     }
+
+    private static isYesterday(timestamp: number, timeZone: string): boolean {
+        const today = new Date();
+        const yesterday = new Date(today);
+        yesterday.setDate(today.getDate() - 1);
+        const timestampDate = new Intl.DateTimeFormat("en-US", { timeZone, year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date(timestamp * 1000));
+        const yesterdayDate = new Intl.DateTimeFormat("en-US", { timeZone, year: "numeric", month: "2-digit", day: "2-digit" }).format(yesterday);
+        return timestampDate === yesterdayDate;
+    }
+
 }
 
 const getLocalizedString = (str: string) => CometChatLocalize.getLocalizedString(str);

@@ -55,7 +55,9 @@
 @import url('./CometChatThreadHeader.css');
 @import url('./CometChatToast.css');
 
-
+.cometchat * {
+    box-sizing: border-box;
+}
 
 
 .cometchat-mentions > span{

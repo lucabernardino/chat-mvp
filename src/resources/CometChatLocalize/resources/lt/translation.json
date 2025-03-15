@@ -269,5 +269,7 @@
     "month_september_full": "Rugsėjis",
     "month_october_full": "Spalis",
     "month_november_full": "Lapkritis",
-    "month_december_full": "Gruodis"
+    "month_december_full": "Gruodis",
+    "message_type_not_supported": "Šis pranešimo tipas nepalaikomas.",
+    "message_list_message_already_translated":"Pasirinkta vertimo kalba yra panaši į originalaus pranešimo kalbą."
 }

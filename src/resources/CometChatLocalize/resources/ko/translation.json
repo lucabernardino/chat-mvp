@@ -269,5 +269,7 @@
     "month_september_full": "9월",
     "month_october_full": "10월",
     "month_november_full": "11월",
-    "month_december_full": "12월"
+    "month_december_full": "12월",
+    "message_type_not_supported": "이 메시지 유형은 지원되지 않습니다.",
+    "message_list_message_already_translated":"번역을 위해 선택한 언어가 원본 메시지의 언어와 유사합니다."
 }

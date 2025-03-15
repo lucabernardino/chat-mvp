@@ -76,6 +76,9 @@ export class ConversationUtils {
     else if (msgObject?.getCategory() == CometChatUIKitConstants.MessageCategory.custom) {
       message = this.getLastMessageCustom(conversationObject)
     }
+    else if (msgObject?.getCategory() == CometChatUIKitConstants.MessageCategory.interactive) {
+      message = getLocalizedString("message_type_not_supported");
+    }
     return message;
   }
 

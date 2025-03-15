@@ -269,5 +269,7 @@
     "month_september_full": "September",
     "month_october_full": "October",
     "month_november_full": "November",
-    "month_december_full": "December"
+    "month_december_full": "December",
+    "message_type_not_supported": "This message type is not supported.",
+    "message_list_message_already_translated":"Selected language for translation is similar to the language of the original message."
 }

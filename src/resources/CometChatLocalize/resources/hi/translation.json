@@ -269,5 +269,7 @@
     "month_september_full": "सितंबर",
     "month_october_full": "अक्टूबर",
     "month_november_full": "नवंबर",
-    "month_december_full": "दिसंबर"
+    "month_december_full": "दिसंबर",
+    "message_type_not_supported": "यह संदेश प्रकार समर्थित नहीं है।",
+    "message_list_message_already_translated":"अनुवाद के लिए चयनित भाषा मूल संदेश की भाषा के समान है।"
 }

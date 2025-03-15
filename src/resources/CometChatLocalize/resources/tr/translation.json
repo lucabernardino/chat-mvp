@@ -269,5 +269,7 @@
     "month_september_full": "Eylül",
     "month_october_full": "Ekim",
     "month_november_full": "Kasım",
-    "month_december_full": "Aralık"
+    "month_december_full": "Aralık",
+    "message_type_not_supported": "Bu mesaj türü desteklenmemektedir.",
+    "message_list_message_already_translated":"Çeviri için seçilen dil, orijinal mesajın diliyle benzer."
 }

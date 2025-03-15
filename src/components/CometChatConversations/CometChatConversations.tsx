@@ -998,7 +998,6 @@ export function CometChatConversations(props: ConversationsProps) {
         let shouldRefreshConversation = true;
         if (
           message.getSender().getUid() !== state.loggedInUser?.getUid() &&
-          !hideReceipts &&
           !message.getDeliveredAt()
         ) {
           CometChat.markAsDelivered(message);
@@ -1165,7 +1164,8 @@ export function CometChatConversations(props: ConversationsProps) {
     conversation: CometChat.Conversation
   ): JSX.Element | null {
     try {
-      if (!shouldDisplaySubtitleReceipt(conversation)) {
+      let lastMessageCategory = conversation.getLastMessage() ? (conversation.getLastMessage() as CometChat.BaseMessage).getCategory() : "";
+      if (!shouldDisplaySubtitleReceipt(conversation) || lastMessageCategory === CometChatUIKitConstants.MessageCategory.interactive) {
         return null;
       }
 
@@ -1380,7 +1380,7 @@ export function CometChatConversations(props: ConversationsProps) {
           iconName = "";
           break;
       }
-      if (message.getDeletedAt()) {
+      if (message.getDeletedAt() ||  message.getCategory()=== CometChatUIKitConstants.MessageCategory.interactive) {
         iconName = "deleted";
       }
       return iconName

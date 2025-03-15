@@ -67,47 +67,67 @@ export const CometChatCallDetailsInfo = (props: { call: any }) => {
 
     const getCallStatus = (call: CometChat.Call, loggedInUser: CometChat.User): string => {
         const isSentByMe = (call: any, loggedInUser: CometChat.User) => {
-            const senderUid: string = call.callInitiator?.getUid();
+            const senderUid: string = call.initiator?.getUid();
             return !senderUid || senderUid === loggedInUser?.getUid();
         }
         const callStatus: string = call.getStatus();
         const isSentByMeFlag: boolean = isSentByMe(call, loggedInUser!);
-        if (isSentByMeFlag) {
-            switch (callStatus) {
-                case CometChatUIKitConstants.calls.initiated:
+        switch (callStatus) {
+            case CometChatUIKitConstants.calls.initiated: {
+                if (isSentByMeFlag) {
                     return getLocalizedString("calls_outgoing_call");
-                case CometChatUIKitConstants.calls.cancelled:
-                    return getLocalizedString("calls_cancelled_call");
-                case CometChatUIKitConstants.calls.rejected:
-                    return getLocalizedString("calls_rejected_call");
-                case CometChatUIKitConstants.calls.busy:
-                    return getLocalizedString("calls_missed_call");
-                case CometChatUIKitConstants.calls.ended:
-                    return getLocalizedString("calls_ended_call");
-                case CometChatUIKitConstants.calls.ongoing:
-                    return getLocalizedString("calls_answered_call");
-                case CometChatUIKitConstants.calls.unanswered:
-                    return getLocalizedString("calls_unanswered_call");
-                default:
-                    return getLocalizedString("calls_outgoing_call");
+                } else {
+                    return getLocalizedString('calls_incoming_call');
+                }
             }
-        } else {
-            switch (callStatus) {
-                case CometChatUIKitConstants.calls.initiated:
-                    return getLocalizedString("calls_incoming_call");
-                case CometChatUIKitConstants.calls.ongoing:
-                    return getLocalizedString("calls_answered_call");
-                case CometChatUIKitConstants.calls.ended:
-                    return getLocalizedString("calls_ended_call");
-                case CometChatUIKitConstants.calls.unanswered:
-                case CometChatUIKitConstants.calls.cancelled:
-                    return getLocalizedString("calls_missed_call");
-                case CometChatUIKitConstants.calls.busy:
-                    return getLocalizedString("calls_busy_call");
-                case CometChatUIKitConstants.calls.rejected:
-                    return getLocalizedString("calls_rejected_call");
-                default:
+            case CometChatUIKitConstants.calls.cancelled: {
+                if (isSentByMeFlag) {
                     return getLocalizedString("calls_outgoing_call");
+                } else {
+                    return getLocalizedString("calls_missed_call");
+                }
+            }
+            case CometChatUIKitConstants.calls.rejected: {
+                if (isSentByMeFlag) {
+                    return getLocalizedString("calls_outgoing_call");
+                } else {
+                    return getLocalizedString("calls_missed_call");
+                }
+            }
+            case CometChatUIKitConstants.calls.busy: {
+                if (isSentByMeFlag) {
+                    return getLocalizedString("calls_outgoing_call");
+                } else {
+                    return getLocalizedString("calls_missed_call");
+                }
+            }
+            case CometChatUIKitConstants.calls.ended: {
+                if (isSentByMeFlag) {
+                    return getLocalizedString("calls_outgoing_call");
+                } else {
+                    return getLocalizedString('calls_incoming_call');
+                }
+            }
+            case CometChatUIKitConstants.calls.ongoing: {
+                if (isSentByMeFlag) {
+                    return getLocalizedString("calls_outgoing_call");
+                } else {
+                    return getLocalizedString('calls_incoming_call');
+                }
+            }
+            case CometChatUIKitConstants.calls.unanswered: {
+                if (isSentByMeFlag) {
+                    return getLocalizedString("calls_outgoing_call");
+                } else {
+                    return getLocalizedString("calls_missed_call");
+                }
+            }
+            default: {
+                if (isSentByMeFlag) {
+                    return getLocalizedString("calls_outgoing_call");
+                } else {
+                    return getLocalizedString('calls_incoming_call');
+                }
             }
         }
     }
@@ -119,52 +139,64 @@ export const CometChatCallDetailsInfo = (props: { call: any }) => {
         }
         const isSentByMeFlag: boolean = isSentByMe(call, loggedInUser!);
         const callStatus = getCallStatus(call, loggedInUser!);
-        if (isSentByMeFlag) {
-            switch (callStatus) {
-                case getLocalizedString("calls_outgoing_call"):
+        switch (callStatus) {
+            case getLocalizedString("calls_outgoing_call"): {
+                if (isSentByMeFlag) {
                     return outgoingCallSuccess;
-                case getLocalizedString("calls_incoming_call"):
-                    return outgoingCallSuccess;
-                case getLocalizedString("calls_cancelled_call"):
-                    return outgoingCallSuccess;
-                case getLocalizedString("calls_rejected_call"):
-                    return callRejectedIcon;
-                case getLocalizedString("calls_busy_call"):
-                    return missedCallIcon;
-                case getLocalizedString("calls_ended_call"):
-                    return outgoingCallSuccess;
-                case getLocalizedString("calls_answered_call"):
-                    return outgoingCallSuccess;
-                case getLocalizedString("calls_unanswered_call"):
-                    return missedCallIcon;
-                case getLocalizedString("calls_missed_call"):
-                    return missedCallIcon;
-                default:
-                    return "";
+                } else {
+                    return incomingCallSuccessIcon;
+                }
             }
-        } else {
-            switch (callStatus) {
-                case getLocalizedString("calls_outgoing_call"):
+            case getLocalizedString("calls_incoming_call"):
+                if (isSentByMeFlag) {
+                    return outgoingCallSuccess;
+                } else {
                     return incomingCallSuccessIcon;
-                case getLocalizedString("calls_incoming_call"):
-                    return incomingCallSuccessIcon;
-                case getLocalizedString("calls_cancelled_call"):
-                    return incomingCallIcon;
-                case getLocalizedString("calls_rejected_call"):
-                    return callRejectedIcon;
-                case getLocalizedString("calls_busy_call"):
+                }
+            case getLocalizedString("calls_cancelled_call"):
+                if (isSentByMeFlag) {
+                    return outgoingCallSuccess;
+                } else {
                     return missedCallIcon;
-                case getLocalizedString("calls_ended_call"):
-                    return incomingCallSuccessIcon;
-                case getLocalizedString("calls_answered_call"):
-                    return incomingCallSuccessIcon;
-                case getLocalizedString("calls_unanswered_call"):
+                }
+            case getLocalizedString("calls_rejected_call"):
+                if (isSentByMeFlag) {
+                    return outgoingCallSuccess;
+                } else {
                     return missedCallIcon;
-                case getLocalizedString("calls_missed_call"):
+                }
+            case getLocalizedString("calls_busy_call"):
+                if (isSentByMeFlag) {
+                    return outgoingCallSuccess;
+                } else {
                     return missedCallIcon;
-                default:
-                    return "";
-            }
+                }
+            case getLocalizedString("calls_ended_call"):
+                if (isSentByMeFlag) {
+                    return outgoingCallSuccess;
+                } else {
+                    return incomingCallSuccessIcon;
+                }
+            case getLocalizedString("calls_answered_call"):
+                if (isSentByMeFlag) {
+                    return outgoingCallSuccess;
+                } else {
+                    return incomingCallSuccessIcon;
+                }
+            case getLocalizedString("calls_unanswered_call"):
+                if (isSentByMeFlag) {
+                    return outgoingCallSuccess;
+                } else {
+                    return missedCallIcon;
+                }
+            case getLocalizedString("calls_missed_call"):
+                if (isSentByMeFlag) {
+                    return outgoingCallSuccess;
+                } else {
+                    return missedCallIcon;
+                }
+            default:
+                return "";
         }
     }
 

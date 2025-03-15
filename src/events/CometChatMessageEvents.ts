@@ -38,6 +38,10 @@ export class CometChatMessageEvents {
     static onMessageDeleted: Subject<CometChat.BaseMessage> = new Subject<CometChat.BaseMessage>();
     static onMessageReactionAdded: Subject<CometChat.ReactionEvent> = new Subject<CometChat.ReactionEvent>();
     static onMessageReactionRemoved: Subject<CometChat.ReactionEvent> = new Subject<CometChat.ReactionEvent>();
+    static onCustomInteractiveMessageReceived: Subject<CometChat.InteractiveMessage> = new Subject<CometChat.InteractiveMessage>();
+    static onFormMessageReceived: Subject<CometChat.InteractiveMessage> = new Subject<CometChat.InteractiveMessage>();
+    static onCardMessageReceived: Subject<CometChat.InteractiveMessage> = new Subject<CometChat.InteractiveMessage>();
+    static onSchedulerMessageReceived: Subject<CometChat.InteractiveMessage> = new Subject<CometChat.InteractiveMessage>();
 }
 /**
 * Interface for message-related events

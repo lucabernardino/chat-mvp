@@ -505,11 +505,10 @@ const CometChatCallLogs = (props: CallLogsProps) => {
           return <>{subtitleView(item)}</>;
         }
 
-        const iconClass = missedCall
-          ? "cometchat-call-logs__list-item-subtitle-icon-missed-call"
-          : isCallSentByMe
-            ? "cometchat-call-logs__list-item-subtitle-icon-outgoing-call"
-            : "cometchat-call-logs__list-item-subtitle-icon-incoming-call";
+        const iconClass = isCallSentByMe
+        ? "cometchat-call-logs__list-item-subtitle-icon-outgoing-call" :
+        missedCall ? "cometchat-call-logs__list-item-subtitle-icon-missed-call"
+          : "cometchat-call-logs__list-item-subtitle-icon-incoming-call";
 
         return (
           <>
