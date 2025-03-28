@@ -271,5 +271,7 @@
     "month_november_full": "Kasım",
     "month_december_full": "Aralık",
     "message_type_not_supported": "Bu mesaj türü desteklenmemektedir.",
-    "message_list_message_already_translated":"Çeviri için seçilen dil, orijinal mesajın diliyle benzer."
+    "message_list_message_already_translated":"Çeviri için seçilen dil, orijinal mesajın diliyle benzer.",
+    "media_recorder_error_title": "Mikrofon Erişimi Gerekli",
+    "media_recorder_error_subtitle": "Mikrofonunuza erişemedik. Kayıt başlatmak için lütfen mikrofon izni verin."
 }

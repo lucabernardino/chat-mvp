@@ -412,7 +412,6 @@ const CometChatMessageList = (props: MessageListProps) => {
   /**
   * All the useRef useCometChatMessageList are declaired here. These do not trigger a rerender. They are used to get the updated values wherever required in the code.
    */
-  const dateHeaderRef = useRef<number>(0);
   const stickyDateHeaderRef = useRef<number>(0);
   const loggedInUserRef = useRef<CometChat.User | null>(null);
   const isFirstReloadRef = useRef<boolean>(false);
@@ -883,6 +882,9 @@ const CometChatMessageList = (props: MessageListProps) => {
     (hasScrolled?: boolean) => {
       if (hasScrolled !== undefined) {
         isOnBottomRef.current = hasScrolled;
+        if(isOnBottomRef.current && UnreadMessagesRef.current.length > 0){
+          clearNewMessagesCount();
+        }
         setScrollListToBottom(isOnBottomRef.current);
       }
     },
@@ -1412,10 +1414,18 @@ const CometChatMessageList = (props: MessageListProps) => {
         return options;
       }
     },
-    [
+    [ 
       messagesTemplate,
       setDefaultOptionsCallback,
       errorHandler,
+      hideReplyInThreadOption,
+      hideTranslateMessageOption,
+      hideReactionOption,
+      hideEditMessageOption,
+      hideDeleteMessageOption,
+      hideMessagePrivatelyOption,
+      hideCopyMessageOption,
+      hideMessageInfoOption,
     ]
   );
 
@@ -2691,7 +2701,9 @@ const CometChatMessageList = (props: MessageListProps) => {
   const onBottomCallback: () => Promise<boolean | CometChat.CometChatException> = useCallback(() => {
     return new Promise((resolve, reject) => {
       try {
-        clearNewMessagesCount();
+        if(UnreadMessagesRef.current.length > 0){
+          clearNewMessagesCount();
+        }
         setScrollListToBottom(false);
         if (messageListManagerRef.current && messageListManagerRef.current.previous) {
           messageListManagerRef.current.previous = null;
@@ -2962,7 +2974,8 @@ const CometChatMessageList = (props: MessageListProps) => {
 
       const ccMessageSent = CometChatMessageEvents.ccMessageSent.subscribe(
         (obj: IMessages) => {
-          let { message, status } = obj;
+          let status = obj.status;
+          let message = obj.message;
           switch (status) {
             case MessageStatus.inprogress: {
               if (isPartOfCurrentChatForUIEvent(message))
@@ -2975,18 +2988,17 @@ const CometChatMessageList = (props: MessageListProps) => {
                   setShowNewMessagesBanner(false);
                   UnreadMessagesRef.current = [];
                 }
-                updateMessage(message, true);
+                updateMessage(CometChatUIKitUtility.clone(message), true);
               }
-
               if (isThreadOfCurrentChatForUIEvent(message)) {
-                updateReplyCount(message);
+                updateReplyCount(CometChatUIKitUtility.clone(message));
               }
               break;
             }
             default:
               updateMessage(message, true);
               if (isThreadOfCurrentChatForUIEvent(message)) {
-                updateReplyCount(message);
+                updateReplyCount(CometChatUIKitUtility.clone(message));
               }
               break;
           }
@@ -3115,16 +3127,17 @@ const CometChatMessageList = (props: MessageListProps) => {
    */
   const handleScroll = useCallback(() => {
     try {
-
       const messageListBody = document.querySelector(".cometchat-message-list .cometchat-list__body");
       if (!messageListBody) return;
       let firstVisibleMessageId: any = null;
       Object.keys(elementRefs.current).some((messageId) => {
         const element = elementRefs.current[messageId];
-        if (element.current) {
+        if (element?.current) {
           const rect = element.current.getBoundingClientRect();
           const containerRect = messageListBody.getBoundingClientRect();
-          if (rect.top >= containerRect.top && rect.bottom <= containerRect.bottom) {
+          const elementHeight = rect.bottom - rect.top;
+          const visibleHeight = Math.min(rect.bottom, containerRect.bottom) - Math.max(rect.top, containerRect.top);
+          if (visibleHeight / elementHeight >= 0.1) {
             firstVisibleMessageId = messageId;
             return true;
           }
@@ -3136,9 +3149,8 @@ const CometChatMessageList = (props: MessageListProps) => {
         if (currentVisibleMessage) {
           const messageDate = currentVisibleMessage.getSentAt();
           setTimeout(() => {
-            if (isDateDifferent(dateHeaderRef.current, messageDate)) {
+            if (isDateDifferent(stickyDateHeaderRef.current, messageDate)) {
               setDateHeader(messageDate);
-              dateHeaderRef.current = messageDate;
               stickyDateHeaderRef.current = messageDate
 
             }
@@ -3529,12 +3541,8 @@ const CometChatMessageList = (props: MessageListProps) => {
         );
       } else {
         if ((i == 0 && !isOnBottomRef.current) || ((messageList.length < 10) && i == 0)) {
-          dateHeaderRef.current = item?.getSentAt();
-          if(!stickyDateHeaderRef.current){
-            stickyDateHeaderRef.current = item?.getSentAt()
-          }
           setTimeout(() => {
-            setDateHeader(item?.getSentAt());
+            handleScroll()
           }, 0);
         }
         return null;

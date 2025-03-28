@@ -271,5 +271,7 @@
     "month_november_full": "November",
     "month_december_full": "December",
     "message_type_not_supported": "Dit berichttype wordt niet ondersteund.",
-    "message_list_message_already_translated":"De geselecteerde taal voor vertaling is vergelijkbaar met de taal van het oorspronkelijke bericht."
+    "message_list_message_already_translated":"De geselecteerde taal voor vertaling is vergelijkbaar met de taal van het oorspronkelijke bericht.",
+    "media_recorder_error_title": "Microfoontoegang Nodig",
+    "media_recorder_error_subtitle": "We hebben geen toegang tot je microfoon. Geef microfoonmachtiging om te beginnen met opnemen."
 }

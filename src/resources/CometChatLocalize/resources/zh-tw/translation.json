@@ -271,5 +271,7 @@
     "month_november_full": "十一月",
     "month_december_full": "十二月",
     "message_type_not_supported": "此訊息類型不受支援。",
-    "message_list_message_already_translated":"所選的翻譯語言與原始訊息的語言相似。"
+    "message_list_message_already_translated":"所選的翻譯語言與原始訊息的語言相似。",
+    "media_recorder_error_title": "需要麥克風存取權",
+    "media_recorder_error_subtitle": "我們無法存取您的麥克風。請授予麥克風權限以開始錄音。"
 }

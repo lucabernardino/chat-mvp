@@ -271,5 +271,7 @@
     "month_november_full": "Novembre",
     "month_december_full": "Décembre",
     "message_type_not_supported": "Ce type de message n'est pas pris en charge.",
-    "message_list_message_already_translated":"La langue sélectionnée pour la traduction est similaire à la langue du message original."
+    "message_list_message_already_translated":"La langue sélectionnée pour la traduction est similaire à la langue du message original.",
+    "media_recorder_error_title": "Accès au Microphone Nécessaire",
+    "media_recorder_error_subtitle": "Nous n’avons pas pu accéder à votre microphone. Veuillez autoriser l’accès pour commencer l’enregistrement."
 }

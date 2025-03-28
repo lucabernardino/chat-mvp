@@ -271,5 +271,7 @@
     "month_november_full": "November",
     "month_december_full": "Disember",
     "message_type_not_supported": "Jenis mesej ini tidak disokong.",
-    "message_list_message_already_translated":"Bahasa yang dipilih untuk terjemahan adalah serupa dengan bahasa mesej asal."
+    "message_list_message_already_translated":"Bahasa yang dipilih untuk terjemahan adalah serupa dengan bahasa mesej asal.",
+    "media_recorder_error_title": "Akses Mikrofon Diperlukan",
+    "media_recorder_error_subtitle": "Kami tidak dapat mengakses mikrofon anda. Sila berikan kebenaran mikrofon untuk memulakan rakaman."
 }

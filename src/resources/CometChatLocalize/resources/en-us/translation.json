@@ -271,5 +271,7 @@
     "month_november_full": "November",
     "month_december_full": "December",
     "message_type_not_supported": "This message type is not supported.",
-    "message_list_message_already_translated":"Selected language for translation is similar to the language of the original message."
+    "message_list_message_already_translated":"Selected language for translation is similar to the language of the original message.",
+    "media_recorder_error_title": "Microphone Access Needed",
+    "media_recorder_error_subtitle": "We couldn't access your microphone. Please grant microphone permission to start recording."
 }

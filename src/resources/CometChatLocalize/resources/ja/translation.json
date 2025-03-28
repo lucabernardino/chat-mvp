@@ -271,5 +271,7 @@
     "month_november_full": "11月",
     "month_december_full": "12月",
     "message_type_not_supported": "このメッセージタイプはサポートされていません。",
-    "message_list_message_already_translated":"翻訳のために選択された言語は、元のメッセージの言語と似ています。"
+    "message_list_message_already_translated":"翻訳のために選択された言語は、元のメッセージの言語と似ています。",
+    "media_recorder_error_title": "マイクへのアクセスが必要です",
+    "media_recorder_error_subtitle": "マイクにアクセスできませんでした。録音を開始するには、マイクの許可を与えてください。"
 }

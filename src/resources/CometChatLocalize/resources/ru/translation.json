@@ -271,5 +271,7 @@
     "month_november_full": "Ноябрь",
     "month_december_full": "Декабрь",
     "message_type_not_supported": "Этот тип сообщения не поддерживается.",
-    "message_list_message_already_translated":"Выбранный язык для перевода похож на язык исходного сообщения."
+    "message_list_message_already_translated":"Выбранный язык для перевода похож на язык исходного сообщения.",
+    "media_recorder_error_title": "Требуется доступ к микрофону",
+    "media_recorder_error_subtitle": "Не удалось получить доступ к вашему микрофону. Пожалуйста, предоставьте разрешение на использование микрофона для начала записи."
 }

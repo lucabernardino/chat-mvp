@@ -271,5 +271,7 @@
     "month_november_full": "Lapkritis",
     "month_december_full": "Gruodis",
     "message_type_not_supported": "Šis pranešimo tipas nepalaikomas.",
-    "message_list_message_already_translated":"Pasirinkta vertimo kalba yra panaši į originalaus pranešimo kalbą."
+    "message_list_message_already_translated":"Pasirinkta vertimo kalba yra panaši į originalaus pranešimo kalbą.",
+    "media_recorder_error_title": "Reikalinga Prieiga prie Mikrofono",
+    "media_recorder_error_subtitle": "Nepavyko pasiekti jūsų mikrofono. Prašome suteikti leidimą naudoti mikrofoną, kad galėtumėte pradėti įrašymą."
 }

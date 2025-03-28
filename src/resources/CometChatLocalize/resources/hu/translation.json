@@ -271,5 +271,7 @@
     "month_november_full": "november",
     "month_december_full": "december",
     "message_type_not_supported": "Ez az üzenettípus nem támogatott.",
-    "message_list_message_already_translated":"A fordításhoz kiválasztott nyelv hasonló az eredeti üzenet nyelvéhez."
+    "message_list_message_already_translated":"A fordításhoz kiválasztott nyelv hasonló az eredeti üzenet nyelvéhez.",
+    "media_recorder_error_title": "Mikrofon-hozzáférés Szükséges",
+    "media_recorder_error_subtitle": "Nem tudtuk elérni a mikrofont. Kérjük, adjon engedélyt a mikrofon használatához a felvétel megkezdéséhez."
 }

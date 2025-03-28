@@ -271,5 +271,7 @@
     "month_november_full": "十一月",
     "month_december_full": "十二月",
     "message_type_not_supported": "此消息类型不受支持。",
-    "message_list_message_already_translated":"所选的翻译语言与原始消息的语言相似。"
+    "message_list_message_already_translated":"所选的翻译语言与原始消息的语言相似。",
+    "media_recorder_error_title": "需要麦克风访问权限",
+    "media_recorder_error_subtitle": "无法访问您的麦克风。请授予麦克风权限以开始录音。"
 }

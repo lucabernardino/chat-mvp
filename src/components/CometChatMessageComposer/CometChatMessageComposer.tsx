@@ -525,6 +525,7 @@ const isPartOfCurrentChatForUIEvent: (message: CometChat.BaseMessage) => boolean
   const mentionsFormatterInstanceId = "composer_" + Date.now();
   const disableSoundForMessagePropRef = useRefSync(disableSoundForMessage);
   const customSoundForMessagePropRef = useRefSync(customSoundForMessage);
+
     /**
    * Manages playing audio
    */
@@ -1251,6 +1252,7 @@ try {
     const actualFileType = expectedFileType === "file" ? "file" : file.type.split('/')[0];
     if (expectedFileType !== "file" && expectedFileType !== actualFileType) {
       dispatch({ type: "setShowValidationError", showValidationError: true });
+      mediaFilePickerElement.value = "";
       return;
     }
   
@@ -1557,6 +1559,8 @@ return hideAttachmentButton || (hideAudioAttachmentOption && hideVideoAttachment
 
         className={`cometchat-message-composer__secondary-button-view-attachment-button ${state.contentToDisplay === "attachments" ? "cometchat-message-composer__secondary-button-view-attachment-button-active" : ""} cometchat-message-composer__secondary-button-view-attachment-button-${actions?.length}`}
       >  <CometChatPopover
+        useParentHeight={false}
+        useParentContainer={true}
         onOutsideClick={() => {
           dispatch({ type: "setContentToDisplay", contentToDisplay: "none" });
         }}
@@ -1588,7 +1592,7 @@ return hideAttachmentButton || (hideAudioAttachmentOption && hideVideoAttachment
   function getDefaultButtons() {
     try {
       const stickerButton = ChatConfigurator.getDataSource().getStickerButton(
-        getComposerId() as unknown as ComposerId,
+        getComposerId(),
         user,
         group
       );
@@ -1765,6 +1769,8 @@ return hideAttachmentButton || (hideAudioAttachmentOption && hideVideoAttachment
     return (
       <div className={`cometchat-message-composer__voice-recording-button ${state.contentToDisplay === "voiceRecording" ? "cometchat-message-composer__voice-recording-button-active" : ""}`}>
         <CometChatPopover
+          useParentHeight={false}
+          useParentContainer={true}
           ref={voiceRecordingBtnRef}
           placement={Placement.top}
           closeOnOutsideClick={false}
@@ -1828,6 +1834,8 @@ return hideAttachmentButton || (hideAudioAttachmentOption && hideVideoAttachment
         className={`cometchat-message-composer__emoji-keyboard-button ${state.contentToDisplay === "emojiKeyboard" ? "cometchat-message-composer__emoji-keyboard-button-active" : ""}`}
       >
         <CometChatPopover
+          useParentHeight={false}
+          useParentContainer={true}
           ref={emojiBtnRef}
           closeOnOutsideClick={true}
           onOutsideClick={() => {
@@ -2291,7 +2299,7 @@ try {
         )}
         <div
           key={getComposerId()?.group || getComposerId()?.user}
-          className='cometchat-message-composer'
+          className="cometchat-message-composer"
         >
           {getMediaFilePicker()}
           { state.showValidationError  || state.showMentionsCountWarning || headerView ||  getTextMessageEditPreview() ? getHeaderView() : null}

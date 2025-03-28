@@ -86,15 +86,25 @@ const CometChatThreadHeader = (props: CometChatThreadHeaderProps) => {
 
     const loggedInUser = useRef<CometChat.User | null>(null);
     const [replyCount, setReplyCount] = useState<number>(0);
+    const [updatedMessage, setUpdatedMessage] = useState<CometChat.BaseMessage>(parentMessage);
+
     const onErrorCallback = useCometChatErrorHandler(onError);
 
     useEffect(() => {
         try {
-            setReplyCount(parentMessage?.getReplyCount() ?? 0);
+            setReplyCount(updatedMessage?.getReplyCount() ?? 0);
         } catch (error) {
             onErrorCallback(error, 'useEffect');
         }
-    }, [parentMessage, setReplyCount]);
+    }, [updatedMessage, setReplyCount]);
+    
+    useEffect(() => {
+        try {
+            setUpdatedMessage(parentMessage);
+        } catch (error) {
+            onErrorCallback(error, 'useEffect');
+        }
+    }, [parentMessage]);
 
     useEffect(() => {
         try {
@@ -147,6 +157,17 @@ const CometChatThreadHeader = (props: CometChatThreadHeaderProps) => {
                         ) {
                             setReplyCount((prevCount) => prevCount + 1);
                         }
+                    }
+                );
+            const onMessageEdited =
+                CometChatMessageEvents.onMessageEdited.subscribe(
+                    (message: CometChat.BaseMessage) => {
+                        setUpdatedMessage((prevMessage) => {
+                            if (!prevMessage.getEditedAt() || prevMessage.getEditedAt() != message.getEditedAt()) {
+                                return message;
+                            }
+                            return prevMessage;
+                        })
                     }
                 );
             const onCustomMessageReceived =
@@ -207,6 +228,7 @@ const CometChatThreadHeader = (props: CometChatThreadHeaderProps) => {
                 onSchedulerMessageReceived?.unsubscribe();
                 onCardMessageReceived?.unsubscribe();
                 onCustomInteractiveMessageReceived?.unsubscribe();
+                onMessageEdited?.unsubscribe();
             };
         }
         catch (error) {
@@ -271,22 +293,22 @@ const CometChatThreadHeader = (props: CometChatThreadHeaderProps) => {
     const getBubbleView = useCallback(() => {
         try {
             let alignment = MessageBubbleAlignment.right;
-            if (parentMessage && loggedInUser.current) {
+            if (updatedMessage && loggedInUser.current) {
                 if (messageBubbleView) return messageBubbleView;
                 else {
                     const templatesArray = CometChatUIKit.getDataSource()?.getAllMessageTemplates();
-                    const template = templatesArray?.find((template: CometChatMessageTemplate) => template.type === parentMessage.getType() && template.category === parentMessage.getCategory());
+                    const template = templatesArray?.find((template: CometChatMessageTemplate) => template.type === updatedMessage.getType() && template.category === updatedMessage.getCategory());
                     if (!template) {
                         return <></>
                     }
-                    if (parentMessage.getSender()?.getUid() !== loggedInUser.current?.getUid()) {
+                    if (updatedMessage.getSender()?.getUid() !== loggedInUser.current?.getUid()) {
                         alignment = MessageBubbleAlignment.left;
                     } else {
                         alignment = MessageBubbleAlignment.right;
                     }
 
                     const view = new MessageUtils().getMessageBubble(
-                        parentMessage,
+                        updatedMessage,
                         template,
                         alignment,
                         messageSentAtDateTimeFormat
@@ -299,16 +321,16 @@ const CometChatThreadHeader = (props: CometChatThreadHeaderProps) => {
             onErrorCallback(error, 'getBubbleView');
         }
         return null;
-    }, [parentMessage, messageBubbleView,messageSentAtDateTimeFormat]);
+    }, [updatedMessage, messageBubbleView,messageSentAtDateTimeFormat]);
 
     const getAdditionalClassName = useCallback(() => {
         try {
             const messageTypes = [CometChatUIKitConstants.MessageTypes.audio, CometChatUIKitConstants.MessageTypes.file, CometChatUIKitConstants.MessageTypes.text, CollaborativeDocumentConstants.extension_document, CollaborativeWhiteboardConstants.extension_whiteboard, StickersConstants.sticker];
-            if (parentMessage && messageTypes.includes(parentMessage.getType())) return "cometchat-thread-header__message-small";
+            if (updatedMessage && messageTypes.includes(updatedMessage.getType())) return "cometchat-thread-header__message-small";
         } catch (error) {
             onErrorCallback(error, 'getAdditionalClassName');
         }
-    }, [parentMessage]);
+    }, [updatedMessage]);
 
 
     return (
@@ -326,11 +348,11 @@ const CometChatThreadHeader = (props: CometChatThreadHeaderProps) => {
                 <div className="cometchat-thread-header__body">
                     {!hideDate && <div className="cometchat-thread-header__body-timestamp">
                         <CometChatDate
-                            timestamp={parentMessage.getSentAt()}
+                            timestamp={updatedMessage.getSentAt()}
                             calendarObject={getDateFormat()}
                         ></CometChatDate>
                     </div>}
-                    <div className={`cometchat-thread-header__message ${parentMessage.getSender()?.getUid() !== loggedInUser.current?.getUid() ? "cometchat-thread-header__message-incoming" : "cometchat-thread-header__message-outgoing"} ${getAdditionalClassName()}`}>
+                    <div className={`cometchat-thread-header__message ${updatedMessage.getSender()?.getUid() !== loggedInUser.current?.getUid() ? "cometchat-thread-header__message-incoming" : "cometchat-thread-header__message-outgoing"} ${getAdditionalClassName()}`}>
                         {getBubbleView()}
                     </div>
 

@@ -271,5 +271,7 @@
     "month_november_full": "November",
     "month_december_full": "December",
     "message_type_not_supported": "Denna meddelandetyp stöds inte.",
-    "message_list_message_already_translated":"Det valda språket för översättning liknar språket i det ursprungliga meddelandet."
+    "message_list_message_already_translated":"Det valda språket för översättning liknar språket i det ursprungliga meddelandet.",
+    "media_recorder_error_title": "Mikrofonåtkomst Krävs",
+    "media_recorder_error_subtitle": "Vi kunde inte komma åt din mikrofon. Vänligen ge mikrofontillstånd för att börja spela in."
 }
