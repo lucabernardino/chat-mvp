@@ -741,6 +741,7 @@ const CometChatCallLogs = (props: CallLogsProps) => {
       new CometChatUIKitCalls.OngoingCallListener({
         onCallEnded: () => {
           CometChatUIKitCalls.endSession();
+          CometChat.clearActiveCall();
           CometChatCallEvents.ccCallEnded.next(null as any);
           closeCallScreen();
         },

@@ -44,7 +44,7 @@ export const CometChatTabs = (props: {
                 >
                     <div
                         className={(activeTab === tabItem.id || hoverTab === tabItem.id) ? "cometchat-tab-component__tab-icon cometchat-tab-component__tab-icon-active" : "cometchat-tab-component__tab-icon"}
-                        style={tabItem.icon ? { WebkitMask: `url(${tabItem.icon}), center, center, no-repeat` } : undefined}
+                        style={tabItem.icon ? { WebkitMask: `url(${tabItem.icon}) center center no-repeat` } : undefined}
                         onMouseEnter={() => setHoverTab(tabItem.id)}
                         onMouseLeave={() => setHoverTab("")}
                     />

@@ -31,6 +31,11 @@ interface MessageInformationProps {
    * Format for the timestamp displayed next to messages.
    */
   messageSentAtDateTimeFormat?: CalendarObject;
+
+  /**
+   * Template for customizing the appearance of the message.
+   */
+  template?: CometChatMessageTemplate;
 }
 
 const CometChatMessageInformation = (props: MessageInformationProps) => {
@@ -42,6 +47,7 @@ const CometChatMessageInformation = (props: MessageInformationProps) => {
     onError = (error: CometChat.CometChatException) => {
       console.log(error);
     },
+    template
   } = props;
 
   const [state, setState] = useState<States>(States.loading);
@@ -111,8 +117,9 @@ const CometChatMessageInformation = (props: MessageInformationProps) => {
       }
       if (message) {
         const templatesArray = CometChatUIKit.getDataSource()?.getAllMessageTemplates();
-        const template = templatesArray?.find((template: CometChatMessageTemplate) => template.type === message.getType() && template.category === message.getCategory());
-        if (!template) {
+
+        const bubbleTemplate = template ?? templatesArray?.find((t: CometChatMessageTemplate) => t.type === message.getType() && t.category === message.getCategory());
+        if (!bubbleTemplate) {
           return <></>
         }
         if (message.getSender()?.getUid() !== loggedInUser.current?.getUid()) {
@@ -122,7 +129,7 @@ const CometChatMessageInformation = (props: MessageInformationProps) => {
         }
         const view = new MessageUtils().getMessageBubble(
           message,
-          template,
+          bubbleTemplate,
           alignment,
           messageSentAtDateTimeFormat
         );
@@ -172,13 +179,13 @@ const CometChatMessageInformation = (props: MessageInformationProps) => {
             />
           </div>}
 
-          <div className="cometchat-message-information__receipts-subtitle-text">
+         {deliveredAt &&  <div className="cometchat-message-information__receipts-subtitle-text">
             {getLocalizedString("message_information_delivered")}
             <CometChatDate
               timestamp={deliveredAt}
               calendarObject={getMessageInfoDateFormat()}
             />
-          </div>
+          </div>}
         </div>
       )
     } catch (error) {
@@ -280,7 +287,7 @@ const CometChatMessageInformation = (props: MessageInformationProps) => {
         CometChatUIKitConstants.MessageReceiverType.group && (
           <React.Fragment>
             {state === States.loading ? (<div className="cometchat-message-information__shimmer">
-              {[...Array(3)].map((_, index) => (
+              {[...Array(4)].map((_, index) => (
                 <div key={index} className="cometchat-message-information__shimmer-item">
                   <div className="cometchat-message-information__shimmer-item-avatar"></div>
                   <div className="cometchat-message-information__shimmer-item-title"></div>

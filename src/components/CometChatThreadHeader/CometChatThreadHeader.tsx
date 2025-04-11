@@ -81,7 +81,8 @@ const CometChatThreadHeader = (props: CometChatThreadHeaderProps) => {
         hideDate = false,
         hideReplyCount = false,
         separatorDateTimeFormat,
-        messageSentAtDateTimeFormat
+        messageSentAtDateTimeFormat,
+        template
     } = props;
 
     const loggedInUser = useRef<CometChat.User | null>(null);
@@ -163,7 +164,7 @@ const CometChatThreadHeader = (props: CometChatThreadHeaderProps) => {
                 CometChatMessageEvents.onMessageEdited.subscribe(
                     (message: CometChat.BaseMessage) => {
                         setUpdatedMessage((prevMessage) => {
-                            if (!prevMessage.getEditedAt() || prevMessage.getEditedAt() != message.getEditedAt()) {
+                            if (message.getId() == prevMessage.getId() && (!prevMessage.getEditedAt() || prevMessage.getEditedAt() != message.getEditedAt())) {
                                 return message;
                             }
                             return prevMessage;
@@ -249,9 +250,34 @@ const CometChatThreadHeader = (props: CometChatThreadHeaderProps) => {
                     }
                 }
             );
+            const ccMessageEdited = CometChatMessageEvents.ccMessageEdited.subscribe(
+                ({ status, message }: IMessages) => {
+                    if (
+                        status === MessageStatus.success                    ) {
+                        setUpdatedMessage((prevMessage) => {
+                            if (message.getId() == prevMessage.getId() && (!prevMessage.getEditedAt() || prevMessage.getEditedAt() != message.getEditedAt())) {
+                                return message;
+                            }
+                            return prevMessage;
+                        })
+                    }
+                }
+            );
+            const ccMessageDeleted = CometChatMessageEvents.ccMessageDeleted.subscribe(
+                (message:CometChat.BaseMessage) => {
+                    setUpdatedMessage((prevMessage) => {
+                        if (message.getId() == prevMessage.getId() && (!prevMessage.getDeletedAt() || prevMessage.getDeletedAt() != message.getDeletedAt())) {
+                            return message;
+                        }
+                        return prevMessage;
+                    })
+                }
+            );
 
             return () => {
                 ccMessageSent?.unsubscribe();
+                ccMessageEdited?.unsubscribe();
+                ccMessageDeleted?.unsubscribe();
             };
         } catch (error) {
             onErrorCallback(error, 'subscribeToEvents');
@@ -297,8 +323,8 @@ const CometChatThreadHeader = (props: CometChatThreadHeaderProps) => {
                 if (messageBubbleView) return messageBubbleView;
                 else {
                     const templatesArray = CometChatUIKit.getDataSource()?.getAllMessageTemplates();
-                    const template = templatesArray?.find((template: CometChatMessageTemplate) => template.type === updatedMessage.getType() && template.category === updatedMessage.getCategory());
-                    if (!template) {
+                    const bubbleTemplate = template ?? templatesArray?.find((template: CometChatMessageTemplate) => template.type === updatedMessage.getType() && template.category === updatedMessage.getCategory());
+                    if (!bubbleTemplate) {
                         return <></>
                     }
                     if (updatedMessage.getSender()?.getUid() !== loggedInUser.current?.getUid()) {
@@ -309,7 +335,7 @@ const CometChatThreadHeader = (props: CometChatThreadHeaderProps) => {
 
                     const view = new MessageUtils().getMessageBubble(
                         updatedMessage,
-                        template,
+                        bubbleTemplate,
                         alignment,
                         messageSentAtDateTimeFormat
                     );

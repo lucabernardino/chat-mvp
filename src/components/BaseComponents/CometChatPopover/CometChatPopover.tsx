@@ -20,6 +20,7 @@ interface PopoverProps {
     disableBackgroundInteraction?:boolean;
     useParentContainer?:boolean;
     useParentHeight?: boolean;
+    showTooltip?:boolean;
 
 }
 
@@ -40,6 +41,7 @@ const CometChatPopover = forwardRef<{
             disableBackgroundInteraction = false,
             useParentContainer = false,
             useParentHeight = true,
+            showTooltip=false
 
         },
         ref
@@ -51,6 +53,7 @@ const CometChatPopover = forwardRef<{
         const popoverRef = useRef<HTMLDivElement>(null);
         const childRef = useRef<HTMLDivElement>(null);
         const parentViewRef = useRef<HTMLDivElement | null>(null);
+        const availablePositionRef = useRef<Placement>(Placement.top);
         useImperativeHandle(ref, () => ({
             openPopover() {
                 getPopoverPositionStyle();
@@ -154,8 +157,8 @@ const CometChatPopover = forwardRef<{
                 const spaceLeftParent = rect.left - parentViewRect.left;
                 const spaceRightParent = parentViewRect.right - rect.right;
           
-                if (placement === Placement.top && spaceAboveParent >= height + 10) return Placement.top;
-                if (placement === Placement.bottom && spaceBelowParent >= height + 10) return Placement.bottom;
+                if (placement === Placement.top && spaceAboveParent >= height + (!showTooltip ? 10 : 0)) return Placement.top;
+                if (placement === Placement.bottom && spaceBelowParent >= height + (!showTooltip ? 10 : 0)) return Placement.bottom;
                 if (placement === Placement.left && spaceLeftParent >= height + 10) return Placement.left;
                 if (placement === Placement.right && spaceRightParent >= height + 10) return Placement.right;
           
@@ -193,11 +196,12 @@ const CometChatPopover = forwardRef<{
                 return;
             }
             const availablePlacement = getAvailablePlacement(rect, height);
+            availablePositionRef.current = availablePlacement;
             let positionStyle:CSSProperties = {};
         
             if ([Placement.top, Placement.bottom].includes(availablePlacement)) {
                 positionStyle.top = availablePlacement === Placement.top
-                    ? `${Math.max(parentViewRect.top, rect.top - height - 10)}px`
+                    ? `${Math.max(parentViewRect.top, rect.top - height - (!showTooltip ? 10 : 5))}px`
                     : `${Math.min(parentViewRect.bottom - height, rect.bottom + 10)}px`;
         
                 let adjustedLeft = Math.max(parentViewRect.left, rect.left);
@@ -261,6 +265,7 @@ const CometChatPopover = forwardRef<{
             const viewportHeight = window.innerHeight;
             const viewportWidth = window.innerWidth;
             const availablePlacement = getAvailablePlacement(rect, height);
+            availablePositionRef.current = availablePlacement;
             let positionStyle:CSSProperties = {};
         
             if ([Placement.top, Placement.bottom].includes(availablePlacement)) {
@@ -395,7 +400,11 @@ const CometChatPopover = forwardRef<{
                                   }),
                               }}
                             className="cometchat-popover__content">
+                                            {showTooltip && availablePositionRef.current == Placement.top ?  <div className={`cometchat-popover__content-tooltip-top`}></div> : null}
+
                             {content}
+                            {showTooltip && availablePositionRef.current == Placement.bottom ?  <div className={`cometchat-popover__content-tooltip-bottom`}></div> : null}
+
                         </div>
                     }
                 </div>

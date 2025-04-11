@@ -11,7 +11,8 @@ interface defaultStateType {
     newChat?: {
         user: CometChat.User,
         group: CometChat.Group
-    }
+    },
+    isFreshChat?: boolean;
 }
 
 export const defaultAppState: defaultStateType = {
@@ -24,6 +25,7 @@ export const defaultAppState: defaultStateType = {
     threadedMessage: undefined,
     showNewChat: false,
     showJoinGroup: false,
+    isFreshChat: false,
 }
 
 export const appReducer = (state = defaultAppState, action: any) => {
@@ -61,6 +63,9 @@ export const appReducer = (state = defaultAppState, action: any) => {
         case "resetAppState": {
             return defaultAppState;
         }
+        case 'updateIsFreshChat': {
+            return { ...state, isFreshChat: action.payload };
+          }
 
         default: {
             return state;

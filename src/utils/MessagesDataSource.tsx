@@ -347,7 +347,7 @@ export class MessagesDataSource implements DataSource {
         <div
           className="cometchat-message-bubble__status-info-view"
         >
-          <span className="cometchat-message-bubble__status-info-view-helper-text">   {!_messageObject.getDeletedAt() && _messageObject.getType() == CometChatUIKitConstants.MessageTypes.text && _messageObject.getEditedAt() ? getLocalizedString("message_list_action_edited") : null}</span>
+            {!_messageObject.getDeletedAt() && _messageObject.getType() == CometChatUIKitConstants.MessageTypes.text && _messageObject.getEditedAt() ? <span className="cometchat-message-bubble__status-info-view-helper-text">  {getLocalizedString("message_list_action_edited")} </span>: null}
 
           {this.getBubbleStatusInfoDate(_messageObject, messageSentAtDateTimeFormat)}
           {this.getBubbleStatusInfoReceipt(_messageObject, hideReceipt)}
@@ -694,6 +694,19 @@ export class MessagesDataSource implements DataSource {
           );
           break;
       }
+    }
+    else if (
+      messageObject.getCategory() ==
+      CometChatUIKitConstants.MessageCategory.custom ||
+      messageObject.getCategory() ==
+      CometChatUIKitConstants.MessageCategory.interactive
+    ) {
+      _optionList = ChatConfigurator.getDataSource().getCommonOptions(
+        loggedInUser,
+        messageObject,
+        group,
+        additionalParams
+      );
     }
     return _optionList;
   }

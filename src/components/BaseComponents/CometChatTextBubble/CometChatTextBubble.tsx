@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useCometChatTextBubble } from "./useCometChatTextBubble";
-import { sanitizeHtml } from "../../../utils/util";
+import { fireClickEvent, sanitizeHtml } from "../../../utils/util";
 import {getLocalizedString} from "../../../resources/CometChatLocalize/cometchat-localize";
 import { CometChatTextFormatter } from "../../../formatters/CometChatFormatters/CometChatTextFormatter";
 import { MentionsTargetElement } from "../../../Enums/Enums";
@@ -79,11 +79,18 @@ const CometChatTextBubble = (props: TextBubbleProps) => {
                     }}>{textState}</p>
                     {isTruncated && !isExpanded && (
                         <span className="cometchat-text-bubble__read-more
-" onClick={() => setIsExpanded(true)}>{getLocalizedString("text_message_read_more")}</span>
+" onClick={() => {
+                                setIsExpanded(true)
+                                fireClickEvent()
+
+                            }}>{getLocalizedString("text_message_read_more")}</span>
                     )}
-                    {isExpanded && (
+                    {isExpanded && isTruncated && (
                         <span className="cometchat-text-bubble__read-less
-" onClick={() => setIsExpanded(false)}>{getLocalizedString("text_message_show_less")}</span>
+" onClick={() => {
+                                setIsExpanded(false)
+                                fireClickEvent()
+                            }}>{getLocalizedString("text_message_show_less")}</span>
                     )}
                 </div>
             </div>

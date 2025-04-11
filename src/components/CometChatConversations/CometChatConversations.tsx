@@ -319,7 +319,16 @@ function stateReducer(state: State, action: Action): State {
           state.conversationList = [];
           conversations = action.conversations;
         } else {
-          conversations = [...state.conversationList, ...action.conversations];
+          conversations = [
+            ...state.conversationList,
+            ...action.conversations.filter(
+              (newConversation) =>
+                !state.conversationList.some(
+                  (existingConversation) =>
+                    existingConversation.getConversationId() === newConversation.getConversationId()
+                )
+            ),
+          ];
         }
         newState = { ...state, conversationList: conversations };
       }
@@ -383,6 +392,7 @@ function stateReducer(state: State, action: Action): State {
           ...state,
           conversationList: newConversationList,
           typingIndicatorMap: newTypingIndicatorMap,
+          fetchState: newConversationList.length == 0 ? States.empty :  States.loaded
         };
       }
       break;
@@ -812,6 +822,7 @@ export function CometChatConversations(props: ConversationsProps) {
   const attachListenerOnFetch = useRef<boolean>(false);
   const [activeConversationState, setActiveConversationState] = useState(activeConversation);
   const customSoundForMessagesRef = useRefSync(customSoundForMessages);
+  const conversationListRef = useRef<CometChat.Conversation[]>([]);
 
   (() => {
     if (state.isFirstReload) {
@@ -835,11 +846,6 @@ export function CometChatConversations(props: ConversationsProps) {
         if (!conversationManager) {
           return;
         }
-        let initialState =  isConnected && !attachListenerOnFetch.current && state.conversationList.length > 0
-          ? States.loaded
-          : States.loading;
-        dispatch({ type: "setFetchState", fetchState: initialState });
-
         const conversations = await conversationManager.fetchNext();
 
         if (conversations.length !== 0 && fetchNextIdRef.current === fetchId) {
@@ -851,6 +857,7 @@ export function CometChatConversations(props: ConversationsProps) {
             conversations,
             removeOldConversation,
           });
+          conversationListRef.current = removeOldConversation ? conversations : [...conversationListRef.current,...conversations]
 
         }
         if (attachListenerOnFetch.current) {
@@ -867,14 +874,14 @@ export function CometChatConversations(props: ConversationsProps) {
             );
           });
         }
-        if(attachListenerOnFetch.current && conversations.length == 0 && state.conversationList.length == 0){
+        if(conversations.length  == 0 && conversationListRef.current.length == 0){
           dispatch({ type: "setFetchState", fetchState: States.empty });
         }
         if(attachListenerOnFetch.current){
           attachListenerOnFetch.current = false
         }
       } catch (error) {
-        if (state.conversationList.length <= 0) {
+        if (conversationListRef.current.length <= 0) {
           dispatch({ type: "setFetchState", fetchState: States.error });
         }
         errorHandler(error, "fetchNextAndAppendConversations");
@@ -1195,6 +1202,12 @@ export function CometChatConversations(props: ConversationsProps) {
       throw error;
     }
   }
+  const preserveEntities = (input: string): string => {
+    return input
+      .replace(/&/g, "&amp;")
+      .replace(/&(?!amp;|lt;|gt;|quot;|#39;|#\d+;)/g, "&amp;")
+      .replace(/&amp;(?!lt;|gt;|quot;|#39;|#\d+;)/g, "&amp;");
+  };
 
   /**
    * Creates subtitle text
@@ -1284,7 +1297,7 @@ export function CometChatConversations(props: ConversationsProps) {
             />
             <div
               className={`cometchat-conversations__subtitle-text`}
-              dangerouslySetInnerHTML={{ __html: subtitle }}
+              dangerouslySetInnerHTML={{ __html:   preserveEntities(subtitle) }}
             >
 
             </div>
@@ -1603,7 +1616,7 @@ export function CometChatConversations(props: ConversationsProps) {
         if (conversationType === CometChatUIKitConstants.MessageReceiverType.user) {
           let user = (conversation.getConversationWith() as CometChat.User)
           status = user.getStatus();
-          userBlockedFlag = new MessageUtils().getUserStatusVisible(user) && hideUserStatus
+          userBlockedFlag = new MessageUtils().getUserStatusVisible(user) || hideUserStatus
         };
         return (
           <div className={`cometchat-conversations__list-item

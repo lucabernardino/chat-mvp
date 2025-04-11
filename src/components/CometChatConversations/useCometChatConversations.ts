@@ -1,5 +1,5 @@
 import { MessageStatus } from '../../Enums/Enums';
-import React, { JSX, useEffect } from "react";
+import React, { JSX, useEffect, useRef } from "react";
 
 import { Action } from "./CometChatConversations";
 import { CometChat, Conversation } from "@cometchat/chat-sdk-javascript";
@@ -47,17 +47,20 @@ export function useCometChatConversations(args: Args) {
     hideUserStatus
   } = args;
 
+  const isFirstRenderRef = useRef<boolean>(true);
+
   useEffect(
     /**
      * Creates a new request builder -> empties the `conversationList` state -> initiates a new fetch
      */
     () => {
+      if(!isFirstRenderRef.current) return;
       try {
         dispatch({ type: "setIsFirstReload", isFirstReload: true });
       conversationsManagerRef.current = new ConversationsManager({ conversationsRequestBuilder,errorHandler });
       dispatch({ type: "setConversationList", conversationList: [] });
       fetchNextAndAppendConversations(fetchNextIdRef.current = "initialFetchNext_" + String(Date.now()));
-
+      isFirstRenderRef.current = false;
 
       } catch (error) {
         errorHandler(error,"useEffect")
