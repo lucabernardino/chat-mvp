@@ -52,7 +52,7 @@ export abstract class DataSource {
   abstract getStatusInfoView(
     message: CometChat.BaseMessage,
     alignment: MessageBubbleAlignment,
-    hideReceipt?: boolean,
+    hideReceipts?: boolean,
     messageSentAtDateTimeFormat?:CalendarObject
   ): Element | JSX.Element | null;
   abstract getTextMessageContentView(

@@ -9,7 +9,7 @@ import { CometChatSoundManager } from "../../../resources/CometChatSoundManager/
 import { CometChatUIKitUtility } from "../../../CometChatUIKit/CometChatUIKitUtility";
 import {getLocalizedString} from "../../../resources/CometChatLocalize/cometchat-localize";
 import { CometChatUIKitConstants } from "../../../constants/CometChatUIKitConstants";
-import { MessageStatus } from "../../../Enums/Enums";
+import { CallWorkflow, MessageStatus } from "../../../Enums/Enums";
 import { CometChatButton } from "../../BaseComponents/CometChatButton/CometChatButton";
 import audioCall from "../../../assets/audio_call_button.svg";
 import videoCall from "../../../assets/video_call_button.svg";
@@ -462,11 +462,11 @@ const CometChatCallButtons = (props: CallButtonsPropsType) => {
           </div>
         ) : null}
       </div>
-
       {showOngoingCall && sessionIdRef.current != null ? (
         <CometChatOngoingCall
           sessionID={sessionIdRef.current}
           callSettingsBuilder={getCallBuilder()}
+          callWorkflow={activeGroup ? CallWorkflow.directCalling : CallWorkflow.defaultCalling}
         />
       ) : null}
 

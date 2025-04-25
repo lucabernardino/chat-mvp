@@ -25,7 +25,7 @@ import { CometChatUserDetails } from "../CometChatDetails/CometChatUserDetails";
 import { CometChatThreadedMessages } from "../CometChatDetails/CometChatThreadedMessages";
 import { CometChatCallDetails } from "../CometChatCallLog/CometChatCallLogDetails";
 import { CometChatAlertPopup } from "../CometChatAlertPopup/CometChatAlertPopup";
-import { CometChatAvatar,CometChatButton,CometChatConfirmDialog,CometChatConversationEvents,CometChatGroupEvents,CometChatGroupMembers,CometChatGroups,CometChatIncomingCall,CometChatMessageEvents,CometChatToast,CometChatUIKit,CometChatUIKitConstants,CometChatUIKitLoginListener,CometChatUIKitUtility,CometChatUserEvents,CometChatUsers,CometChatUIEvents,getLocalizedString,IMessages,IMouseEvent,IActiveChatChanged,MessageStatus,IGroupMemberAdded,IGroupMemberKickedBanned } from "@cometchat/chat-uikit-react";
+import { CometChatAvatar,CometChatButton,CometChatConfirmDialog,CometChatConversationEvents,CometChatGroupEvents,CometChatGroupMembers,CometChatGroups,CometChatIncomingCall,CometChatMessageEvents,CometChatToast,CometChatUIKit,CometChatUIKitConstants,CometChatUIKitLoginListener,CometChatUIKitUtility,CometChatUserEvents,CometChatUsers,CometChatUIEvents,getLocalizedString,IMessages,IMouseEvent,IActiveChatChanged,MessageStatus,IGroupMemberAdded,IGroupMemberKickedBanned, IGroupMemberJoined } from "@cometchat/chat-uikit-react";
 import { CallLog } from "@cometchat/calls-sdk-javascript";
 
 interface TabContentProps {
@@ -285,9 +285,9 @@ function CometChatHome(props: { theme?: string }) {
         }, [activeTab, selectedItem]);
 
         const updateisFirstChat = ({ message, status }: IMessages) => {
-            const receiverId = message.getReceiverId();
-            const sender = message.getSender();
-            if ((appState.selectedItemUser && (appState.selectedItemUser.getUid() == receiverId || (appState.selectedItemUser.getUid() == sender.getUid() && receiverId == loggedInUser?.getUid())) || appState.selectedItemGroup && (appState.selectedItemGroup.getGuid() == receiverId || loggedInUser?.getUid() == receiverId)) && isFreshChatRef.current && status == MessageStatus.success) {
+            const receiverId = message?.getReceiverId();
+            const sender = message?.getSender();
+            if ((appState.selectedItemUser && (appState.selectedItemUser.getUid() == receiverId || ((!sender || (sender && appState.selectedItemUser.getUid() == sender.getUid())) && receiverId == loggedInUser?.getUid())) || appState.selectedItemGroup && (appState.selectedItemGroup.getGuid() == receiverId || loggedInUser?.getUid() == receiverId)) && isFreshChatRef.current && status == MessageStatus.success) {
                 setAppState({ type: 'updateIsFreshChat', payload: false });
                 isFreshChatRef.current = false;
                 let conversationWith = appState.selectedItemUser ? appState.selectedItemUser.getUid() : appState.selectedItemGroup?.getGuid();
@@ -1082,6 +1082,7 @@ function CometChatHome(props: { theme?: string }) {
                                     if (loggedInUser) {
                                         const groupClone = CometChatUIKitUtility.clone(group);
                                         groupClone.setHasJoined(false);
+                                        groupClone.setMembersCount(groupClone.getMembersCount() - 1);
                                         CometChatGroupEvents.ccGroupLeft.next({
                                             userLeft: CometChatUIKitUtility.clone(loggedInUser),
                                             leftGroup: groupClone,
@@ -1370,6 +1371,11 @@ function CometChatHome(props: { theme?: string }) {
         const ccOpenChat = CometChatUIEvents.ccOpenChat.subscribe((item) => {
             openChatForUser(item.user);
         })
+        const ccGroupJoineed = CometChatGroupEvents.ccGroupMemberJoined.subscribe((data: IGroupMemberJoined) => {
+            setGroup(data.joinedGroup)
+            setSelectedItem(data.joinedGroup);
+            setAppState({ type: "updateSelectedItemGroup", payload: data.joinedGroup });
+        })
 
         const ccClickEvent = CometChatUIEvents.ccMouseEvent.subscribe((mouseevent: IMouseEvent) => {
             if (mouseevent.event.type === "click" && (mouseevent.body as { CometChatUserGroupMembersObject: User })?.CometChatUserGroupMembersObject) {
@@ -1408,6 +1414,7 @@ function CometChatHome(props: { theme?: string }) {
             ccConversationDeleted?.unsubscribe();
             ccOpenChat?.unsubscribe();
             ccClickEvent?.unsubscribe();
+            ccGroupJoineed?.unsubscribe();
         };
     }, [newChat, selectedItem]);
 

@@ -16,6 +16,7 @@ import { CometChatMessageEvents, IMessages } from "../../events/CometChatMessage
 import { useCometChatErrorHandler } from "../../CometChatCustomHooks";
 import { CalendarObject } from "../../utils/CalendarObject";
 import { sanitizeCalendarObject } from "../../utils/util";
+import {CometChatTextFormatter } from "../../formatters";
 interface CometChatThreadHeaderProps {
     /**
      * Hides the visibility of the date header.
@@ -67,7 +68,16 @@ interface CometChatThreadHeaderProps {
     /**
    * Format for the timestamp displayed next to messages.
    */
-    messageSentAtDateTimeFormat?: CalendarObject,
+    messageSentAtDateTimeFormat?: CalendarObject;
+    /**
+    * Hides the visibility of receipt in the Thread Header.
+    * @default false
+     */
+    hideReceipts?: boolean;
+    /**
+    * Array of text formatters for custom styling or formatting of message text bubbles.
+    */
+    textFormatters?: CometChatTextFormatter[];
 }
 
 const CometChatThreadHeader = (props: CometChatThreadHeaderProps) => {
@@ -82,7 +92,9 @@ const CometChatThreadHeader = (props: CometChatThreadHeaderProps) => {
         hideReplyCount = false,
         separatorDateTimeFormat,
         messageSentAtDateTimeFormat,
-        template
+        template,
+        hideReceipts,
+        textFormatters
     } = props;
 
     const loggedInUser = useRef<CometChat.User | null>(null);
@@ -337,7 +349,9 @@ const CometChatThreadHeader = (props: CometChatThreadHeaderProps) => {
                         updatedMessage,
                         bubbleTemplate,
                         alignment,
-                        messageSentAtDateTimeFormat
+                        messageSentAtDateTimeFormat,
+                        hideReceipts,
+                        textFormatters
                     );
                     return view;
                 }

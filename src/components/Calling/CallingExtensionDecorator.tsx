@@ -284,7 +284,7 @@ export class CallingExtensionDecorator extends DataSourceDecorator {
       callBuilder.setCallListener(
         new CometChatUIKitCalls.OngoingCallListener({
           onCallEndButtonPressed: () => {
-            CometChatUIEvents.ccShowOngoingCall.next({ child: null });
+            CometChatUIEvents.ccShowOngoingCall.next({ child: null ,message});
           },
         })
       );
@@ -293,7 +293,7 @@ export class CallingExtensionDecorator extends DataSourceDecorator {
     const ongoingCallScreen = (
       <CometChatOngoingCall callSettingsBuilder={callBuilder} sessionID={sessionId} callWorkflow={CallWorkflow.directCalling} />
     );
-    CometChatUIEvents.ccShowOngoingCall.next({ child: ongoingCallScreen });
+    CometChatUIEvents.ccShowOngoingCall.next({ child: ongoingCallScreen ,message});
   }
 
 

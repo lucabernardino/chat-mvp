@@ -87,13 +87,13 @@ export abstract class DataSourceDecorator implements DataSource {
   getStatusInfoView(
     message: CometChat.BaseMessage,
     alignment: MessageBubbleAlignment,
-    hideReceipt?: boolean,
+    hideReceipts?: boolean,
     messageSentAtDateTimeFormat?:CalendarObject
   ) {
     return (this.dataSource ?? new MessagesDataSource()).getStatusInfoView(
       message,
       alignment,
-      hideReceipt,
+      hideReceipts,
       messageSentAtDateTimeFormat
     );
   }

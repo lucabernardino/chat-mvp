@@ -6,6 +6,7 @@ import { CometChat } from "@cometchat/chat-sdk-javascript";
 import {getLocalizedString} from "../resources/CometChatLocalize/cometchat-localize";
 import { CometChatMessageTemplate } from "../modals";
 import { CalendarObject } from "./CalendarObject";
+import { CometChatTextFormatter } from "../formatters";
 
 /**
  * Utility class for handling message display and styling.
@@ -24,7 +25,8 @@ export class MessageUtils {
   getContentView(
     message: CometChat.BaseMessage,
     template: CometChatMessageTemplate,
-    alignment?:MessageBubbleAlignment
+    alignment?:MessageBubbleAlignment,
+    textFormatters?:CometChatTextFormatter[]
   ) {
     let view;
     const messageTypesMap: any = {};
@@ -37,7 +39,7 @@ export class MessageUtils {
     ) {
       view = messageTypesMap[
         `${message?.getCategory()}_${message?.getType()}`
-      ]?.contentView(message, alignment);
+      ]?.contentView(message, alignment,textFormatters);
       // default would be html string using lit components
       if (typeof view === "string") {
         return {
@@ -60,7 +62,8 @@ export class MessageUtils {
     message: CometChat.BaseMessage,
     template: CometChatMessageTemplate,
     alignment?: MessageBubbleAlignment,
-    messageSentAtDateTimeFormat?:CalendarObject
+    messageSentAtDateTimeFormat?:CalendarObject,
+    hideReceipts:boolean = false
   ) {
     let view;
     const messageTypesMap: any = {};
@@ -73,7 +76,7 @@ export class MessageUtils {
     ) {
       view = messageTypesMap[
         `${message?.getCategory()}_${message?.getType()}`
-      ]?.statusInfoView(message, alignment,messageSentAtDateTimeFormat);
+      ]?.statusInfoView(message, alignment,hideReceipts,messageSentAtDateTimeFormat);
       if (typeof view === "string") {
         return {
           html: view,
@@ -129,11 +132,13 @@ export class MessageUtils {
     baseMessage: CometChat.BaseMessage,
     template: CometChatMessageTemplate,
     alignment: MessageBubbleAlignment,
-    messageSentAtDateTimeFormat?:CalendarObject
+    messageSentAtDateTimeFormat?:CalendarObject,
+    hideReceipts?:boolean,
+    textFormatters?:CometChatTextFormatter[]
   ) {
     return this.getBubbleWrapper(baseMessage, template)
       ? this.getBubbleWrapper(baseMessage, template)
-      : <CometChatMessageBubble bottomView={null} headerView={null} options={[]} footerView={null} leadingView={null} statusInfoView={this.getStatusInfoView(baseMessage, template, alignment,messageSentAtDateTimeFormat)} contentView={this.getContentView(baseMessage, template,alignment)} replyView={null} threadView={null} alignment={alignment} id={baseMessage?.getId() || baseMessage?.getMuid()} />
+      : <CometChatMessageBubble bottomView={null} headerView={null} options={[]} footerView={null} leadingView={null} statusInfoView={this.getStatusInfoView(baseMessage, template, alignment,messageSentAtDateTimeFormat,hideReceipts)} contentView={this.getContentView(baseMessage, template,alignment,textFormatters)} replyView={null} threadView={null} alignment={alignment} id={baseMessage?.getId() || baseMessage?.getMuid()} />
   }
   /**
    *
