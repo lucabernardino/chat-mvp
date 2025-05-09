@@ -15,7 +15,7 @@ import { CometChatDate } from "../BaseComponents/CometChatDate/CometChatDate";
 import { useCometChatErrorHandler } from "../../CometChatCustomHooks";
 import { CalendarObject } from "../../utils/CalendarObject";
 import { CometChatTextFormatter } from "../../formatters";
-
+import { JSX } from 'react';
 interface MessageInformationProps {
   message: CometChat.BaseMessage;
   onClose?: () => void;

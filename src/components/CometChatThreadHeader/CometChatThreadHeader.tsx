@@ -17,6 +17,7 @@ import { useCometChatErrorHandler } from "../../CometChatCustomHooks";
 import { CalendarObject } from "../../utils/CalendarObject";
 import { sanitizeCalendarObject } from "../../utils/util";
 import {CometChatTextFormatter } from "../../formatters";
+import { JSX } from 'react';
 interface CometChatThreadHeaderProps {
     /**
      * Hides the visibility of the date header.

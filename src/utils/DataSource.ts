@@ -10,6 +10,7 @@ import { CometChatActionsIcon, CometChatActionsView, CometChatMessageComposerAct
 import {  MessageBubbleAlignment } from "../Enums/Enums";
 import { ComposerId } from "./MessagesDataSource";
 import { CalendarObject } from "./CalendarObject";
+import { JSX } from 'react';
 /**
  * Class for providing message options and views.
  * It is used in AI and calling module and utils related to messages.

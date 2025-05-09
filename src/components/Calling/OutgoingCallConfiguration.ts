@@ -1,3 +1,4 @@
+import { JSX } from 'react';
 export class OutgoingCallConfiguration {
   disableSoundForCalls?: boolean = false;
   customSoundForCalls?: string;

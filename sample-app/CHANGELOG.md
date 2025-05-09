@@ -1,3 +1,14 @@
+## [6.0.5] - 09-05-2025
+
+## New 
+- None
+
+## Enhancements
+- Updated the sample app to handle back button visibility using the `showBackButton` prop instead of relying on CSS for mobile view.
+
+## Fixes
+- None
+
 ## [6.0.4] - 25-04-2025
 
 ## New 

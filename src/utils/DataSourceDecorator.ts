@@ -8,6 +8,7 @@ import { additionalParams } from "./ConversationUtils";
 import {  CometChatActionsIcon, CometChatActionsView, CometChatMessageComposerAction, CometChatMessageTemplate} from "../modals";
 import { MessageBubbleAlignment } from "../Enums/Enums";
 import { CalendarObject } from "./CalendarObject";
+import { JSX } from 'react';
 
 /**
  * This class is used in AI, calling and Extension modules.

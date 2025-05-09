@@ -14,7 +14,7 @@ import { CometChatAvatar } from "../../BaseComponents/CometChatAvatar/CometChatA
 import { CometChatButton } from "../../BaseComponents/CometChatButton/CometChatButton";
 import { CometChatCallEvents } from "../../../events/CometChatCallEvents";
 import { useCometChatErrorHandler } from "../../../CometChatCustomHooks";
-
+import { JSX } from 'react';
 interface IncomingCallProps {
   /**
    * The CometChat call object used to initialize and display the incoming call component.

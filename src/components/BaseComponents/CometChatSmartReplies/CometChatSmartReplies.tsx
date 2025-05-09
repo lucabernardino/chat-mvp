@@ -4,7 +4,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import {getLocalizedString} from '../../../resources/CometChatLocalize/cometchat-localize';
 import { States } from '../../../Enums/Enums';
-
+import { JSX } from 'react';
 interface CometChatSmartRepliesProps {
     getSmartReplies?: () => Promise<string[]>;
     onSuggestionClicked?: (reply: string) => void;

@@ -31,9 +31,16 @@ interface MessageHeaderProps {
 
     /**
      * Hides the back button in the header in mobile view.
+     * @deprecated Use 'showBackButton' prop instead. This prop is deprecated and will be removed in future versions.
      * @default false
      */
     hideBackButton?: boolean;
+
+    /**
+     * Hides the back button in the header in mobile view.
+     * @default false
+     */
+    showBackButton?: boolean;
   
     /**
      * Hides the video call button.
@@ -141,7 +148,7 @@ export const CometChatMessageHeader = (props: MessageHeaderProps) => {
         itemView = null,
         onError,
         onBack = () => { },
-        hideBackButton,
+        hideBackButton = true,
         leadingView,
         titleView,
         trailingView,
@@ -149,7 +156,8 @@ export const CometChatMessageHeader = (props: MessageHeaderProps) => {
         showConversationSummaryButton = false,
         enableAutoSummaryGeneration = false,
         summaryGenerationMessageCount = 1000,
-        lastActiveAtDateTimeFormat
+        lastActiveAtDateTimeFormat,
+        showBackButton = false
     } = props;
 
     /** States and ref used in the component */
@@ -536,7 +544,7 @@ export const CometChatMessageHeader = (props: MessageHeaderProps) => {
      */
     const getBackButton = () => {
         try {
-            if (hideBackButton) return null;
+        if (hideBackButton && !showBackButton) return null;
 
             return (
                 <div onClick={() => {

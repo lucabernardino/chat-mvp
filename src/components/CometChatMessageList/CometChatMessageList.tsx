@@ -45,6 +45,7 @@ import { CometChatConversationStarter } from "../BaseComponents/CometChatConvers
 import { CometChatSmartReplies } from "../BaseComponents/CometChatSmartReplies/CometChatSmartReplies";
 import { CalendarObject } from "../../utils/CalendarObject";
 import { ComposerId } from "../../utils/MessagesDataSource";
+import { JSX } from 'react';
 
 /**
  * Props for the MessageList component.

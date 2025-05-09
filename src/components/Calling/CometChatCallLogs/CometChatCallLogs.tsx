@@ -24,7 +24,7 @@ import errorIconDark from "../../../assets/list_error_state_icon_dark.svg"
 import { getThemeMode, sanitizeCalendarObject } from "../../../utils/util";
 import { useCometChatErrorHandler } from "../../../CometChatCustomHooks";
 import { CalendarObject } from "../../../utils/CalendarObject";
-
+import { JSX } from 'react';
 interface CallLogsProps {
   /**
    * Object representing the active call that is currently selected.
