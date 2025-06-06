@@ -295,7 +295,10 @@ class CometChatLocalize {
         .replace(/\bdddd\b/g, replacements["dddd"] || "")
         .replace(/\bddd\b/g, replacements["ddd"] || "")
         .replace(/\bdd\b/g, replacements["dd"] || "")
-        .replace(/(?<=\s|^)A(?=\s|$)/g, replacements["A"] || "");
+        .replace(/\sA\s/g, ` ${replacements["A"] || "A"} `)
+        .replace(/^A\s/g, `${replacements["A"] || "A"} `)
+        .replace(/\sA$/, ` ${replacements["A"] || "A"}`)
+        .replace(/^A$/, `${replacements["A"] || "A"}`);
     
 
     }

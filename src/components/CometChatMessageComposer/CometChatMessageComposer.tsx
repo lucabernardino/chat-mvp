@@ -232,6 +232,12 @@ interface MessageComposerProps {
    * A custom header section displayed at the top of the message composer, often used for media previews or additional information.
    */
   headerView?: JSX.Element;
+
+  /**
+  * Controls the visibility of the scrollbar in the list.
+  * @defaultValue `false`
+  */
+  showScrollbar?: boolean;
 }
 
 /**
@@ -386,6 +392,7 @@ export function CometChatMessageComposer(props: MessageComposerProps) {
     enterKeyBehavior = EnterKeyBehavior.SendMessage,
     disableSoundForMessage = false,
     customSoundForMessage,
+    showScrollbar = false
   } = props;
   
   /**
@@ -2306,12 +2313,13 @@ try {
               group={group}
               groupMemberRequestBuilder={groupMembersRequestBuilder}
               onError={defaultOnEmptyForMentions}
+              showScrollbar={showScrollbar}
             />
           </div>
         )}
         <div
           key={getComposerId()?.group || getComposerId()?.user}
-          className="cometchat-message-composer"
+          className={`cometchat-message-composer ${!showScrollbar ? 'cometchat-message-composer-hide-scrollbar' : ''}`}
         >
           {getMediaFilePicker()}
           { state.showValidationError  || state.showMentionsCountWarning || headerView ||  getTextMessageEditPreview() ? getHeaderView() : null}

@@ -156,6 +156,12 @@ interface GroupsProps {
      * @returns A JSX element to be rendered as the trailing view.
      */
     trailingView?: (group: CometChat.Group) => JSX.Element;
+
+    /**
+    * Controls the visibility of the scrollbar in the list.
+    * @defaultValue `false`
+    */
+    showScrollbar?: boolean;
   };
 
 type State = {
@@ -309,7 +315,8 @@ export function CometChatGroups(props: GroupsProps) {
         hideGroupType = false,
         leadingView,
         titleView,
-        trailingView
+        trailingView,
+        showScrollbar = false
     } = props;
     const titleRef = useRef<string>(getLocalizedString("group_title"));
     const searchPlaceholderTextRef = useRef<string>(getLocalizedString("group_seach_placeholder"));
@@ -632,8 +639,9 @@ export function CometChatGroups(props: GroupsProps) {
     return (
         <div className="cometchat" style={{ width: "100%", height: "100%" }}>
             <div
-                className="cometchat-groups">
+                className={`cometchat-groups ${!showScrollbar ? "cometchat-groups-hide-scrollbar" : ""}`}>
                 <CometChatList
+                    showScrollbar={showScrollbar}
                     title={titleRef.current}
                     searchPlaceholderText={searchPlaceholderTextRef.current || getLocalizedString("group_search_placeholder")}
                     hideSearch={hideSearch}

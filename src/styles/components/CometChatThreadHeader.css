@@ -102,8 +102,8 @@
     flex: 1 0 0;
 }
 
-.cometchat-thread-header__message::-webkit-scrollbar,
-.cometchat-thread-header__message::-webkit-scrollbar-thumb {
+.cometchat-thread-header-hide-scrollbar .cometchat-thread-header__message::-webkit-scrollbar,
+.cometchat-thread-header-hide-scrollbar .cometchat-thread-header__message::-webkit-scrollbar-thumb {
     display: none;
 }
 

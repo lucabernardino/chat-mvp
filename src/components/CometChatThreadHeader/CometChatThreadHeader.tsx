@@ -79,6 +79,11 @@ interface CometChatThreadHeaderProps {
     * Array of text formatters for custom styling or formatting of message text bubbles.
     */
     textFormatters?: CometChatTextFormatter[];
+    /**
+    * Controls the visibility of the scrollbar in the list.
+    * @defaultValue `false`
+    */
+    showScrollbar?: boolean;
 }
 
 const CometChatThreadHeader = (props: CometChatThreadHeaderProps) => {
@@ -95,7 +100,8 @@ const CometChatThreadHeader = (props: CometChatThreadHeaderProps) => {
         messageSentAtDateTimeFormat,
         template,
         hideReceipts,
-        textFormatters
+        textFormatters,
+        showScrollbar = false
     } = props;
 
     const loggedInUser = useRef<CometChat.User | null>(null);
@@ -376,7 +382,7 @@ const CometChatThreadHeader = (props: CometChatThreadHeaderProps) => {
 
     return (
         <div className="cometchat">
-            <div className="cometchat-thread-header">
+            <div className={`cometchat-thread-header ${!showScrollbar ? "cometchat-thread-header-hide-scrollbar" : ""}`}>
                 <div className="cometchat-thread-header__top-bar">
                     <div className="cometchat-thread-header__top-bar-title">
                         {getLocalizedString("thread_title")}

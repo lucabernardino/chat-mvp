@@ -295,6 +295,12 @@ interface MessageListProps {
    */
   messageInfoDateTimeFormat?: CalendarObject;
 
+  /**
+    * Controls the visibility of the scrollbar in the list.
+    * @defaultValue `false`
+  */
+  showScrollbar?: boolean;
+
 }
 
 const defaultProps: MessageListProps = {
@@ -339,6 +345,7 @@ const defaultProps: MessageListProps = {
   showSmartReplies: false,
   smartRepliesKeywords: ['what', 'when', 'why', 'who', 'where', 'how', '?'],
   smartRepliesDelayDuration: 10000,
+  showScrollbar: false,
 };
 
 const CometChatMessageList = (props: MessageListProps) => {
@@ -386,6 +393,7 @@ const CometChatMessageList = (props: MessageListProps) => {
     messageSentAtDateTimeFormat,
     separatorDateTimeFormat,
     stickyDateTimeFormat,
+    showScrollbar
   } = { ...defaultProps, ...props };
   /**
    * All the useState useCometChatMessageList are declaired here. These trigger a rerender when updated.
@@ -3857,7 +3865,7 @@ const CometChatMessageList = (props: MessageListProps) => {
         boxSizing: "border-box"
       }}>
         <div
-          className='cometchat-message-list'
+          className={`cometchat-message-list ${!showScrollbar ? "cometchat-message-list-hide-scrollbar" : ""}`}
         >
           {stickyDateHeaderRef.current && showDateHeader &&  !hideStickyDate && messageList.length > 0  ? <div
             className='cometchat-message-list__date-header'
@@ -3877,6 +3885,7 @@ const CometChatMessageList = (props: MessageListProps) => {
 '
           >
             <CometChatList
+              showScrollbar={showScrollbar}
               scrolledUpCallback={updateIsOnBottom}
               headerView={undefined}
               hideSearch={true}
@@ -3933,6 +3942,7 @@ const CometChatMessageList = (props: MessageListProps) => {
             template={getMessageTemplate(activeMessageInfo)}
             hideReceipts={hideReceipts}
             textFormatters={textFormatters}
+            showScrollbar={showScrollbar}
           />
         </div>
       )}

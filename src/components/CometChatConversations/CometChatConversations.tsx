@@ -223,6 +223,11 @@ interface ConversationsProps {
    */
   trailingView?: (conversation: CometChat.Conversation) => JSX.Element;
 
+  /**
+   * Controls the visibility of the scrollbar in the list.
+   * @defaultValue `false`
+   */
+  showScrollbar?: boolean;
 }
 
 type State = {
@@ -797,7 +802,8 @@ export function CometChatConversations(props: ConversationsProps) {
     hideGroupType = false,
     disableSoundForMessages = false,
     customSoundForMessages = null,
-    lastMessageDateTimeFormat
+    lastMessageDateTimeFormat,
+    showScrollbar = false,
   } = props;
 
   const [state, dispatch] = useReducer(stateReducer, {
@@ -1815,9 +1821,10 @@ export function CometChatConversations(props: ConversationsProps) {
   return (
     <div className="cometchat" style={{ width: "100%", height: "100%" }}>
       <div
-        className='cometchat-conversations'
+        className={`cometchat-conversations ${!showScrollbar ? 'cometchat-conversations-hide-scrollbar' : ''}`}
       >
         <CometChatList
+          showScrollbar={showScrollbar}
           title={titleRef.current}
           hideSearch={true}
           list={state.conversationList}

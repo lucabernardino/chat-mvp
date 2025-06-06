@@ -115,6 +115,11 @@ interface CallLogsProps {
    * @returns A JSX element to be rendered as the trailing view.
    */
   trailingView?: (call: any) => JSX.Element;
+  /**
+   * Controls the visibility of the scrollbar in the list.
+   * @defaultValue `false`
+   */
+  showScrollbar?: boolean;
 }
 
 const defaultProps: CallLogsProps = {
@@ -131,6 +136,7 @@ const defaultProps: CallLogsProps = {
     console.log(error);
   },
   activeCall: undefined,
+  showScrollbar:false
 
 };
 
@@ -150,6 +156,7 @@ const CometChatCallLogs = (props: CallLogsProps) => {
     onCallButtonClicked,
     onError,
     callInitiatedDateTimeFormat,
+    showScrollbar
   } = { ...defaultProps, ...props, };
   const titleRef = useRef<string>(getLocalizedString("call_logs_title"));
 
@@ -768,7 +775,7 @@ const CometChatCallLogs = (props: CallLogsProps) => {
 
   return (
     <div className='cometchat' style={{ width: "100%", height: "100%" }}>
-      <div className='cometchat-call-logs'>
+      <div className={`cometchat-call-logs ${!showScrollbar ? "cometchat-call-logs-hide-scrollbar" : ""}`}>
         {showOutgoingCallScreen ? (
           <div className='cometchat-call-logs__outgoing-call'>
             <CometChatOutgoingCall
@@ -790,6 +797,7 @@ const CometChatCallLogs = (props: CallLogsProps) => {
         ) : null}
 
         <CometChatList
+          showScrollbar={showScrollbar}
           title={titleRef.current}
           hideSearch={true}
           list={callList}
