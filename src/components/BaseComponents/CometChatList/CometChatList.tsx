@@ -50,6 +50,8 @@ interface ListProps<T> {
    * Hide the search bar
    *
    * @defaulValue `false`
+   * @remarks
+   * This property is ignored when a custom `searchView` is provided
    */
   hideSearch?: boolean;
   /**
@@ -147,12 +149,33 @@ interface ListProps<T> {
    * Function to call whenever the component encounters an error
    */
   onError?: ((error: CometChat.CometChatException) => void) | null;
-    /**
+  /**
    * Title of the component
    *
    * @defaultValue `""`
    */
-    title?: string;
+  title?: string;
+  
+  /**
+  * A custom search bar component to display in the header.
+  * 
+  * @remarks
+  * When provided, this component overrides the default search bar and the `hideSearch` property.
+  * The custom search view will be displayed even if `hideSearch` is set to true.
+  */
+  searchView?: JSX.Element;
+
+  /**
+   * Callback triggered when the search bar is clicked.
+   */
+  onSearchBarClicked?: () => void;
+
+  /**
+   * Show shimmer effect on top of the list
+   *
+   * @defaultValue `false`
+   */
+  showShimmerOnTop?: boolean;
 
   /**
    * Controls the visibility of the scrollbar in the list.
@@ -189,6 +212,9 @@ function List<T>(props: ListProps<T>): JSX.Element {
     scrolledUpCallback,
     headerView,
     title = "",
+    searchView,
+    onSearchBarClicked,
+    showShimmerOnTop = false,
     showScrollbar = false,
   } = props;
   // Refs for DOM elements and other states
@@ -227,15 +253,22 @@ function List<T>(props: ListProps<T>): JSX.Element {
    * Renders the search box if the hideSearch prop is false.
    */
   function getSearchBox(): JSX.Element | null {
-    if (hideSearch) {
-      return null;
-    }
+    if (hideSearch && !searchView) return null;
+  
+    const handleClick = () => {
+      if (!searchView && onSearchBarClicked) onSearchBarClicked();
+    };
+  
     return (
-      <div className="cometchat-list__header-search-bar
-">
-        <CometChatSearchBar onChange={handleSearchChanged} searchText={searchText} placeholderText={searchPlaceholderText} />
+      <div className="cometchat-list__header-search-bar" onClick={handleClick}>
+        {searchView || (
+          <CometChatSearchBar
+            onChange={handleSearchChanged}
+            searchText={searchText}
+            placeholderText={searchPlaceholderText}
+          />
+        )}
       </div>
-
     );
   }
 
@@ -299,7 +332,7 @@ function List<T>(props: ListProps<T>): JSX.Element {
   function getLoadingView(): JSX.Element {
     return (
       <div
-        className="cometchat-list__loading-view"
+        className={`cometchat-list__loading-view ${showShimmerOnTop ? "cometchat-list__loading-view-top" : ""}`}
       >
         {loadingView}
       </div>
@@ -401,7 +434,7 @@ function List<T>(props: ListProps<T>): JSX.Element {
         <div ref={intersectionObserverRootRef} className="cometchat-list__body">
           <div ref={intersectionObserverTopTargetRef} style={{ height: "1px", minHeight: "1px" }}></div>
           {getList()}
-          {getStateView()}
+          {showShimmerOnTop ? getLoadingView() :  getStateView()}
           <div ref={intersectionObserverBottomTargetRef} style={{ height: "1px", minHeight: "1px" }}></div>
         </div>
       </div>

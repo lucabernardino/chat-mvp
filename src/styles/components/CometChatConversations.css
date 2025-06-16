@@ -573,7 +573,22 @@ width: 100%;
   display: none;
   }
 
-
+.cometchat-conversations .cometchat-search-bar__input{
+  cursor: pointer;
+}
+.cometchat-conversations .cometchat-list-item__body{
+  position: relative;
+}
+.cometchat-conversations .cometchat-list-item__menu-view{
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 1;
+}
+.cometchat-conversations .cometchat-list-item__trailing-view-hidden {
+  visibility: hidden;
+  display: initial;
+}
 @keyframes shimmerAnimation {
     0% {
       background-position: -468px 0;

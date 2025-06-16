@@ -282,3 +282,42 @@ export enum MentionsVisibility {
   groupConversationOnly,
   both
 }
+
+
+/**
+ * Specifies the scope of the search functionality.
+ * 
+ * @remarks
+ * - `Conversations`: Limits the search to conversations only.
+ * - `Messages`: Limits the search to messages only.
+ * 
+ */
+export enum CometChatSearchScope {
+  Conversations = 'conversations',
+  Messages = 'messages',
+}
+/**
+ * Specifies the filters available for the search functionality.
+ * 
+ * @remarks
+ * - `Messages`: Filters to search within messages.
+ * - `Conversations`: Filters to search within conversations.
+ * - `Unread`: Filters to search for unread messages.
+ * - `Groups`: Filters to search within groups.
+ * - `Photos`: Filters to search for photo messages.
+ * - `Videos`: Filters to search for video messages.
+ * - `Links`: Filters to search for links shared in messages.
+ * - `Documents`: Filters to search for document files.
+ * - `Audio`: Filters to search for audio messages.
+ */
+export enum CometChatSearchFilter {
+  Messages = 'messages',
+  Conversations = 'conversations',
+  Unread = 'unread',
+  Groups = 'groups',
+  Photos = 'photos',
+  Videos = 'videos',
+  Links = 'links',
+  Documents = 'files',
+  Audio = 'audio',
+}

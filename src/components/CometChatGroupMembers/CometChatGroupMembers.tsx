@@ -279,7 +279,7 @@ function stateReducer(state: State, action: Action): State {
         };
       } else if (groupMembers.length !== 0) {
         const existingIds = new Set(state.groupMemberList.map(member => member.getUid()));
-        const newUniqueMembers = groupMembers.filter(member => !existingIds.has(member.getUid()));
+        const newUniqueMembers = disableLoadingState ? groupMembers : groupMembers.filter(member => !existingIds.has(member.getUid()));
         newState = {
           ...state,
           groupMemberList: disableLoadingState

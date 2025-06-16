@@ -64,7 +64,8 @@
     width: 100%;
     height: 100%;
     box-sizing: border-box;
-    border-right: 1px solid var(--cometchat-border-color-light)
+    border-right: 1px solid var(--cometchat-border-color-light);
+    position: relative;
 }
 
 /* Styles for loading, error, and empty views, taking up the remaining space */
@@ -74,6 +75,14 @@
     height: calc(100% - 1px);
     overflow: hidden;
     width: 100%;
+}
+.cometchat-list__loading-view-top{
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    height: 100%;
+    width: 100%;
+    z-index: 2;
 }
 
 /* Section header text styling */

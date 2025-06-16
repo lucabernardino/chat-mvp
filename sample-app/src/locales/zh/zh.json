@@ -66,5 +66,6 @@
     "user_group_empty_state": "从左侧边栏的通话列表中选择一个用户或群组，开始您的对话。",
     "transfer": "转移",
     "cancel": "取消",
-    "error": "似乎发生了错误"
+    "error": "似乎发生了错误",
+     "messages_search_title": "搜索消息"
 }

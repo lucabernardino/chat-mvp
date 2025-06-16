@@ -66,5 +66,6 @@
     "user_group_empty_state": "왼쪽 사이드바 통화 목록에서 사용자나 그룹을 선택하고 대화를 시작하세요.",
     "transfer": "전송",
     "cancel": "취소",
-    "error": "문제가 발생한 것 같습니다"
+    "error": "문제가 발생한 것 같습니다",
+    "messages_search_title": "메시지 검색"
 }

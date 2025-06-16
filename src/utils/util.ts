@@ -1,3 +1,4 @@
+import { useCallback, useEffect, useRef } from "react";
 import WaveSurfer from "../components/BaseComponents/CometChatAudioBubble/src/wavesurfer";
 import { CalendarObject } from "./CalendarObject";
 
@@ -238,3 +239,33 @@ export const decodeHTML = (input: string): string =>  {
   txt.innerHTML = input;
   return txt.value;
 }
+
+/** 
+* Custom React hook for creating debounced callbacks with automatic cleanup.
+*/
+export const useDebouncedCallback = (callback: () => void, delay: number) => {
+    const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  
+    const debouncedCallback = useCallback(() => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+      timeoutRef.current = setTimeout(() => {
+        callback();
+        timeoutRef.current = null;
+      }, delay);
+    }, [callback, delay]);
+  
+    const cleanup = useCallback(() => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
+    }, []);
+  
+    useEffect(() => {
+      return cleanup;
+    }, [cleanup]);
+  
+    return { debouncedCallback, cleanup };
+  };

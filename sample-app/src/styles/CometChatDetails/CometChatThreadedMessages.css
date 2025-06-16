@@ -4,6 +4,7 @@
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    background: var(--cometchat-background-color-01, #FFFFFF);
 }
 
 .cometchat-threaded-message .cometchat-thread-header__top-bar {

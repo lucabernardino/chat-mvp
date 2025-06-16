@@ -27,7 +27,8 @@ function useCometChatMessageList(
 	setDateHeader?: Function,
 	parentMessageId?: number,
 	hideGroupActionMessages?: boolean,
-	showSmartReplies?:boolean
+	showSmartReplies?:boolean,
+	goToMessageId?:string
 
 ): void {
 		/**
@@ -80,8 +81,14 @@ function useCometChatMessageList(
 				}
 				unsubscribeEvents = subscribeToUIEvents();
 				setMessageList([]);
+				if(isFirstReloadRef.current && goToMessageId){
+				setScrollListToBottom(false);
+				isOnBottomRef.current = false;
+				}
+				else{
 				setScrollListToBottom(true);
 				isOnBottomRef.current = true;
+				}
 				fetchPreviousMessages();
 				smartReplyViewRef.current = null;
 			}

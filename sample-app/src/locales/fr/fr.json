@@ -66,5 +66,6 @@
     "user_group_empty_state": "Sélectionnez un utilisateur ou un groupe dans la liste d'appels à gauche et commencez votre conversation.",
     "transfer": "Transférer",
     "cancel": "Annuler",
-    "error": "Il semble que quelque chose ait mal tourné"
+    "error": "Il semble que quelque chose ait mal tourné",
+     "messages_search_title": "Rechercher des messages"
 }

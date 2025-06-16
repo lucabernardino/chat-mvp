@@ -1470,11 +1470,22 @@ try {
   const onSendclick = useCallback(() => {
   try {
     var contenteditable = getCurrentInput();
-    let text  =  "";
-    if(contenteditable?.innerHTML){
-     text = decodeHTML(contenteditable.innerHTML).replace(/(<br>\s*)+$/, '');
+    if (contenteditable?.textContent?.trim()) {
+      let textToDispatch = contenteditable?.innerHTML?.trim() === "<br>" ? undefined : decodeHTML(contenteditable?.innerHTML.replace(/(<br>\s*)+$/, ''));
+      if (contenteditable?.innerHTML?.trim() == "<br>") {
+        contenteditable.innerHTML = "";
+      }
+      if (textFormatterArray && textFormatterArray.length) {
+        for (let i = 0; i < textFormatterArray.length; i++) {
+          textToDispatch =
+            textFormatterArray[i].getOriginalText(textToDispatch);
+        }
+      }
+      if(textToDispatch){
+        handleSendButtonClick(textToDispatch);
+
+      }
     }
-     handleSendButtonClick(text);
   } catch (error) {
     errorHandler(error,"onSendclick")
   }

@@ -66,5 +66,6 @@
     "user_group_empty_state": "Wähle einen Benutzer oder eine Gruppe aus der linken Seitenleiste aus und starte dein Gespräch.",
     "transfer": "Übertragen",
     "cancel": "Abbrechen",
-    "error": "Es scheint, als wäre etwas schiefgelaufen"
+    "error": "Es scheint, als wäre etwas schiefgelaufen",
+     "messages_search_title": "Nachrichten suchen"
 }

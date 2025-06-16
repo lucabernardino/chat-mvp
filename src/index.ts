@@ -148,3 +148,6 @@ export { CometChatUIKitUtility } from './CometChatUIKit/CometChatUIKitUtility';
 export * from './CometChatCustomHooks'
 
 export * from './formatters/index'
+
+export * from './utils/SearchUtils'
+export {CometChatSearch} from './components/CometChatSearch/CometChatSearch'

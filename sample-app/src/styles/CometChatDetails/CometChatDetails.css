@@ -82,6 +82,7 @@
     align-self: stretch;
     overflow: auto;
     border-left: 1px solid var(--cometchat-border-color-light, #F5F5F5);
+    background: var(--cometchat-background-color-01, #FFF);
 }
 
 .side-component-content::-webkit-scrollbar,
@@ -324,7 +325,11 @@
         box-shadow: 0px 12px 16px -4px rgba(16, 24, 40, 0.08), 0px 4px 6px -2px rgba(16, 24, 40, 0.03);
     }
 }
-
+.side-component-wrapper--threaded {
+    width: auto;
+    flex-grow: 1;
+    max-width: 100%;
+}
 @media (max-height: 700px) {
     .side-component-content::-webkit-scrollbar,
     .side-component-content::-webkit-scrollbar-thumb {
@@ -334,4 +339,40 @@
 
 .side-component-group-members .cometchat-list__header {
     border-bottom: none;
+}
+.side-component-wrapper__content {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+}
+
+.side-component-wrapper__content-view {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    background: var(--cometchat-background-color-01, #FFF);
+}
+
+.side-component-wrapper__content-top {
+    z-index: 2;
+}
+
+.side-component-wrapper__content-bottom {
+    z-index: 1;
+}
+.conversations-wrapper{
+    position: relative;
+}
+.selector-wrapper-search{
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    z-index: 1;
 }

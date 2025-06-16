@@ -66,5 +66,6 @@
     "user_group_empty_state": "Välj en användare eller grupp från den vänstra sidofältets samtalslista och starta din konversation.",
     "transfer": "Överför",
     "cancel": "Avbryt",
-    "error": "Något gick fel"
+    "error": "Något gick fel",
+     "messages_search_title": "Sök meddelanden"
 }

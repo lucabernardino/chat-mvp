@@ -66,5 +66,6 @@
     "user_group_empty_state": "Kies een gebruiker of groep uit de linkerzijbalk en begin je gesprek.",
     "transfer": "Overdragen",
     "cancel": "Annuleren",
-    "error": "Er is iets misgegaan"
+    "error": "Er is iets misgegaan",
+     "messages_search_title": "Zoek Berichten"
 }

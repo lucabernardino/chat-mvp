@@ -1,4 +1,4 @@
-import { JSX, ReactNode, useCallback, useRef, useState } from "react";
+import { JSX, ReactNode, useCallback, useMemo, useRef, useState } from "react";
 import { useCometChatErrorHandler, useRefSync } from "../../CometChatCustomHooks";
 import { CometChat } from "@cometchat/chat-sdk-javascript";
 import { useCometChatMessageHeader } from "./useCometChatMessageHeader";
@@ -11,12 +11,15 @@ import { CometChatUIKitConstants } from "../../constants/CometChatUIKitConstants
 import { CometChatGroupEvents, IGroupLeft, IGroupMemberAdded, IGroupMemberJoined, IGroupMemberKickedBanned, IOwnershipChanged } from "../../events/CometChatGroupEvents";
 import { CometChatButton } from "../BaseComponents/CometChatButton/CometChatButton";
 import ConversationSummaryIcon from '../../assets/conversation_summary.svg';
+import SearchIcon from '../../assets/search.svg';
 import { CometChatUIEvents } from "../../events/CometChatUIEvents";
 import { CometChatConversationSummary } from "../BaseComponents/CometChatConversationSummary/CometChatConversationSummary";
-import { PanelAlignment } from "../../Enums/Enums";
+import { PanelAlignment, Placement } from "../../Enums/Enums";
 import { CalendarObject } from "../../utils/CalendarObject";
 import { sanitizeCalendarObject } from "../../utils/util";
 import { ComposerId } from "../../utils/MessagesDataSource";
+import { CometChatContextMenu } from "../BaseComponents/CometChatContextMenu/CometChatContextMenu";
+import { CometChatOption } from "../../modals";
 
 /**
  * Interface for the props accepted by the CometChatMessageHeader component.
@@ -28,6 +31,18 @@ interface MessageHeaderProps {
      * @default false
      */
     showConversationSummaryButton?: boolean;
+
+    /**
+     * Shows the search option.
+     * @default false
+     */
+    showSearchOption?: boolean;
+
+    /**
+     * Callback function triggered when search option is clicked.
+     * @returns void
+     */
+    onSearchOptionClicked?: () => void;
 
     /**
      * Hides the back button in the header in mobile view.
@@ -130,7 +145,14 @@ interface MessageHeaderProps {
     /**
     * Format for displaying the "last active" timestamp in the message header.
     */
-    lastActiveAtDateTimeFormat?:CalendarObject
+    lastActiveAtDateTimeFormat?:CalendarObject;
+
+    /**
+     * Callback function triggered when the message header item is clicked.
+     * @returns void
+     */
+
+    onItemClick?: () => void;
   }
 
 /** Functional component for rendering the CometChatMessageHeader */
@@ -157,7 +179,10 @@ export const CometChatMessageHeader = (props: MessageHeaderProps) => {
         enableAutoSummaryGeneration = false,
         summaryGenerationMessageCount = 1000,
         lastActiveAtDateTimeFormat,
-        showBackButton = false
+        showBackButton = false,
+        showSearchOption = false,
+        onSearchOptionClicked = () => {},
+        onItemClick = () => {}
     } = props;
 
     /** States and ref used in the component */
@@ -422,7 +447,7 @@ export const CometChatMessageHeader = (props: MessageHeaderProps) => {
                         updateSubtitle();
                     }
                 },
-            }))
+        }))
 
             CometChat.addGroupListener(
                 groupsListenerId,
@@ -529,7 +554,7 @@ export const CometChatMessageHeader = (props: MessageHeaderProps) => {
                 return itemView;
             } else {
                 return (
-                    <CometChatListItem avatarName={userRef.current?.getName() || groupRef.current?.getName()}
+                    <CometChatListItem onListItemClicked={onItemClick} avatarName={userRef.current?.getName() || groupRef.current?.getName()}
                         avatarURL={userRef.current?.getAvatar() || groupRef.current?.getIcon() || ""}
                         title={userRef.current?.getName() || groupRef.current?.getName() || ""} subtitleView={getSubtitleView()} titleView={titleView} trailingView={trailingView} leadingView={leadingView} />
                 )
@@ -610,7 +635,7 @@ export const CometChatMessageHeader = (props: MessageHeaderProps) => {
             return (
             <div className="cometchat-message-header__conversation-summary-button">
             <CometChatButton
-            hoverText={"Conversation Summary"}
+            hoverText={getLocalizedString("ai_conversation_summary_title")}
             iconURL={ ConversationSummaryIcon}
             onClick={loadConversationSummary}
             />
@@ -621,22 +646,81 @@ export const CometChatMessageHeader = (props: MessageHeaderProps) => {
         }
     }, [showConversationSummaryButton]);
     /** 
+     * search button for the message header. 
+     */
+    const getSearchButton = useCallback(() => {
+        try {
+            return (
+                <div className="cometchat-message-header__search-button">
+                    <CometChatButton
+                        hoverText={getLocalizedString("search_title")}
+                        iconURL={SearchIcon}
+                        onClick={onSearchOptionClicked}
+                    />
+                </div>
+            );
+        } catch (error) {
+            onErrorCallback(error, 'getSearchButton');
+            return null;
+        }
+    }, [onSearchOptionClicked]);
+
+    const menuOptions = useMemo(() => [
+        new CometChatOption({
+            id: "search",
+            title: getLocalizedString("search_title"),
+            iconURL: SearchIcon,
+            onClick: onSearchOptionClicked
+        }),
+        new CometChatOption({
+            id: "summary",
+            title: getLocalizedString("ai_conversation_summary_title"), 
+            iconURL: ConversationSummaryIcon,
+            onClick: loadConversationSummary
+        })
+    ], [onSearchOptionClicked, loadConversationSummary]);
+    
+    const getMenuOptions = useCallback(() => menuOptions, [menuOptions]);
+
+    /** 
      * Retrieves the auxiliary for the message header. 
      * Combines the auxiliary header auxiliary and the provided auxiliary into a single auxiliary component.
+     * When both search and summary buttons are enabled, more button instead of individual buttons.
      */
     const getAuxiliaryView = useCallback(() => {
         try {
+            const shouldShowMenu = showSearchOption && showConversationSummaryButton;
+            
             return (
                 <div className="cometchat-message-header__auxiliary-button-view">
                     {ChatConfigurator.getDataSource().getAuxiliaryHeaderMenu(userRef.current, groupRef.current, { hideVideoCallButton, hideVoiceCallButton }) as ReactNode}
-                    {!showConversationSummaryButton ? null : getConversationSummaryButton()}
+                    
+                    {shouldShowMenu ? (
+                        <div className="cometchat-message-header__menu">
+                            <CometChatContextMenu 
+                            closeOnOutsideClick={true}
+                                data={getMenuOptions()}
+                                placement={Placement.bottom}
+                                topMenuSize={1}
+                                useParentContainer={true}
+                                useParentHeight={false}
+                                disableBackgroundInteraction={true}
+                            />
+                        </div>
+                    ) : (
+                        <>
+                            {showConversationSummaryButton && getConversationSummaryButton()}
+                            {showSearchOption && getSearchButton()}
+                        </>
+                    )}
+                    
                     {auxiliaryButtonView}
                 </div>
             );
         } catch (error) {
             onErrorCallback(error, 'getAuxiliaryView');
         }
-    }, [auxiliaryButtonView]);
+    }, [auxiliaryButtonView, showSearchOption, showConversationSummaryButton]);
 
     useCometChatMessageHeader(
         loggedInUser,

@@ -66,5 +66,6 @@
     "user_group_empty_state": "Válasszon egy felhasználót vagy csoportot a bal oldali oldalsáv hívás listájából, és kezdje el a beszélgetését.",
     "transfer": "Átadás",
     "cancel": "Mégse",
-    "error": "Úgy tűnik, valami hiba történt"
+    "error": "Úgy tűnik, valami hiba történt",
+    "messages_search_title": "Üzenetek keresése"
 }

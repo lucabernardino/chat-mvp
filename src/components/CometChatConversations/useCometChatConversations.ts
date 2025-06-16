@@ -191,7 +191,12 @@ export function useCometChatConversations(args: Args) {
      */
     () => {
       try {
-        
+        let builder = conversationsRequestBuilder;
+        var builtBuilder:CometChat.ConversationsRequest;
+        if(builder){
+          builtBuilder = builder.build();
+        }
+
       const groupMemberScopeChangedSub = CometChatGroupEvents.ccGroupMemberScopeChanged.subscribe(item => {
         dispatch({ type: "updateConversationLastMessageAndPlaceAtTheTop", message: item.message });
       });
@@ -217,14 +222,14 @@ export function useCometChatConversations(args: Args) {
         dispatch({ type: "removeConversationOfTheGroup", group: item.leftGroup });
       });
       const userBlockedSub = CometChatUserEvents.ccUserBlocked.subscribe(user => {
-        if (!conversationsRequestBuilder?.includeBlockedUsers) {
+        if (builtBuilder && !builtBuilder?.isIncludeBlockedUsers()) {
           dispatch({ type: "removeConversationOfTheUser", user });
         } else {
           dispatch({ type: "updateConversationWithUser", user });
         }
       });
       const userUnBlockedSub = CometChatUserEvents.ccUserUnblocked.subscribe(user => {
-        if (conversationsRequestBuilder?.includeBlockedUsers) {
+        if (builtBuilder && builtBuilder.isIncludeBlockedUsers()) {
           dispatch({ type: "updateConversationWithUser", user });
         }
       });
@@ -235,7 +240,7 @@ export function useCometChatConversations(args: Args) {
       });
       const messageSentSub = CometChatMessageEvents.ccMessageSent.subscribe(item => {
         if (item.status === MessageStatus.success) {
-          if (conversationsRequestBuilder && conversationsRequestBuilder.build().getConversationType() && item.message.getReceiverType() !== conversationsRequestBuilder.build().getConversationType()) {
+          if (builtBuilder && builtBuilder.getConversationType() && item.message.getReceiverType() !== builtBuilder.getConversationType()) {
             return;
           }
           CometChat.CometChatHelper.getConversationFromMessage(item.message).then(conversation => {

@@ -66,5 +66,6 @@
     "user_group_empty_state": "Pasirinkite vartotoją arba grupę iš kairiojo meniu sąrašo ir pradėkite pokalbį.",
     "transfer": "Perduoti",
     "cancel": "Atšaukti",
-    "error": "Panašu, kad kažkas nepavyko"
+    "error": "Panašu, kad kažkas nepavyko",
+     "messages_search_title": "Paieška žinutėse"
 }

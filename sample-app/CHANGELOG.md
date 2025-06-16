@@ -1,3 +1,20 @@
+## [6.1.0] - 16-06-2025
+
+## New
+- Implemented the `onSearchOptionClicked` prop from the UI Kit in `CometChatMessageHeader`, allowing users to search messages within a specific chat using the `CometChatSearch` component. Search filters include Audio, Video, Photo, File, and Link messages.
+- Implemented the `onSearchBarClicked` prop from the UI Kit in `CometChatConversations`, enabling search across all conversations and messages via the `CometChatSearch` component. Filters are available for Unread and Group conversations, and for Audio, Video, Photo, File, and Link messages.
+- Implemented navigation to a specific message from search results using the `goToMessageId` prop of `CometChatMessageList`.
+- Implemented the `onSubtitleClicked` prop of `CometChatThreadHeader` to navigate to the parent message within the main message list.
+
+## Enhancements
+- Replaced the "i" icon used to open the User/Group Details page with a click interaction on `CometChatMessageHeader`, improving accessibility and simplifying the UI.
+
+## Fixes
+- None
+
+## Removals
+- Removed the "i" icon from `CometChatMessageHeader` as it has been replaced by the new header click behavior for opening the details page.
+
 ## [6.0.6] - 06-06-2025
 
 ## New

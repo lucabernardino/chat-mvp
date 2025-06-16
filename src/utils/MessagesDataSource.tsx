@@ -378,6 +378,28 @@ export class MessagesDataSource implements DataSource {
         textFormatters?: CometChatTextFormatter[]
 
       ) => {
+          const shouldOverrideTextFormatters = (
+            existingFormatters?: CometChatTextFormatter[],
+          incoming?: CometChatTextFormatter[]
+        ): boolean => {
+          if (!incoming || incoming.length === 0) return false;
+          if (!existingFormatters || existingFormatters.length === 0) return true;
+          
+          // Compare by constructor name or another property that uniquely identifies formatter types
+          return incoming.some(incomingFormatter => 
+            !existingFormatters.some(existingFormatter => 
+              incomingFormatter.constructor?.name === existingFormatter.constructor?.name
+            )
+          );
+        };
+        
+        const mergedParams = {
+          ...additionalConfigurations,
+          ...(shouldOverrideTextFormatters(
+            additionalConfigurations?.textFormatters,
+            textFormatters
+          ) ? { textFormatters } : {})
+        };
         let textMessage: CometChat.TextMessage =
           message as CometChat.TextMessage;
         if (textMessage.getDeletedAt() != null) {
@@ -386,8 +408,7 @@ export class MessagesDataSource implements DataSource {
         return ChatConfigurator.getDataSource().getTextMessageContentView(
           textMessage,
           _alignment,
-
-          {...additionalConfigurations,...{textFormatters:textFormatters}}
+          mergedParams
         );
       },
       options: ChatConfigurator.getDataSource().getMessageOptions,
@@ -1240,12 +1261,13 @@ export class MessagesDataSource implements DataSource {
     loggedInUser: CometChat.User,
     additionalConfigurations: additionalParams
   ): string {
+     let formatters:CometChatTextFormatter[] = additionalConfigurations.textFormatters || additionalConfigurations.textFormattersList || []
     let config = {
       ...additionalConfigurations,
       textFormatters:
-        additionalConfigurations?.textFormatters &&
-          additionalConfigurations?.textFormatters.length
-          ? [...additionalConfigurations.textFormatters]
+        formatters &&
+          formatters.length
+          ? [...formatters]
           : [this.getMentionsTextFormatter({ disableMentions: additionalConfigurations.disableMentions })],
     };
     let message = ConversationUtils.getLastConversationMessage(

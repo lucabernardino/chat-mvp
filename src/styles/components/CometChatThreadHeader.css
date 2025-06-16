@@ -21,16 +21,31 @@
     background: var(--cometchat-background-color-01, #FFF);
 }
 
-.cometchat-thread-header__top-bar-title {
+.cometchat-thread-header__top-bar-title-container {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: flex-start;
     flex: 1 0 0;
     overflow: hidden;
+}
+
+.cometchat-thread-header__top-bar-title {
     color: var(--cometchat-text-color-primary, #141414);
     text-overflow: ellipsis;
     font: var(--cometchat-font-heading3-bold, 700 20px Roboto);
+}
+
+.cometchat-thread-header__top-bar-subtitle-text{
+    color: var(--cometchat-text-color-secondary, #727272);
+    font: var(--cometchat-font-caption1-regular, 400 12px Roboto);
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.cometchat-thread-header__top-bar-subtitle-text-clickable {
+    cursor: pointer;
 }
 
 .cometchat-thread-header__top-bar-close {

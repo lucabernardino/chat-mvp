@@ -66,5 +66,6 @@
     "user_group_empty_state": "Pick a user or group from the left sidebar call list, and start your conversation.",
     "transfer": "Transfer",
     "cancel": "Cancel",
-    "error": "It seems something went wrong"
+    "error": "It seems something went wrong",
+    "messages_search_title": "Search Messages"
 }

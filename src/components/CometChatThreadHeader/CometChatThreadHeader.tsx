@@ -80,6 +80,16 @@ interface CometChatThreadHeaderProps {
     */
     textFormatters?: CometChatTextFormatter[];
     /**
+     * Callback function triggered when the subtitle is clicked.
+     */
+    onSubtitleClicked?: () => void;
+
+    /**
+     * Custom subtitle view to display below the thread title.
+     */
+    subtitleView?: JSX.Element;
+    
+    /**
     * Controls the visibility of the scrollbar in the list.
     * @defaultValue `false`
     */
@@ -101,6 +111,8 @@ const CometChatThreadHeader = (props: CometChatThreadHeaderProps) => {
         template,
         hideReceipts,
         textFormatters,
+        onSubtitleClicked,
+        subtitleView,
         showScrollbar = false
     } = props;
 
@@ -379,13 +391,38 @@ const CometChatThreadHeader = (props: CometChatThreadHeaderProps) => {
         }
     }, [updatedMessage]);
 
+    const getSubtitleView = useCallback(() => {
+        if (parentMessage?.getSender()) {
+            const onClick = () => {
+                if (onSubtitleClicked) {
+                    onSubtitleClicked()
+                }
+            }
+            return (
+                <div
+                    className={`cometchat-thread-header__top-bar-subtitle-text ${onSubtitleClicked ? "cometchat-thread-header__top-bar-subtitle-text-clickable" : ""}`}
+                    onClick={onClick}
+                >
+                    {parentMessage.getSender().getName()}
+                </div>
+            );
+        }
+        return null;
+    }, [parentMessage, onSubtitleClicked]);
 
     return (
         <div className="cometchat">
             <div className={`cometchat-thread-header ${!showScrollbar ? "cometchat-thread-header-hide-scrollbar" : ""}`}>
                 <div className="cometchat-thread-header__top-bar">
-                    <div className="cometchat-thread-header__top-bar-title">
-                        {getLocalizedString("thread_title")}
+                    <div className="cometchat-thread-header__top-bar-title-container">
+                        <div className="cometchat-thread-header__top-bar-title">
+                            {getLocalizedString("thread_title")}
+                        </div>
+                        
+                            <div className="cometchat-thread-header__top-bar-subtitle">
+                                {subtitleView ?? getSubtitleView()}
+                            </div>
+                        
                     </div>
                     <div className="cometchat-thread-header__top-bar-close">
                         {getCloseBtnView()}

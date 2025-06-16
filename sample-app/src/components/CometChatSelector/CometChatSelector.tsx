@@ -23,6 +23,7 @@ interface SelectorProps {
     setShowCreateGroup?: Dispatch<SetStateAction<boolean>>;
     onHide?: () => void;
     onNewChatClicked?: () => void;
+    onSearchClicked?:()=>void;
     onGroupCreated?: (group: CometChat.Group) => void;
 }
 
@@ -39,6 +40,7 @@ export const CometChatSelector = (props: SelectorProps) => {
         onHide = () => { },
         onNewChatClicked = () => { },
         onGroupCreated = () => { },
+        onSearchClicked = ()=>{}
     } = props;
 
     const [loggedInUser, setLoggedInUser] = useState<CometChat.User | null>();
@@ -138,6 +140,8 @@ export const CometChatSelector = (props: SelectorProps) => {
                 )}
                 {activeTab == "chats" ? (
                     <CometChatConversations
+                        showSearchBar={true}
+                        onSearchBarClicked={onSearchClicked}
                         activeConversation={activeItem as CometChat.Conversation}
                         headerView={conversationsHeaderView()}
                         onItemClick={(e) => {

@@ -66,5 +66,6 @@
     "user_group_empty_state": "Scegli un utente o un gruppo dalla lista chiamate nel pannello laterale sinistro e inizia la tua conversazione.",
     "transfer": "Trasferisci",
     "cancel": "Annulla",
-    "error": "Sembra che ci sia stato un problema"
+    "error": "Sembra che ci sia stato un problema",
+    "messages_search_title": "Cerca messaggi"
 }

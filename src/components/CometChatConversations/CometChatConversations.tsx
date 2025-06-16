@@ -224,7 +224,23 @@ interface ConversationsProps {
   trailingView?: (conversation: CometChat.Conversation) => JSX.Element;
 
   /**
-   * Controls the visibility of the scrollbar in the list.
+  * A custom search bar component to display in the Conversations header.
+  */
+  searchView?: JSX.Element;
+
+  /**
+   * Callback triggered when the search bar is clicked.
+   */
+  onSearchBarClicked?: () => void;
+
+  /**
+   * Determines whether to display the search bar in the Conversations header.
+   *
+   * @defaultValue `false`
+   */
+  showSearchBar?: boolean;
+  
+   /** Controls the visibility of the scrollbar in the list.
    * @defaultValue `false`
    */
   showScrollbar?: boolean;
@@ -803,6 +819,9 @@ export function CometChatConversations(props: ConversationsProps) {
     disableSoundForMessages = false,
     customSoundForMessages = null,
     lastMessageDateTimeFormat,
+    showSearchBar = false,
+    searchView,
+    onSearchBarClicked,
     showScrollbar = false,
   } = props;
 
@@ -1479,7 +1498,7 @@ export function CometChatConversations(props: ConversationsProps) {
           if (
             defaultOptions[i].id ===
             CometChatUIKitConstants.ConversationOptions.delete
-          ) {
+           && !defaultOptions[i].onClick) {
             defaultOptions[i].onClick = () => deleteOptionCallback(conversation);
           }
         }
@@ -1496,14 +1515,10 @@ export function CometChatConversations(props: ConversationsProps) {
             data={curOptions as unknown as CometChatActionsIcon[]}
             topMenuSize={2}
             placement={Placement.left}
-            onOptionClicked={() => {
-              curOptions && curOptions.forEach((option: CometChatOption) => {
-                if (option) {
-                  if (option.id) {
-                    option.onClick?.(parseInt(String(option.id)));
-                  }
-                }
-              });
+            onOptionClicked={(menu?:CometChatOption | CometChatActionsIcon) => {
+              if(menu?.onClick){
+                menu.onClick(conversation)
+              }
             }}
           />
         </div>
@@ -1826,7 +1841,9 @@ export function CometChatConversations(props: ConversationsProps) {
         <CometChatList
           showScrollbar={showScrollbar}
           title={titleRef.current}
-          hideSearch={true}
+          hideSearch={!showSearchBar}
+          searchView={searchView}
+          onSearchBarClicked={onSearchBarClicked}
           list={state.conversationList}
           listItemKey='getConversationId'
           itemView={getListItem()}

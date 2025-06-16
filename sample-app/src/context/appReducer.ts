@@ -13,6 +13,13 @@ interface defaultStateType {
         group: CometChat.Group
     },
     isFreshChat?: boolean;
+    goToMessageId?: string;
+    showMessagesSearch?: boolean;
+    showConversationsSearch?: boolean;
+    sideComponentTop?: string;
+    threadSearchMessage?: CometChat.BaseMessage;
+    searchKeyword?:string;
+    
 }
 
 export const defaultAppState: defaultStateType = {
@@ -26,6 +33,12 @@ export const defaultAppState: defaultStateType = {
     showNewChat: false,
     showJoinGroup: false,
     isFreshChat: false,
+    goToMessageId:undefined,
+    showMessagesSearch: false,
+    showConversationsSearch:false,
+    sideComponentTop: "search",
+    threadSearchMessage:undefined,
+    searchKeyword:undefined
 }
 
 export const appReducer = (state = defaultAppState, action: any) => {
@@ -46,7 +59,7 @@ export const appReducer = (state = defaultAppState, action: any) => {
             return { ...state, ["selectedItemCall"]: action.payload };
         }
         case "updateSideComponent": {
-            return { ...state, ["sideComponent"]: action.payload };
+            return { ...state, ["sideComponent"]: action.payload ,["sideComponentTop"]:action.payload?.type || ""};
         }
         case "updateThreadedMessage": {
             return { ...state, ["threadedMessage"]: action.payload };
@@ -66,7 +79,24 @@ export const appReducer = (state = defaultAppState, action: any) => {
         case 'updateIsFreshChat': {
             return { ...state, isFreshChat: action.payload };
           }
-
+        case 'updateGoToMessageId': {
+            return { ...state, goToMessageId: action.payload };
+        }
+        case 'updateShowMessagesSearch': {
+            return {...state, showMessagesSearch: action.payload,["sideComponentTop"]:"search" };
+        }
+        case 'updateShowConversationsSearch': {
+            return {...state, showConversationsSearch: action.payload};
+        }
+        case 'updateSideComponentTop': {
+            return {...state, sideComponentTop: action.payload};
+        }
+        case 'updateThreadSearchMessage': {
+            return {...state, threadSearchMessage: action.payload};
+        }
+        case 'UpdateSearchKeyword': {
+            return {...state, searchKeyword: action.payload};
+        }
         default: {
             return state;
         }

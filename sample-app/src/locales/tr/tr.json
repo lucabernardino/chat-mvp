@@ -66,5 +66,6 @@
     "user_group_empty_state": "Sol kenar çubuğundaki kullanıcı veya grup listesinden birini seçin ve sohbetinize başlayın.",
     "transfer": "Aktar",
     "cancel": "İptal",
-    "error": "Bir şeyler ters gitti gibi görünüyor"
+    "error": "Bir şeyler ters gitti gibi görünüyor",
+    "messages_search_title": "Mesajları Ara"
 }

@@ -66,5 +66,6 @@
     "user_group_empty_state": "左サイドバーの通話リストからユーザーまたはグループを選んで、会話を始めてください。",
     "transfer": "転送",
     "cancel": "キャンセル",
-    "error": "何か問題が発生しました"
+    "error": "何か問題が発生しました",
+    "messages_search_title": "メッセージを検索"
 }

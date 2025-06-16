@@ -54,6 +54,7 @@
 @import url('./CometChatOngoingCall.css');
 @import url('./CometChatThreadHeader.css');
 @import url('./CometChatToast.css');
+@import url('./CometChatSearch.css');
 
 .cometchat * {
     box-sizing: border-box;
@@ -109,4 +110,8 @@ font:var(--cometchat-font-body-regular);
 }
 .cometchat-text-bubble .cometchat-url{
     text-decoration: underline;
+}
+
+.cometchat-text-bubble .cometchat-text-highlight {
+    font: var(--cometchat-font-body-bold);
 }
