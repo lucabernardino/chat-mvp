@@ -4,6 +4,7 @@ import { CometChatActionsIcon, CometChatActionsView, CometChatOption } from '../
 import { Placement } from '../../../Enums/Enums';
 import { fireClickEvent } from '../../../utils/util';
 import { isMobileDevice } from '../../../utils/util';
+import { useCometChatFrameContext } from '../../../context/CometChatFrameContext';
 interface ContextMenuProps {
     /* data to be used for the menu items. */
     data: Array<CometChatActionsIcon | CometChatActionsView | CometChatOption>,
@@ -23,6 +24,8 @@ interface ContextMenuProps {
     useParentContainer?: boolean;
     /* Specifies whether the menu should use parent height for positioning */
     useParentHeight?: boolean;
+    /* If true, forces the menu to open only at the specified placement without any positioning logic */
+    forceStaticPlacement?: boolean;
 }
 
 /**
@@ -41,7 +44,8 @@ const CometChatContextMenu = (props: ContextMenuProps) => {
         closeOnOutsideClick = false,
         disableBackgroundInteraction = false,
         useParentContainer = false,
-        useParentHeight = false
+        useParentHeight = false,
+        forceStaticPlacement = false
     } = props;
     const popoverRef = React.createRef<{
         openPopover: () => void;
@@ -52,6 +56,15 @@ const CometChatContextMenu = (props: ContextMenuProps) => {
     const [positionStyleState, setPositionStyleState] = useState<CSSProperties>({});
     const parentViewRef = useRef<HTMLDivElement | null>(null);
     const resizeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const IframeContext = useCometChatFrameContext();
+    
+    const getCurrentWindow = ()=>{
+      return IframeContext?.iframeWindow || window;
+    }
+
+    const getCurrentDocument = ()=>{
+      return IframeContext?.iframeDocument || document;
+    }
 
 
     /**
@@ -72,8 +85,8 @@ const CometChatContextMenu = (props: ContextMenuProps) => {
     useEffect(() => {
         if (closeOnOutsideClick) {
           
-            document.addEventListener('click', handleClickOutside);
-            return () => document.removeEventListener('click', handleClickOutside);
+            getCurrentDocument().addEventListener('click', handleClickOutside);
+            return () => getCurrentDocument().removeEventListener('click', handleClickOutside);
         }
     }, [closeOnOutsideClick]);
 
@@ -241,6 +254,54 @@ const CometChatContextMenu = (props: ContextMenuProps) => {
         let positionStyle: CSSProperties = {};
         const padding = 10; // Common padding value used throughout
 
+        // If forceStaticPlacement is true, use simple static positioning based on placement
+        if (forceStaticPlacement) {
+            // Get parent container boundaries if available
+            const viewportWidth = window.innerWidth;
+            const containerLeft = parentRect ? parentRect.left : 0;
+            const containerRight = parentRect ? parentRect.right : viewportWidth;
+            
+            let calculatedLeft = rect.left;
+            let calculatedTop = rect.top;
+            
+            switch (availablePlacement) {
+                case Placement.top:
+                    calculatedTop = rect.top - height - padding;
+                    calculatedLeft = rect.left;
+                    break;
+                case Placement.bottom:
+                    calculatedTop = rect.bottom + padding;
+                    calculatedLeft = rect.left;
+                    break;
+                case Placement.left:
+                    calculatedTop = rect.top;
+                    calculatedLeft = rect.left - width - padding;
+                    break;
+                case Placement.right:
+                    calculatedTop = rect.top;
+                    calculatedLeft = rect.right + padding;
+                    break;
+                default:
+                    calculatedTop = rect.top;
+                    calculatedLeft = rect.left - width - padding;
+                    break;
+            }
+            
+            // Adjust horizontal position to stay within parent boundaries
+            if (calculatedLeft + width > containerRight) {
+                // Menu would exceed right boundary, move it left
+                calculatedLeft = containerRight - width - padding;
+            }
+            if (calculatedLeft < containerLeft) {
+                // Menu would exceed left boundary, move it right
+                calculatedLeft = containerLeft + padding;
+            }
+            
+            positionStyle.top = `${calculatedTop}px`;
+            positionStyle.left = `${calculatedLeft}px`;
+            return positionStyle;
+        }
+
         // When using parent container as viewport
         if (positioningStrategy === 'parent' && parentRect) {
             if ([Placement.top, Placement.bottom].includes(availablePlacement)) {
@@ -295,8 +356,8 @@ const CometChatContextMenu = (props: ContextMenuProps) => {
         }
         // Default: position relative to viewport
         else {
-            const viewportHeight = window.innerHeight;
-            const viewportWidth = window.innerWidth;
+            const viewportHeight = getCurrentWindow().innerHeight;
+            const viewportWidth = getCurrentWindow().innerWidth;
 
             if ([Placement.top, Placement.bottom].includes(availablePlacement)) {
                 // Check if there's enough space below or above
@@ -322,9 +383,14 @@ const CometChatContextMenu = (props: ContextMenuProps) => {
         }
 
         return positionStyle;
-    }, [placement, useParentHeight]);
+    }, [placement, useParentHeight, forceStaticPlacement]);
 
     const getAvailablePlacement = useCallback((rect:DOMRect, height:number) => {
+        // If forceStaticPlacement is true, always return the placement prop without any logic
+        if (forceStaticPlacement) {
+            return placement;
+        }
+
         const spaceAbove = rect.top;
         const parentViewRect = parentViewRef.current?.getBoundingClientRect();
         const spaceBelow = parentViewRect ? parentViewRect.bottom - rect.bottom : 0;
@@ -338,7 +404,7 @@ const CometChatContextMenu = (props: ContextMenuProps) => {
     
         if (!parentViewRect) return placement;
         return spaceBelow >= height + 10 ? Placement.bottom : spaceAbove >= height + 10 ? Placement.top : placement;
-    }, [placement]);
+    }, [placement, forceStaticPlacement]);
     
     const calculatePopoverPosition = useCallback(() => {
         if (!moreButtonRef.current || !parentViewRef.current) return;
@@ -368,12 +434,12 @@ const CometChatContextMenu = (props: ContextMenuProps) => {
         const rect = moreButtonRef.current.getBoundingClientRect();
         const parentRect = parentViewRef.current?.getBoundingClientRect() || {
             left: 0,
-            right: window.innerWidth,
-            width: window.innerWidth,
+            right: getCurrentWindow().innerWidth,
+            width: getCurrentWindow().innerWidth,
             // Add missing DOMRect properties
-            height: window.innerHeight,
+            height: getCurrentWindow().innerHeight,
             top: 0,
-            bottom: window.innerHeight,
+            bottom: getCurrentWindow().innerHeight,
             x: 0,
             y: 0,
             toJSON: () => ({})
@@ -467,9 +533,9 @@ const CometChatContextMenu = (props: ContextMenuProps) => {
                 }, 100); // 100ms debounce
             };
 
-            window.addEventListener('resize', handleResize);
+            getCurrentWindow().addEventListener('resize', handleResize);
             return () => {
-                window.removeEventListener('resize', handleResize);
+                getCurrentWindow().removeEventListener('resize', handleResize);
                 if (resizeTimeoutRef.current) {
                     clearTimeout(resizeTimeoutRef.current);
                 }

@@ -78,6 +78,10 @@ export type WaveSurferOptions = {
   backend?: 'WebAudio' | 'MediaElement'
   /** Nonce for CSP if necessary */
   cspNonce?: string
+  /** iframe document for iframe context support */
+  iframeDocument?: Document
+  /** iframe window for iframe context support */
+  iframeWindow?: Window
 }
 
 const defaultOptions = {
@@ -177,7 +181,7 @@ class WaveSurfer extends Player<WaveSurferEvents> {
     this.timer = new Timer()
 
     const audioElement = media ? undefined : this.getMediaElement()
-    this.renderer = new Renderer(this.options, audioElement)
+    this.renderer = new Renderer(this.options, audioElement, this.options.iframeDocument, this.options.iframeWindow)
 
     this.initPlayerEvents()
     this.initRendererEvents()

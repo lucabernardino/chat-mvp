@@ -5,6 +5,7 @@ import { CometChatUIKitLoginListener } from "../../../CometChatUIKit/CometChatUI
 import {getLocalizedString} from "../../../resources/CometChatLocalize/cometchat-localize";
 import { CometChatUIKitConstants } from "../../../constants/CometChatUIKitConstants";
 import { useCometChatErrorHandler } from "../../../CometChatCustomHooks";
+import { useCometChatFrameContext } from "../../../context/CometChatFrameContext";
 
 interface ReactionInfoProps {
     /* Base message object of which reaction info is viewed. */
@@ -39,6 +40,15 @@ export const CometChatReactionInfo: React.FC<ReactionInfoProps> = ({
     const youText = getLocalizedString("reaction_popup_you");
     const limit = CometChatUIKitConstants.requestBuilderLimits.reactionInfoLimit;
     const errorHandler = useCometChatErrorHandler(onError);
+    const IframeContext = useCometChatFrameContext();
+
+    const getCurrentWindow = () => {
+    return IframeContext?.iframeWindow || window;
+    }
+
+    const getCurrentDocument = () => {
+    return IframeContext?.iframeDocument || document;
+    }
 
     useEffect(() => {
         checkVisibilityOfElement();
@@ -74,7 +84,7 @@ export const CometChatReactionInfo: React.FC<ReactionInfoProps> = ({
                     }
                 });
             });
-            observerRef.current.observe(document.getElementById("reaction-info-container") as Element); 
+            observerRef.current.observe(getCurrentDocument().getElementById("reaction-info-container") as Element); 
         } catch (error) {
             errorHandler(error,"checkVisibilityOfElement")
         }
@@ -193,7 +203,7 @@ export const CometChatReactionInfo: React.FC<ReactionInfoProps> = ({
             y_bot = rect?.bottom!,
             y_top = rect?.top!;
 
-        const viewportHeight = window.innerHeight, viewportWidth = window.innerWidth;
+        const viewportHeight = getCurrentWindow().innerHeight, viewportWidth = getCurrentWindow().innerWidth;
         if (placement === Placement.top || placement === Placement.bottom) {
             if (placement === Placement.top) {
                 if (y_top - height - 10 < 0) {

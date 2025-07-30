@@ -46,6 +46,7 @@ import { CometChatSmartReplies } from "../BaseComponents/CometChatSmartReplies/C
 import { CalendarObject } from "../../utils/CalendarObject";
 import { ComposerId } from "../../utils/MessagesDataSource";
 import { JSX } from 'react';
+import { useCometChatFrameContext } from "../../context/CometChatFrameContext";
 
 /**
  * Props for the MessageList component.
@@ -463,8 +464,11 @@ const CometChatMessageList = (props: MessageListProps) => {
   const hasReachedBottomRef = useRef<boolean>(false);
   const hasVisibleAreaRef = useRef<boolean>(false);
   var timeoutId: NodeJS.Timeout | null | number = null;
+  const IframeContext = useCometChatFrameContext();
 
-  
+  const getCurrentDocument = () => {
+    return IframeContext?.iframeDocument || document;
+  }
 
   const { debouncedCallback: debouncedSetMessageProgress } = useDebouncedCallback(
     () => setIsMessageInProgress(false),
@@ -3353,7 +3357,7 @@ const scrollToMessage = useCallback(() => {
 
 const { debouncedCallback: debouncedUpdateVisibleArea } = useDebouncedCallback(
   () => {
-    const messageListBody = document.querySelector(".cometchat-message-list .cometchat-list__body");
+    const messageListBody = getCurrentDocument().querySelector(".cometchat-message-list .cometchat-list__body");
     if (!messageListBody) return;
     
     const { scrollTop, scrollHeight, clientHeight } = messageListBody;
@@ -3373,7 +3377,7 @@ const { debouncedCallback: debouncedUpdateVisibleArea } = useDebouncedCallback(
    */
   const handleScroll = useCallback(() => {
     try {
-      const messageListBody = document.querySelector(".cometchat-message-list .cometchat-list__body");
+      const messageListBody = getCurrentDocument().querySelector(".cometchat-message-list .cometchat-list__body");
       if (!messageListBody) return;
       debouncedUpdateVisibleArea();
       let firstVisibleMessageId: any = null;
@@ -3411,7 +3415,7 @@ const { debouncedCallback: debouncedUpdateVisibleArea } = useDebouncedCallback(
 
   useEffect(() => {
     try {
-      let listElement = document.querySelector(".cometchat-message-list .cometchat-list__body");
+      let listElement = getCurrentDocument().querySelector(".cometchat-message-list .cometchat-list__body");
       if (listElement) {
         listElement.addEventListener("scroll", handleScroll)
       }

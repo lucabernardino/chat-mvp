@@ -151,3 +151,4 @@ export * from './formatters/index'
 
 export * from './utils/SearchUtils'
 export {CometChatSearch} from './components/CometChatSearch/CometChatSearch'
+export {CometChatFrameProvider,useCometChatFrameContext} from './context/CometChatFrameContext'

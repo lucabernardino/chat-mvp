@@ -56,6 +56,8 @@ type Args = {
   getCurrentInput: Function
   isPartOfCurrentChatForUIEvent: (message: CometChat.BaseMessage) => boolean | undefined;
   textMessageToEdit:CometChat.TextMessage | null;
+  getCurrentWindow: () => Window;
+  getCurrentDocument: () => Document;
 
 };
 
@@ -91,8 +93,10 @@ export function useCometChatMessageComposer(args: Args) {
     setUserMemberListType,
     getComposerId,
     isPartOfCurrentChatForUIEvent,
-    parentMessageIdPropRef, getCurrentInput,textMessageToEdit } = args;
+    parentMessageIdPropRef, getCurrentInput,textMessageToEdit,getCurrentWindow,getCurrentDocument } = args;
   const isPreviewVisible = useRef<boolean>(false);
+  const autoFocusCompleted = useRef<boolean>(false);
+
 
 
   function handleMessageDeleted(message: CometChat.BaseMessage) {
@@ -146,7 +150,7 @@ export function useCometChatMessageComposer(args: Args) {
                   });
                   emptyInputField()
                   if (pasteHtmlAtCaret) {
-                    const sel = window?.getSelection();
+                    const sel = getCurrentWindow()?.getSelection();
                     setSelection(sel);
                     let finalText: string | void = object.message.getText();
                     if (textFormatterArray && textFormatterArray.length) {
@@ -310,7 +314,7 @@ export function useCometChatMessageComposer(args: Args) {
   useEffect(() => {
     function triggerSelection(): void {
       try {
-        let sel = window?.getSelection();
+        let sel = getCurrentWindow()?.getSelection();
         setSelection(sel);
       } catch (error) {
         errorHandler(error, "triggerSelection")
@@ -336,9 +340,10 @@ export function useCometChatMessageComposer(args: Args) {
       }
 
       contentEditable.addEventListener("paste", preventPaste);
-      document?.addEventListener("selectionchange", triggerSelection);
-      if (!isMobileDevice()) {
+      getCurrentDocument()?.addEventListener("selectionchange", triggerSelection);
+      if (!isMobileDevice() && !autoFocusCompleted.current) {
         contentEditable?.focus();
+        autoFocusCompleted.current = true;
       }
       if (!disableMentions) {
         if (textFormatterArray.length ) {
@@ -388,12 +393,12 @@ export function useCometChatMessageComposer(args: Args) {
         }
    
       }
-      if(window?.getSelection()){
-        setSelection(window?.getSelection());
+      if(getCurrentWindow()?.getSelection()){
+        setSelection(getCurrentWindow()?.getSelection());
       }
       return () => {
         contentEditable.removeEventListener("paste", preventPaste);
-        document.removeEventListener("selectionchange", triggerSelection);
+        getCurrentDocument()?.removeEventListener("selectionchange", triggerSelection);
       };
     } catch (error) {
       errorHandler(error, "preventPaste")

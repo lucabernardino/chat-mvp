@@ -836,11 +836,14 @@ export function CometChatSearch(props: SearchProps) {
   }, [activeFilters, getAvailableFilters, searchIn, uid, guid]);
 
   // Auto-focus the search input when component mounts
-  useEffect(() => {
-    if (searchInputRef.current) {
-      searchInputRef.current.focus();
-    }
-  }, []);
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            if (searchInputRef.current) {
+                searchInputRef.current.focus();
+            }
+        }, 100);
+        return () => clearTimeout(timer);
+    }, []);
 
   return (
     <div className="cometchat-search">

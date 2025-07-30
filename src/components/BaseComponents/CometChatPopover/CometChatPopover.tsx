@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, ReactNode, useCallback, forwardRef, useImperativeHandle, CSSProperties, useLayoutEffect } from 'react';
 import { fireClickEvent } from '../../../utils/util';
+import { useCometChatFrameContext } from '../../../context/CometChatFrameContext';
 
 export enum Placement {
     top = 'top',
@@ -63,6 +64,15 @@ const CometChatPopover = forwardRef<{
                 setIsOpen(false);
             },
         }));
+        const IframeContext = useCometChatFrameContext();
+
+        const getCurrentWindow = () => {
+            return IframeContext?.iframeWindow || window;
+        }
+
+        const getCurrentDocument = () => {
+            return IframeContext?.iframeDocument || document;
+        }
         const togglePopover = useCallback((e?: any) => {
             setIsOpen(prev => !prev);
         }, []);
@@ -84,8 +94,8 @@ const CometChatPopover = forwardRef<{
         };
         useEffect(() => {
             if (closeOnOutsideClick && isOpen) {
-                document.addEventListener('click', handleClickOutside);
-                return () => document.removeEventListener('click', handleClickOutside);
+                getCurrentDocument().addEventListener('click', handleClickOutside);
+                return () => getCurrentDocument().removeEventListener('click', handleClickOutside);
             }
         }, [closeOnOutsideClick, isOpen]);
         useEffect(() => {
@@ -108,8 +118,8 @@ const CometChatPopover = forwardRef<{
                 if (
                     rect.top < 0 ||
                     rect.left < 0 ||
-                    rect.bottom > window.innerHeight ||
-                    rect.right > window.innerWidth
+                    rect.bottom > getCurrentWindow().innerHeight ||
+                    rect.right > getCurrentWindow().innerWidth
                 ) {
                     setIsOpen(false);
                     if (onOutsideClick) {
@@ -117,11 +127,11 @@ const CometChatPopover = forwardRef<{
                     }
                 }
             };
-            window.addEventListener('resize', handleScroll);
-            window.addEventListener('scroll', handleScroll, true);
+            getCurrentWindow().addEventListener('resize', handleScroll);
+            getCurrentWindow().addEventListener('scroll', handleScroll, true);
             return () => {
-                window.removeEventListener('resize', handleScroll);
-                window.removeEventListener('scroll', handleScroll);
+                getCurrentWindow().removeEventListener('resize', handleScroll);
+                getCurrentWindow().removeEventListener('scroll', handleScroll);
             };
         }, [isOpen]);
         /**
@@ -145,9 +155,9 @@ const CometChatPopover = forwardRef<{
         const getAvailablePlacement = useCallback(
             (rect: DOMRect, height: number) => {
               const spaceAbove = rect.top;
-              const spaceBelow = window.innerHeight - rect.bottom;
+              const spaceBelow = getCurrentWindow().innerHeight - rect.bottom;
               const spaceLeft = rect.left;
-              const spaceRight = window.innerWidth - rect.right;
+              const spaceRight = getCurrentWindow().innerWidth - rect.right;
                         if (useParentContainer) {
                 const parentViewRect = parentViewRef.current?.getBoundingClientRect();
                 if (!parentViewRect) return placement;
@@ -228,8 +238,8 @@ const CometChatPopover = forwardRef<{
 
             const parentRect = parentViewRef.current?.getBoundingClientRect() || {
                 left: 0,
-                right: window.innerWidth,
-                width: window.innerWidth,
+                right: getCurrentWindow().innerWidth,
+                width: getCurrentWindow().innerWidth,
             };
             const height = popoverRef.current.scrollHeight;
             let positionStyle: CSSProperties = {};
@@ -262,8 +272,8 @@ const CometChatPopover = forwardRef<{
             const rect = childRef.current?.getBoundingClientRect();
             if (!rect) return;
             
-            const viewportHeight = window.innerHeight;
-            const viewportWidth = window.innerWidth;
+            const viewportHeight = getCurrentWindow().innerHeight;
+            const viewportWidth = getCurrentWindow().innerWidth;
             const availablePlacement = getAvailablePlacement(rect, height);
             availablePositionRef.current = availablePlacement;
             let positionStyle:CSSProperties = {};

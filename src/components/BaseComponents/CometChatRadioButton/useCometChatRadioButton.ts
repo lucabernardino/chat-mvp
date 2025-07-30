@@ -1,4 +1,5 @@
 import { ChangeEvent, useCallback, useEffect } from "react";
+import { useCometChatFrameContext } from "../../../context/CometChatFrameContext";
 
 export const useCometChatRadioButton = ({
     checked = false,
@@ -6,9 +7,13 @@ export const useCometChatRadioButton = ({
     id = "",
     name = "name",
 }) => {
+    const IframeContext = useCometChatFrameContext();
 
+    const getCurrentDocument = () => {
+        return IframeContext?.iframeDocument || document;
+    }
     useEffect(() => {
-        const radioGroup = document.getElementsByName(name);
+        const radioGroup = getCurrentDocument().getElementsByName(name);
         (radioGroup as NodeListOf<HTMLInputElement>).forEach((radio) => {
             if (radio.value === id && checked == true) {
                 radio.checked = true;
@@ -21,7 +26,7 @@ export const useCometChatRadioButton = ({
         It also triggers the callback function with the value and the labeltext of the radio button changed. 
     */
     const updateRadioState = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-        const radioGroup = document.getElementsByName(name);
+        const radioGroup = getCurrentDocument().getElementsByName(name);
         (radioGroup as NodeListOf<HTMLInputElement>).forEach((radio) => {
             if (radio.value === id) {
                 radio.checked = event.target?.checked;

@@ -42,6 +42,7 @@ import { decodeHTML, getThemeVariable, isMobileDevice, isSafari, processFileForA
 import { CometChatMessageEvents } from '../../events/CometChatMessageEvents';
 import { CometChatUIEvents } from '../../events/CometChatUIEvents';
 import { CometChatSoundManager } from "../../resources/CometChatSoundManager/CometChatSoundManager";
+import { useCometChatFrameContext } from "../../context/CometChatFrameContext";
 
 export type ContentToDisplay =
   | "attachments"
@@ -532,6 +533,15 @@ const isPartOfCurrentChatForUIEvent: (message: CometChat.BaseMessage) => boolean
   const mentionsFormatterInstanceId = "composer_" + Date.now();
   const disableSoundForMessagePropRef = useRefSync(disableSoundForMessage);
   const customSoundForMessagePropRef = useRefSync(customSoundForMessage);
+  const IframeContext = useCometChatFrameContext();
+  
+  const getCurrentWindow = () => {
+    return IframeContext?.iframeWindow || window;
+  }
+
+  const getCurrentDocument = () => {
+    return IframeContext?.iframeDocument || document;
+  }
 
     /**
    * Manages playing audio
@@ -786,12 +796,12 @@ try {
       return;
     }
     if (endTypingTimeoutId.current !== null) {
-      window.clearTimeout(endTypingTimeoutId.current);
+      getCurrentWindow()?.clearTimeout(endTypingTimeoutId.current);
       endTypingTimeoutId.current = null;
     } else {
       startTyping();
     }
-    endTypingTimeoutId.current = window.setTimeout(
+    endTypingTimeoutId.current = getCurrentWindow()?.setTimeout(
       () => endTyping(),
       END_TYPING_AFTER_START_IN_MS
     );
@@ -1730,9 +1740,9 @@ return hideAttachmentButton || (hideAudioAttachmentOption && hideVideoAttachment
 
   function getCurrentInput() {
     if (parentMessageIdPropRef.current) {
-      return document.querySelector(".cometchat-message-composer__input-thread")
+      return getCurrentDocument()?.querySelector(".cometchat-message-composer__input-thread")
     }
-    return document.querySelector(".cometchat-message-composer__input")
+    return getCurrentDocument()?.querySelector(".cometchat-message-composer__input")
   }
 
 
@@ -1967,7 +1977,7 @@ return hideAttachmentButton || (hideAudioAttachmentOption && hideVideoAttachment
  * @returns void
  */
  const updateSelection = useCallback(() => {
-  const selection = window.getSelection();
+  const selection = getCurrentWindow()?.getSelection();
   if (selection && selection.rangeCount > 0) {
     const currentRange = selection.getRangeAt(0);
     const inputElement =getCurrentInput();
@@ -2138,7 +2148,7 @@ try {
  */
   const checkPlainTextAvailability = (disabled?: boolean): any => {
     try {
-      const temp = document.createElement('div');
+      const temp = getCurrentDocument()?.createElement('div');
       // Type cast to 'any' to bypass the type check
       temp.contentEditable = 'plaintext-only';
       const value = temp.contentEditable === 'plaintext-only';
@@ -2165,9 +2175,9 @@ try {
       try {
         if (sel.current && range.current) {
           range.current.deleteContents();
-          let el = document.createElement("div");
+          let el = document?.createElement("div");
           el.innerHTML = html;
-          let frag = document.createDocumentFragment(),
+          let frag = document?.createDocumentFragment(),
             node,
 
             lastNode;
@@ -2303,7 +2313,9 @@ try {
     propsText: props.initialComposerText,
     getCurrentInput,
     isPartOfCurrentChatForUIEvent,
-    textMessageToEdit:state.textMessageToEdit
+    textMessageToEdit:state.textMessageToEdit,
+    getCurrentWindow,
+    getCurrentDocument
   });
   // Main rendering of the message composer component
   return (

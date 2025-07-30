@@ -32,12 +32,16 @@ class Renderer extends EventEmitter<RendererEvents> {
   private isDragging = false
   private subscriptions: (() => void)[] = []
   private unsubscribeOnScroll?: () => void
+  private iframeDocument: Document  = document
+  private iframeWindow: Window  = window
 
-  constructor(options: WaveSurferOptions, audioElement?: HTMLElement) {
+  constructor(options: WaveSurferOptions, audioElement?: HTMLElement, iframeDocument?: Document , iframeWindow?: Window ) {
     super()
 
     this.subscriptions = []
     this.options = options
+    this.iframeDocument = iframeDocument || document
+    this.iframeWindow = iframeWindow || window
 
     const parent = this.parentFromOptionsContainer(options.container)
     this.parent = parent
@@ -61,9 +65,16 @@ class Renderer extends EventEmitter<RendererEvents> {
   private parentFromOptionsContainer(container: WaveSurferOptions['container']) {
     let parent
     if (typeof container === 'string') {
-      parent = document.querySelector(container) satisfies HTMLElement | null
+      parent = this.iframeDocument.querySelector(container) satisfies HTMLElement | null
     } else if (container instanceof HTMLElement) {
-      parent = container
+      parent = container;
+    }
+   // This check ensures that audio bubbles work correctly inside an iframe.
+   // The container element may come from the iframe’s DOM, and in that case,
+   // `instanceof HTMLElement` will fail because it's not equal to `iframeWindow.HTMLElement`.
+   // Hence, we explicitly check against the iframe's global `HTMLElement` class.
+    else if (this.iframeWindow  &&  (container as any) instanceof  (this.iframeWindow  as  Window & typeof globalThis)?.HTMLElement) {
+    parent = container as HTMLElement;
     }
 
     if (!parent) {
@@ -166,7 +177,7 @@ class Renderer extends EventEmitter<RendererEvents> {
   }
 
   private initHtml(): [HTMLElement, ShadowRoot] {
-    const div = document.createElement('div')
+    const div = this.iframeDocument.createElement('div')
     const shadow = div.attachShadow({ mode: 'open' })
 
     const cspNonce = this.options.cspNonce && typeof this.options.cspNonce === 'string' ? this.options.cspNonce.replace(/"/g, '') : '';
@@ -250,6 +261,10 @@ class Renderer extends EventEmitter<RendererEvents> {
 
   /** Wavesurfer itself calls this method. Do not call it manually. */
   setOptions(options: WaveSurferOptions) {
+    // Update iframe document if provided
+  this.iframeWindow = options.iframeWindow || window;
+  this.iframeDocument = options.iframeDocument || document;
+
     if (this.options.container !== options.container) {
       const newParent = this.parentFromOptionsContainer(options.container)
       newParent.appendChild(this.container)
@@ -325,9 +340,9 @@ class Renderer extends EventEmitter<RendererEvents> {
     if (!Array.isArray(color)) return color || ''
     if (color.length < 2) return color[0] || ''
 
-    const canvasElement = document.createElement('canvas')
+    const canvasElement = this.iframeDocument.createElement('canvas')
     const ctx = canvasElement.getContext('2d') as CanvasRenderingContext2D
-    const gradientHeight = canvasElement.height * (window.devicePixelRatio || 1)
+    const gradientHeight = canvasElement.height * (this.iframeWindow.devicePixelRatio || 1)
     const gradient = ctx.createLinearGradient(0, 0, 0, gradientHeight)
 
     const colorStopPercentage = 1 / (color.length - 1)
@@ -340,7 +355,7 @@ class Renderer extends EventEmitter<RendererEvents> {
   }
 
   private getPixelRatio() {
-    return Math.max(1, window.devicePixelRatio || 1)
+    return Math.max(1, this.iframeWindow.devicePixelRatio || 1)
   }
 
   private renderBarWaveform(
@@ -486,7 +501,7 @@ class Renderer extends EventEmitter<RendererEvents> {
     progressContainer: HTMLElement,
   ) {
     const pixelRatio = this.getPixelRatio()
-    const canvas = document.createElement('canvas')
+    const canvas = this.iframeDocument.createElement('canvas')
     canvas.width = Math.round(width * pixelRatio)
     canvas.height = Math.round(height * pixelRatio)
     canvas.style.width = `${width}px`
@@ -602,7 +617,7 @@ class Renderer extends EventEmitter<RendererEvents> {
     channelIndex: number,
   ) {
     // A container for canvases
-    const canvasContainer = document.createElement('div')
+    const canvasContainer = this.iframeDocument.createElement('div')
     const height = this.getHeight(options.height, options.splitChannels)
     canvasContainer.style.height = `${height}px`
     if (overlay && channelIndex > 0) {

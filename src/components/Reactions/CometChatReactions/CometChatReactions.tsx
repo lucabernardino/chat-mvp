@@ -4,6 +4,7 @@ import { CometChatPopover } from "../../BaseComponents/CometChatPopover/CometCha
 import { CometChatReactionInfo } from "../CometChatReactionInfo/CometChatReactionInfo";
 import { MessageBubbleAlignment, Placement } from "../../../Enums/Enums";
 import { useCometChatErrorHandler } from "../../../CometChatCustomHooks";
+import { useCometChatFrameContext } from "../../../context/CometChatFrameContext";
 
 interface ReactionsProps {
     messageObject: CometChat.BaseMessage;
@@ -34,6 +35,11 @@ export const CometChatReactions: React.FC<ReactionsProps> = ({
     const resizeObserver = useRef<ResizeObserver | null>(null);
     const [previousWidth, setPreviousWidth] = useState(0);
     const parentRef: any = useRef(null);
+    const IframeContext = useCometChatFrameContext();
+
+    const getCurrentWindow = () => {
+        return IframeContext?.iframeWindow || window;
+    }
 
     /* This function is used to set the reaction state. */
     const checkReaction = () => {
@@ -123,8 +129,8 @@ export const CometChatReactions: React.FC<ReactionsProps> = ({
             const bubble = parentRef.current?.parentNode;
             if (bubble) {
                 const rect = bubble.getBoundingClientRect();
-                const isAtTop = rect.top < window.innerHeight / 2;
-                const isAtBottom = rect.bottom > window.innerHeight / 2;
+                const isAtTop = rect.top < getCurrentWindow().innerHeight / 2;
+                const isAtBottom = rect.bottom > getCurrentWindow().innerHeight / 2;
                 return isAtTop ? Placement.bottom : isAtBottom ? Placement.top : Placement.bottom;
             } else {
                 return Placement.bottom;
@@ -138,7 +144,7 @@ export const CometChatReactions: React.FC<ReactionsProps> = ({
     /* Purpose of this function is to check and set the alignment of more reactions list. */
     const getPlacementAlignment = (callback: Function) => {
         try {
-            if (window.innerWidth <= 768) {
+            if (getCurrentWindow().innerWidth <= 768) {
                 setMoreListAlignment(checkBubblePosition());
             } else {
                 setMoreListAlignment(

@@ -116,7 +116,7 @@ const CometChatThreadHeader = (props: CometChatThreadHeaderProps) => {
         showScrollbar = false
     } = props;
 
-    const loggedInUser = useRef<CometChat.User | null>(null);
+    const loggedInUser = useRef<CometChat.User | null>(CometChatUIKitLoginListener.getLoggedInUser());
     const [replyCount, setReplyCount] = useState<number>(0);
     const [updatedMessage, setUpdatedMessage] = useState<CometChat.BaseMessage>(parentMessage);
 
@@ -137,14 +137,6 @@ const CometChatThreadHeader = (props: CometChatThreadHeaderProps) => {
             onErrorCallback(error, 'useEffect');
         }
     }, [parentMessage]);
-
-    useEffect(() => {
-        try {
-            loggedInUser.current = CometChatUIKitLoginListener.getLoggedInUser();
-        } catch (error) {
-            onErrorCallback(error, 'useEffect');
-        }
-    }, []);
      /**
     * Function for the date separators in threaded message previews.
     * @returns CalendarObject
@@ -318,7 +310,7 @@ const CometChatThreadHeader = (props: CometChatThreadHeaderProps) => {
 
     useEffect(() => {
         try {
-            if (loggedInUser) {
+            if (loggedInUser.current) {
                 const removeListener = addListener();
                 const unsubscribeFromEvents = subscribeToEvents();
                 return () => {
@@ -329,7 +321,7 @@ const CometChatThreadHeader = (props: CometChatThreadHeaderProps) => {
         } catch (error) {
             onErrorCallback(error, 'useEffect');
         }
-    }, [loggedInUser, addListener, subscribeToEvents]);
+    },  [addListener, subscribeToEvents]);
 
     /* This function returns close button view. */
     function getCloseBtnView() {

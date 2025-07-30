@@ -2,6 +2,7 @@ import React, { ReactNode, useCallback, useEffect, useRef, useState } from 'reac
 import { MentionsTargetElement, MessageBubbleAlignment } from '../../../Enums/Enums'
 import { CometChatTextFormatter } from '../../../formatters/CometChatFormatters/CometChatTextFormatter'
 import {getLocalizedString} from '../../../resources/CometChatLocalize/cometchat-localize'
+import { useCometChatFrameContext } from '../../../context/CometChatFrameContext';
 interface IMessageTranslationBubbleProps {
   /** 
    * The text that has been translated.
@@ -56,6 +57,11 @@ const MessageTranslationBubble = (props: IMessageTranslationBubbleProps) => {
 
   const { children, helpText, translatedText, alignment, textFormatters, isSentByMe } = { ...defaultProps, ...props }
   const textElementRef = useRef<HTMLDivElement | null>(null);
+  const IframeContext = useCometChatFrameContext();
+
+  const getCurrentDocument = () => {
+    return IframeContext?.iframeDocument || document;
+  }
 
   useEffect(() => {
     if (textFormatters) {
@@ -85,9 +91,9 @@ const MessageTranslationBubble = (props: IMessageTranslationBubbleProps) => {
    */
   function pasteHtml(textElement: HTMLDivElement | null, html: string) {
     try {
-      let el = document.createElement("div");
+      let el = getCurrentDocument().createElement("div");
       el.innerHTML = html;
-      let frag = document.createDocumentFragment(),
+      let frag = getCurrentDocument().createDocumentFragment(),
         node,
         lastNode;
       while ((node = el.firstChild)) {

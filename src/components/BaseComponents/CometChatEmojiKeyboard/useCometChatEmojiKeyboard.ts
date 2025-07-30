@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { CometChatEmoji, CometChatEmojiCategory } from "./CometChatEmoji";
 import { Emojis } from "./emojis";
+import { useCometChatFrameContext } from "../../../context/CometChatFrameContext";
 
 export const useCometChatEmojiKeyboard = ({
     emojiData = [],
@@ -12,7 +13,11 @@ export const useCometChatEmojiKeyboard = ({
     const [searchEmojiData, setSearchEmojiData] = useState<{ [key: string]: CometChatEmoji }>({});
     const [searchString, setSearchString] = useState<string>("");
     const emojiDataRef = useRef(emojiData);
+    const IframeContext = useCometChatFrameContext();
 
+    const getCurrentDocument = () => {
+        return IframeContext?.iframeDocument || document;
+    }
     useEffect(() => {
         emojiDataRef.current = emojiDataState;
     }, [emojiDataState]);
@@ -57,7 +62,7 @@ export const useCometChatEmojiKeyboard = ({
         setActiveCategory(id);
         setSearchString("");
         setSearchEmojiData({});
-        document.getElementById(id)?.scrollIntoView({
+        getCurrentDocument().getElementById(id)?.scrollIntoView({
             behavior: "smooth",
             block: "start",
         });

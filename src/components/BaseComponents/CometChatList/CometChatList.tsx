@@ -8,6 +8,7 @@ import { CometChat } from "@cometchat/chat-sdk-javascript";
 import { useCometChatList } from "./useCometChatList";
 import { States } from "../../../Enums/Enums";
 import { CometChatSearchBar } from "../CometChatSearchBar/CometChatSearchBar";
+import { useCometChatFrameContext } from "../../../context/CometChatFrameContext";
 /**
  * Extracts the value associated with the passed key from the passed object
  *
@@ -231,6 +232,11 @@ function List<T>(props: ListProps<T>): JSX.Element {
   const onScrolledToBottomRef = useRefSync(onScrolledToBottom);
   const onSearchRef = useRefSync(onSearch);
   const errorHandler = useCometChatErrorHandler(onError);
+  const IframeContext = useCometChatFrameContext();
+
+  const getCurrentWindow = () => {
+    return IframeContext?.iframeWindow || window;
+  }
 
   /**
  * Handles changes in the search input field and triggers a search with a debounce of 500ms.
@@ -240,9 +246,9 @@ function List<T>(props: ListProps<T>): JSX.Element {
   const handleSearchChanged = (e: { value?: string }) => {
     const newSearchText = e.value;
     if (timeoutIdRef.current !== null) {
-      window.clearTimeout(timeoutIdRef.current);
+      getCurrentWindow().clearTimeout(timeoutIdRef.current);
     }
-    timeoutIdRef.current = window.setTimeout(() => {
+    timeoutIdRef.current = getCurrentWindow().setTimeout(() => {
       onSearchRef.current?.(newSearchText!);
       timeoutIdRef.current = null;
     }, 500);

@@ -1,4 +1,5 @@
 import { MouseEvent, useCallback, useEffect, useState } from "react"
+import { useCometChatFrameContext } from "../../../context/CometChatFrameContext";
 interface ICometChatListItem {
   id?: string;
   onListItemClicked?: (input: { id: string }) => void;
@@ -11,6 +12,11 @@ export const useCometChatListItem = ({
   menuRef,
 }:ICometChatListItem) => {
   const [isHovering, setIsHovering] = useState<boolean>(false);
+  const IframeContext = useCometChatFrameContext();
+
+  const getCurrentDocument = () => {
+    return IframeContext?.iframeDocument || document;
+  }
   /* 
       This function is triggered on list item click. 
       It triggers the callback function with the id as input. 
@@ -37,12 +43,12 @@ export const useCometChatListItem = ({
     };
 
     if (isHovering) {
-        document.addEventListener("click", handleOutsideClick);
+        getCurrentDocument().addEventListener("click", handleOutsideClick);
     } else {
-        document.removeEventListener("click", handleOutsideClick);
+        getCurrentDocument().removeEventListener("click", handleOutsideClick);
     }
 
-    return () => document.removeEventListener("click", handleOutsideClick);
+    return () => getCurrentDocument().removeEventListener("click", handleOutsideClick);
 }, [isHovering]);
 
 

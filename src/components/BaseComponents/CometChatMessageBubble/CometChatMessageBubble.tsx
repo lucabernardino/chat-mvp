@@ -8,6 +8,7 @@ import { CollaborativeWhiteboardConstants } from "../../Extensions/Collaborative
 import { PollsConstants } from "../../Extensions/Polls/PollsConstants";
 import { StickersConstants } from "../../Extensions/Stickers/StickersConstants";
 import { JSX } from 'react';
+import { useCometChatFrameContext } from '../../../context/CometChatFrameContext';
 /**Interface defining the structure for MessageBubbleProps */
 interface MessageBubbleProps {
   id: string | number;
@@ -78,6 +79,11 @@ const CometChatMessageBubble = (props: MessageBubbleProps) => {
   const previousHeightRef = useRef<number>(0);
   var timeoutId: NodeJS.Timeout | null = null;
   const intersectionObserver = useRef<IntersectionObserver | null>(null);
+  const IframeContext = useCometChatFrameContext();
+
+  const getCurrentWindow = () => {
+    return IframeContext?.iframeWindow || window;
+  }
   
   useEffect(() => {
     if (messageRef && messageRef.current && setRef) {
@@ -233,12 +239,12 @@ const CometChatMessageBubble = (props: MessageBubbleProps) => {
     };
 
     if (isHovering) {
-      window.addEventListener('overlayclick', handleOverlayClicked as EventListener);
+      getCurrentWindow().addEventListener('overlayclick', handleOverlayClicked as EventListener);
 
     }
 
     return () => {
-      window.removeEventListener('overlayclick', handleOverlayClicked as EventListener);
+      getCurrentWindow().removeEventListener('overlayclick', handleOverlayClicked as EventListener);
 
     };
   }, [isHovering]);
@@ -255,7 +261,7 @@ const CometChatMessageBubble = (props: MessageBubbleProps) => {
   };
   /** Helper function to check if the device is mobile*/
   const isMobile = () => {
-    return window.innerWidth <= 768;
+    return getCurrentWindow().innerWidth <= 768;
   };
   /**  Function to get the CSS class based on the message type and category*/
   const getBubbleTypeClassName = () => {
@@ -287,8 +293,8 @@ const CometChatMessageBubble = (props: MessageBubbleProps) => {
     const bubble = messageRef.current;
     if (bubble) {
       const rect = bubble.getBoundingClientRect();
-      const isAtTop = rect.top < window.innerHeight / 2;
-      const isAtBottom = rect.bottom > window.innerHeight / 2;
+      const isAtTop = rect.top < getCurrentWindow().innerHeight / 2;
+      const isAtBottom = rect.bottom > getCurrentWindow().innerHeight / 2;
       if (isAtTop) {
         return Placement.bottom;
       } else if (isAtBottom) {

@@ -705,6 +705,7 @@ export const CometChatMessageHeader = (props: MessageHeaderProps) => {
                                 useParentContainer={true}
                                 useParentHeight={false}
                                 disableBackgroundInteraction={true}
+                                forceStaticPlacement={true}
                             />
                         </div>
                     ) : (
@@ -720,7 +721,7 @@ export const CometChatMessageHeader = (props: MessageHeaderProps) => {
         } catch (error) {
             onErrorCallback(error, 'getAuxiliaryView');
         }
-    }, [auxiliaryButtonView, showSearchOption, showConversationSummaryButton]);
+    }, [auxiliaryButtonView, showSearchOption, showConversationSummaryButton, hideVoiceCallButton, hideVideoCallButton]);
 
     useCometChatMessageHeader(
         loggedInUser,

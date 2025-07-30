@@ -97,9 +97,10 @@ export const CometChatSelector = (props: SelectorProps) => {
                 </div>
                 <div className="chat-menu">
                     <CometChatContextMenu
+                        useParentContainer={true}
                         key="delete-button"
                         closeOnOutsideClick={true}
-                        placement={Placement.left}
+                        placement={Placement.bottom}
                         data={getOptions() as CometChatOption[]}
                         topMenuSize={1}
                         onOptionClicked={(e: CometChatOption) => {

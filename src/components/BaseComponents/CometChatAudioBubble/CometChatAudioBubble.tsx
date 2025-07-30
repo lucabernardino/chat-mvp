@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect, useCallback } from "react";
 import WaveSurfer from "./src/wavesurfer";
 import { closeCurrentMediaPlayer, currentAudioPlayer } from "../../../utils/util";
+import { useCometChatFrameContext } from "../../../context/CometChatFrameContext";
 interface AudioBubbleProps {
     /* URL of the audio to be played. */
     src: string;
@@ -25,11 +26,19 @@ const CometChatAudioBubble = (props: AudioBubbleProps) => {
 
     const [currentTime, setCurrentTime] = useState(0);
     const [duration, setDuration] = useState(0);
+
+    const IframeContext = useCometChatFrameContext();
+    const getCurrentDocument = () => {
+        return IframeContext?.iframeDocument || document;
+    }
+    const getCurrentWindow = () => {
+        return IframeContext?.iframeWindow || window;
+    }
     // Moved useEffect logic to a separate function
     const initializeWaveSurfer = useCallback(() => {
         setIsLoading(true);
         if (waveformRef.current) {
-            const root = document.documentElement;
+            const root =  getCurrentDocument().documentElement;
 
             // Fetch styles for the progress bar and wave radius
             const progressbarColor = isSentByMe
@@ -63,7 +72,8 @@ const CometChatAudioBubble = (props: AudioBubbleProps) => {
                 autoCenter: true,
                 sampleRate: 17000,
                 width: 140,
-
+                iframeDocument: getCurrentDocument(),
+                iframeWindow: getCurrentWindow(),
             });
             wave.load(src);
             setWaveSurfer(wave);
@@ -169,7 +179,7 @@ const CometChatAudioBubble = (props: AudioBubbleProps) => {
             // Creating and downloading audio file
             setIsDownloading(false);
             const blob = new Blob(chunks, { type: 'audio/mpeg' }); // Specify the MIME type for MP3
-            const link = document.createElement('a');
+            const link = getCurrentDocument().createElement('a');
     
             // Use the original URL to extract the filename
             const urlParts = src.split('/');
