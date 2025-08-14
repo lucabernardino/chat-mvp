@@ -294,5 +294,17 @@
     "search_message_subtitle_you": "Jūs",
     "search_message_title_you": "Jūs",
     "search_error_title": "OOPS!",
-    "search_error_subtitle": "Atrodo, kad kažkas nepavyko"
+    "search_error_subtitle": "Atrodo, kad kažkas nepavyko",
+    "ai_assistant_chat_intro_message": "Esu čia, kad padėčiau jums!",
+    "ai_assistant_chat_composer_placeholder": "Klauskite bet ko",
+    "ai_assistant_chat_new_chat": "naujas pokalbis",
+    "ai_assistant_chat_history": "pokalbių istorija",
+    "ai_assistant_chat_history_title": "Pokalbių istorija",
+    "ai_assistant_chat_thinking": "Galvoju…",
+    "ai_assistant_chat_executing_tool": "Vykdoma įrankio užklausa...",
+    "ai_assistant_chat_no_internet": "Nėra interneto ryšio. Patikrinkite savo ryšį ir pabandykite dar kartą.",
+    "ai_assistant_chat_history_empty_title": "Nėra pokalbių",
+    "ai_assistant_chat_history_empty_subtitle": "Jūsų AI agentas pasiruošęs - klauskite bet ko ir pradėkite pokalbį.",
+    "ai_assistant_chat_history_error_title": "OOPS!",
+    "ai_assistant_chat_history_error_subtitle": "Kažkas nepavyko iš mūsų pusės. Pabandykite dar kartą."
 }

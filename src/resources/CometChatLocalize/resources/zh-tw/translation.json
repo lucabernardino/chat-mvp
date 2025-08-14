@@ -78,7 +78,7 @@
     "conversation_subtitle_typing": "正在输入...",
     "conversation_subtitle_you_message": "你",
     "conversation_subtitle_deleted_message": "消息已删除",
-    "conversation_empty_title": "暂无对话",
+    "conversation_empty_title": "對話",
     "conversation_empty_subtitle": "开始新的聊天或邀请他人加入对话。",
     "conversation_error_title": "糟糕！",
     "conversation_error_subtitle": "看起來出了點問題",
@@ -294,5 +294,17 @@
     "search_message_subtitle_you": "你",
     "search_message_title_you": "你",
     "search_error_title": "糟糕",
-    "search_error_subtitle": "看起来出了点问题"
+    "search_error_subtitle": "看起来出了点问题",
+    "ai_assistant_chat_intro_message": "我在這裡協助您！",
+    "ai_assistant_chat_composer_placeholder": "詢問任何問題",
+    "ai_assistant_chat_new_chat": "新聊天",
+    "ai_assistant_chat_history": "歷史記錄",
+    "ai_assistant_chat_history_title": "聊天歷史",
+    "ai_assistant_chat_thinking": "思考中…",
+    "ai_assistant_chat_executing_tool": "執行工具呼叫...",
+    "ai_assistant_chat_no_internet": "無網路連線。請檢查您的連線並重試。",
+    "ai_assistant_chat_history_empty_title": "對話",
+    "ai_assistant_chat_history_empty_subtitle": "您的AI助手已準備就緒 - 詢問任何問題並開始對話。",
+    "ai_assistant_chat_history_error_title": "糟糕！",
+    "ai_assistant_chat_history_error_subtitle": "伺服器發生問題。請重試。"
 }

@@ -24,11 +24,13 @@ function useCometChatMessageList(
 	isFirstReloadRef: MutableRefObject<boolean>,
 	subscribeToUIEvents: Function,
 	showSmartRepliesRef: MutableRefObject<any>,
+	addMessage:(message: CometChat.BaseMessage) => void,
 	setDateHeader?: Function,
 	parentMessageId?: number,
 	hideGroupActionMessages?: boolean,
 	showSmartReplies?:boolean,
-	goToMessageId?:string
+	goToMessageId?:string,
+	isAgentChat?:boolean,
 
 ): void {
 		/**
@@ -78,8 +80,8 @@ function useCometChatMessageList(
 						hideGroupActionMessages
 					)
 				}
-				if(!parentMessageId){
-					MessageListManager.attachListeners(updateMessage);
+				if(!parentMessageId || (parentMessageId && isAgentChat)){
+					MessageListManager.attachListeners(isAgentChat || false,updateMessage,addMessage,user);
 				}
 				unsubscribeEvents = subscribeToUIEvents();
 				setMessageList([]);
@@ -91,7 +93,10 @@ function useCometChatMessageList(
 				setScrollListToBottom(true);
 				isOnBottomRef.current = true;
 				}
+				if(!isAgentChat || (isAgentChat &&  parentMessageId)){
 				fetchPreviousMessages();
+
+				}
 				smartReplyViewRef.current = null;
 			}
 			return () => {
@@ -102,7 +107,7 @@ function useCometChatMessageList(
 		} catch (error) {
 			errorHandler(error,"useEffect")
 		}
-	}, [user, group]);
+	}, [user, group,isAgentChat]);
 	/**
 	 * useEffect hook to store the first and last message ID in the messageList array. These are used to fetch new messages after a particular message when the connection gets reestablished after being interrupted.
 	**/

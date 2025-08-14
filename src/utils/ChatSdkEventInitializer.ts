@@ -78,7 +78,19 @@ export class ChatSdkEventInitializer {
                         CometChatMessageEvents.onCustomInteractiveMessageReceived.next(message);
                         break;
                 }
+                
             },
+            onAIAssistantMessageReceived: (message: CometChat.AIAssistantMessage) => {
+                CometChatMessageEvents.onAIAssistantMessageReceived.next(message);
+
+            },
+            onAIToolResultReceived: (message: CometChat.AIToolResultMessage) => {
+                CometChatMessageEvents.onAIToolResultReceived.next(message);
+            },
+              onAIToolArgumentsReceived: (message: CometChat.AIToolArgumentMessage) => {
+                CometChatMessageEvents.onAIToolArgumentsReceived.next(message);
+            },
+            
         });
     }
 }

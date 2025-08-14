@@ -294,5 +294,17 @@
     "search_message_subtitle_you": "आप",
     "search_message_title_you": "आप",
     "search_error_title": "ओह!",
-    "search_error_subtitle": "ऐसा लगता है कि कुछ गलत हो गया है"
+    "search_error_subtitle": "ऐसा लगता है कि कुछ गलत हो गया है",
+    "ai_assistant_chat_intro_message": "मैं आपकी सहायता के लिए यहाँ हूँ!",
+    "ai_assistant_chat_composer_placeholder": "कुछ भी पूछें",
+    "ai_assistant_chat_new_chat": "नई चैट",
+    "ai_assistant_chat_history": "चैट इतिहास",
+    "ai_assistant_chat_history_title": "चैट इतिहास",
+    "ai_assistant_chat_thinking": "सोच रहा हूँ…",
+    "ai_assistant_chat_executing_tool": "टूल कॉल को निष्पादित कर रहा हूँ...",
+    "ai_assistant_chat_no_internet": "इंटरनेट कनेक्शन नहीं है। कृपया अपनी कनेक्शन की जांच करें और फिर से प्रयास करें।",
+    "ai_assistant_chat_history_empty_title": "अभी कोई वार्तालाप नहीं",
+    "ai_assistant_chat_history_empty_subtitle": "आपका एआई एजेंट तैयार है - कुछ भी पूछें और बातचीत शुरू करें।",
+    "ai_assistant_chat_history_error_title": "ओह!",
+    "ai_assistant_chat_history_error_subtitle": "हमारी ओर से कुछ गलत हो गया। कृपया पुनः प्रयास करें।"
 }

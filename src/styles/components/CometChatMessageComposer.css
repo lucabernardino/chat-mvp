@@ -92,7 +92,7 @@
 }
 
 /* Styling for buttons with no specific class */
-.cometchat-message-composer div:not([class]) .cometchat-button {
+ .cometchat-message-composer__buttons .cometchat-button {
     width: fit-content;
     background: transparent;
     padding: 0;
@@ -257,41 +257,41 @@
 }
 
 /* Send button icon default styling */
-.cometchat-message-composer div:not([class]) .cometchat-message-composer__send-button .cometchat-button .cometchat-button__icon {
+ .cometchat-message-composer__buttons .cometchat-message-composer__send-button .cometchat-button .cometchat-button__icon {
     background: var(--cometchat-static-white);
 }
 
 /* Icon styling for buttons with no specific class */
-.cometchat-message-composer div:not([class]) .cometchat-button .cometchat-button__icon {
+ .cometchat-message-composer__buttons .cometchat-button .cometchat-button__icon {
     background: var(--cometchat-icon-color-secondary);
 }
 
-.cometchat-message-composer div:not([class]) .cometchat-button .cometchat-button__icon:hover {
+ .cometchat-message-composer__buttons .cometchat-button .cometchat-button__icon:hover {
     background: var(--cometchat-primary-color, #6852D6);
 }
 
-.cometchat-message-composer div:not([class]) .cometchat-message-composer__send-button .cometchat-button .cometchat-button__icon:hover {
+ .cometchat-message-composer__buttons .cometchat-message-composer__send-button .cometchat-button .cometchat-button__icon:hover {
     background: var(--cometchat-static-white);
 }
 
 /* Active emoji keyboard button icon */
-.cometchat-message-composer div:not([class]) .cometchat-message-composer__emoji-keyboard-button-active .cometchat-button__icon {
+ .cometchat-message-composer__buttons .cometchat-message-composer__emoji-keyboard-button-active .cometchat-button__icon {
     background: var(--cometchat-primary-color);
 }
 
 /* Active action sheet button icon */
-.cometchat-message-composer div:not([class]) .cometchat-message-composer__secondary-button-view-attachment-button-active .cometchat-button__icon {
+ .cometchat-message-composer__buttons .cometchat-message-composer__secondary-button-view-attachment-button-active .cometchat-button__icon {
     background: var(--cometchat-primary-color);
 }
 
 /* Active voice recording button icon */
-.cometchat-message-composer div:not([class]) .cometchat-message-composer__voice-recording-button-active .cometchat-button__icon {
+ .cometchat-message-composer__buttons .cometchat-message-composer__voice-recording-button-active .cometchat-button__icon {
     background: var(--cometchat-primary-color);
 }
 
 
 /* Active stickerkeyboard button icon */
-.cometchat-message-composer div:not([class]) .cometchat-message-composer__auxilary-button-view-sticker-button-active .cometchat-button__icon {
+ .cometchat-message-composer__buttons .cometchat-message-composer__auxilary-button-view-sticker-button-active .cometchat-button__icon {
     background: var(--cometchat-primary-color);
 }
 .cometchat-message-composer__input-mobile{

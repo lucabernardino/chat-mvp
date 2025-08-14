@@ -1,4 +1,4 @@
-import React, { JSX, useRef } from "react";
+import React, { JSX, useEffect, useRef } from "react";
 import {
   useCometChatErrorHandler,
   useRefSync,
@@ -183,6 +183,13 @@ interface ListProps<T> {
    * @defaultValue `false`
   */
   showScrollbar?: boolean;
+  /**
+   * Set the scrollbar to the bottom-most position of the scrollable list in Agent Chat
+   *
+   * @remarks
+   * 
+   */
+  scrollToEnd?:boolean;
 }
 /**
  * Renders a list component that can display a title, search bar,
@@ -217,6 +224,7 @@ function List<T>(props: ListProps<T>): JSX.Element {
     onSearchBarClicked,
     showShimmerOnTop = false,
     showScrollbar = false,
+    scrollToEnd = false
   } = props;
   // Refs for DOM elements and other states
   const intersectionObserverRootRef = useRef<DivElementRef>(null);
@@ -253,7 +261,12 @@ function List<T>(props: ListProps<T>): JSX.Element {
       timeoutIdRef.current = null;
     }, 500);
   }
-
+  useEffect(() => {
+    if (scrollToEnd && intersectionObserverRootRef.current) {
+      const rootElement = intersectionObserverRootRef.current;
+      rootElement.scrollTop = rootElement.scrollHeight;
+    }
+  }, [scrollToEnd]);
 
   /**
    * Renders the search box if the hideSearch prop is false.
@@ -413,35 +426,35 @@ function List<T>(props: ListProps<T>): JSX.Element {
     didTopObserverCallbackRunRef,
     errorHandler,
     scrolledUpCallback
-     });
-    /**
-   * Renders the title view if the title prop is provided.
-   */
-    function getTitle(): JSX.Element {
-      return (
-        <div
-          className="cometchat-list__header-title"
-        >
-          {title}
-        </div>
-      );
-    }
+  });
+  /**
+ * Renders the title view if the title prop is provided.
+ */
+  function getTitle(): JSX.Element {
+    return (
+      <div
+        className="cometchat-list__header-title"
+      >
+        {title}
+      </div>
+    );
+  }
   return (
     <div className="cometchat" style={{
       width: "100%",
       height: "100%"
     }}>
       <div className={`cometchat-list ${!showScrollbar ? ' cometchat-list-hide-scrollbar' : ''}`}>
-        <div className="cometchat-list__header">
+        {headerView || title || getSearchBox() ? <div className="cometchat-list__header">
           {headerView ?? null}
           {!headerView && title ? getTitle() : null}
           {getSearchBox()}
-        </div>
+        </div> : null}
         <div ref={intersectionObserverRootRef} className="cometchat-list__body">
-          <div ref={intersectionObserverTopTargetRef} style={{ height: "1px", minHeight: "1px" }}></div>
+          <div ref={intersectionObserverTopTargetRef} className="cometchat-list__body-intersection-top" style={{ height: "1px", minHeight: "1px" }}></div>
           {getList()}
-          {showShimmerOnTop ? getLoadingView() :  getStateView()}
-          <div ref={intersectionObserverBottomTargetRef} style={{ height: "1px", minHeight: "1px" }}></div>
+          {showShimmerOnTop ? getLoadingView() : getStateView()}
+          <div ref={intersectionObserverBottomTargetRef} className="cometchat-list__body-intersection-bottom" style={{ height: "1px", minHeight: "1px" }}></div>
         </div>
       </div>
     </div>

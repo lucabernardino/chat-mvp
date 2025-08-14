@@ -294,5 +294,17 @@
     "search_message_subtitle_you": "Tú",
     "search_message_title_you": "Tú",
     "search_error_title": "¡UPS!",
-    "search_error_subtitle": "Parece que algo salió mal"
+    "search_error_subtitle": "Parece que algo salió mal",
+    "ai_assistant_chat_intro_message": "¡Estoy aquí para ayudarte!",
+    "ai_assistant_chat_composer_placeholder": "Pregunta cualquier cosa",
+    "ai_assistant_chat_new_chat": "Nuevo Chat",
+    "ai_assistant_chat_history": "Historial",
+    "ai_assistant_chat_history_title": "Historial de Chat",
+    "ai_assistant_chat_thinking": "Pensando…",
+    "ai_assistant_chat_executing_tool": "Ejecutando herramienta...",
+    "ai_assistant_chat_no_internet": "No hay conexión a internet. Por favor verifica tu conexión e inténtalo de nuevo.",
+    "ai_assistant_chat_history_empty_title": "Aún no hay conversaciones",
+    "ai_assistant_chat_history_empty_subtitle": "Tu agente de IA está listo - pregunta cualquier cosa y comienza la conversación.",
+    "ai_assistant_chat_history_error_title": "¡UPS!",
+    "ai_assistant_chat_history_error_subtitle": "Algo salió mal de nuestro lado. Por favor inténtalo de nuevo."
 }

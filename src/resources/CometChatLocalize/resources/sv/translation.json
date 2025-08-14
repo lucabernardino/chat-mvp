@@ -294,5 +294,17 @@
     "search_message_subtitle_you": "Du",
     "search_message_title_you": "Du",
     "search_error_title": "OOPS!",
-    "search_error_subtitle": "Det verkar som något gick fel"
+    "search_error_subtitle": "Det verkar som något gick fel",
+    "ai_assistant_chat_intro_message": "Jag är här för att assistera dig!",
+    "ai_assistant_chat_composer_placeholder": "Fråga vad som helst",
+    "ai_assistant_chat_new_chat": "ny chatt",
+    "ai_assistant_chat_history": "chattens historik",
+    "ai_assistant_chat_history_title": "Chattens Historik",
+    "ai_assistant_chat_thinking": "Tänker…",
+    "ai_assistant_chat_executing_tool": "Utför verktygsanrop...",
+    "ai_assistant_chat_no_internet": "Ingen internetanslutning. Kontrollera din anslutning och försök igen.",
+    "ai_assistant_chat_history_empty_title": "Inga konversationer än",
+    "ai_assistant_chat_history_empty_subtitle": "Din AI-agent är redo - fråga vad som helst och börja konversationen.",
+    "ai_assistant_chat_history_error_title": "OOPS!",
+    "ai_assistant_chat_history_error_subtitle": "Något gick fel hos oss. Försök igen."
 }

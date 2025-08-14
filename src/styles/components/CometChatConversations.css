@@ -493,6 +493,9 @@ background: var(--cometchat-icon-color-secondary, #A1A1A1);
   background: var(--cometchat-background-color-01, #FFF);
 
 }
+.cometchat-conversations .cometchat-conversations__list-item-agent .cometchat-list-item__title-container {
+  max-width: 90%;
+}
 
 .cometchat-conversations__shimmer-item {
   width: 100%;

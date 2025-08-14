@@ -24,7 +24,7 @@ import { ConversationUtils } from "../../utils/ConversationUtils";
 import { MentionsTargetElement, Placement, Receipts, SelectionMode, States, TitleAlignment } from "../../Enums/Enums";
 import { CometChatActionsIcon, CometChatOption } from "../../modals";
 import { CometChatUIKitConstants } from "../../constants/CometChatUIKitConstants";
-import {getLocalizedString,CometChatLocalize} from "../../resources/CometChatLocalize/cometchat-localize";
+import { getLocalizedString, CometChatLocalize } from "../../resources/CometChatLocalize/cometchat-localize";
 import { isMissedCall } from "../Calling/Utils/utils";
 import { CometChatDate } from "../BaseComponents/CometChatDate/CometChatDate";
 import { PollsConstants } from "../Extensions/Polls/PollsConstants";
@@ -239,10 +239,10 @@ interface ConversationsProps {
    * @defaultValue `false`
    */
   showSearchBar?: boolean;
-  
-   /** Controls the visibility of the scrollbar in the list.
-   * @defaultValue `false`
-   */
+
+  /** Controls the visibility of the scrollbar in the list.
+  * @defaultValue `false`
+  */
   showScrollbar?: boolean;
 }
 
@@ -413,7 +413,7 @@ function stateReducer(state: State, action: Action): State {
           ...state,
           conversationList: newConversationList,
           typingIndicatorMap: newTypingIndicatorMap,
-          fetchState: newConversationList.length == 0 ? States.empty :  States.loaded
+          fetchState: newConversationList.length == 0 ? States.empty : States.loaded
         };
       }
       break;
@@ -865,7 +865,7 @@ export function CometChatConversations(props: ConversationsProps) {
    * @param fetchId - Fetch Id to decide if the fetched data should be appended to the `conversationList` state
    */
   const fetchNextAndAppendConversations = useCallback(
-    async (fetchId: string,isConnected:boolean = false): Promise<void> => {
+    async (fetchId: string, isConnected: boolean = false): Promise<void> => {
       try {
         const conversationManager = conversationsManagerRef.current;
         if (!conversationManager) {
@@ -874,7 +874,7 @@ export function CometChatConversations(props: ConversationsProps) {
         const conversations = await conversationManager.fetchNext();
 
         if (conversations.length !== 0 && fetchNextIdRef.current === fetchId) {
-          let removeOldConversation =  isConnected
+          let removeOldConversation = isConnected
             ? true
             : false;
           dispatch({
@@ -882,7 +882,7 @@ export function CometChatConversations(props: ConversationsProps) {
             conversations,
             removeOldConversation,
           });
-          conversationListRef.current = removeOldConversation ? conversations : [...conversationListRef.current,...conversations]
+          conversationListRef.current = removeOldConversation ? conversations : [...conversationListRef.current, ...conversations]
 
         }
         if (attachListenerOnFetch.current) {
@@ -895,14 +895,14 @@ export function CometChatConversations(props: ConversationsProps) {
             fetchNextAndAppendConversations(
               (fetchNextIdRef.current =
                 "initialFetchNext_" + String(Date.now())),
-                true
+              true
             );
           });
         }
-        if(conversations.length  == 0 && conversationListRef.current.length == 0){
+        if (conversations.length == 0 && conversationListRef.current.length == 0) {
           dispatch({ type: "setFetchState", fetchState: States.empty });
         }
-        if(attachListenerOnFetch.current){
+        if (attachListenerOnFetch.current) {
           attachListenerOnFetch.current = false
         }
       } catch (error) {
@@ -1308,6 +1308,19 @@ export function CometChatConversations(props: ConversationsProps) {
         if (lastMessage?.getDeletedAt()) {
           subtitle = getLocalizedString("conversation_subtitle_deleted_message");
         }
+        if (isAgentChat(conversation)) {
+          return (
+            <div
+              className="cometchat-conversations__subtitle-text-wrapper"
+            >
+              <div
+                className={`cometchat-conversations__subtitle-text`}
+              >
+                {getLocalizedString("conversation_start")}
+              </div>
+            </div>
+          )
+        }
 
         return (
           <div
@@ -1322,7 +1335,7 @@ export function CometChatConversations(props: ConversationsProps) {
             />
             <div
               className={`cometchat-conversations__subtitle-text`}
-              dangerouslySetInnerHTML={{ __html:   preserveEntities(subtitle) }}
+              dangerouslySetInnerHTML={{ __html: preserveEntities(subtitle) }}
             >
 
             </div>
@@ -1419,7 +1432,7 @@ export function CometChatConversations(props: ConversationsProps) {
           iconName = "";
           break;
       }
-      if (message.getDeletedAt() ||  message.getCategory()=== CometChatUIKitConstants.MessageCategory.interactive) {
+      if (message.getDeletedAt() || message.getCategory() === CometChatUIKitConstants.MessageCategory.interactive) {
         iconName = "deleted";
       }
       return iconName
@@ -1440,6 +1453,19 @@ export function CometChatConversations(props: ConversationsProps) {
         {getSubtitleText(conversation)}
       </>
     );
+  }
+
+  function isAgentChat(conversation: CometChat.Conversation) {
+    try {
+      const convWith = conversation.getConversationWith();
+      if (convWith instanceof CometChat.User) {
+        return convWith.getRole() === "@agentic";
+      }
+      return false;
+    } catch (error) {
+      errorHandler(error, "isAgentChat");
+      return false;
+    }
   }
 
   /**
@@ -1463,8 +1489,8 @@ export function CometChatConversations(props: ConversationsProps) {
       <div
         className='cometchat-conversations__subtitle'
       >
-        {!typingIndicator && getSubtitleThreadView(conversation)}
-        {getSubtitleReadReceiptView(conversation)}
+        {(!isAgentChat(conversation) && !typingIndicator) && getSubtitleThreadView(conversation)}
+        {!isAgentChat(conversation) && getSubtitleReadReceiptView(conversation)}
         {getSubtitleTextView(conversation)}
       </div>
     );
@@ -1498,7 +1524,7 @@ export function CometChatConversations(props: ConversationsProps) {
           if (
             defaultOptions[i].id ===
             CometChatUIKitConstants.ConversationOptions.delete
-           && !defaultOptions[i].onClick) {
+            && !defaultOptions[i].onClick) {
             defaultOptions[i].onClick = () => deleteOptionCallback(conversation);
           }
         }
@@ -1515,8 +1541,8 @@ export function CometChatConversations(props: ConversationsProps) {
             data={curOptions as unknown as CometChatActionsIcon[]}
             topMenuSize={2}
             placement={Placement.left}
-            onOptionClicked={(menu?:CometChatOption | CometChatActionsIcon) => {
-              if(menu?.onClick){
+            onOptionClicked={(menu?: CometChatOption | CometChatActionsIcon) => {
+              if (menu?.onClick) {
                 menu.onClick(conversation)
               }
             }}
@@ -1527,11 +1553,11 @@ export function CometChatConversations(props: ConversationsProps) {
       errorHandler(error, "getListItemMenuView")
     }
   }
-/**
- * Function for displaying the timestamp of the last message in the conversations list.
- * @returns CalendarObject
- */
-  function getDateFormat():CalendarObject{
+  /**
+   * Function for displaying the timestamp of the last message in the conversations list.
+   * @returns CalendarObject
+   */
+  function getDateFormat(): CalendarObject {
     const defaultFormat = {
       today: `hh:mm A`,
       yesterday: `[${getLocalizedString("yesterday")}]`,
@@ -1540,7 +1566,7 @@ export function CometChatConversations(props: ConversationsProps) {
 
     var globalCalendarFormat = sanitizeCalendarObject(CometChatLocalize.calendarObject)
     var componentCalendarFormat = sanitizeCalendarObject(lastMessageDateTimeFormat)
-  
+
     const finalFormat = {
       ...defaultFormat,
       ...globalCalendarFormat,
@@ -1572,7 +1598,7 @@ export function CometChatConversations(props: ConversationsProps) {
               className='cometchat-conversations__trailing-view'
             >
               <div className="cometchat-conversations__trailing-view-date">
-                <CometChatDate timestamp={lastMessage.getSentAt()}  calendarObject={getDateFormat()}/>
+                <CometChatDate timestamp={lastMessage.getSentAt()} calendarObject={getDateFormat()} />
               </div>
               <div
                 className="cometchat-conversations__trailing-view-badge"
@@ -1644,8 +1670,10 @@ export function CometChatConversations(props: ConversationsProps) {
           ${groupType && !hideGroupType ? `cometchat-conversations__list-item-${groupType}` : ""}
            ${status && !userBlockedFlag ? `cometchat-conversations__list-item-${status}` : ""}
            ${isActive ? `cometchat-conversations__list-item-active` : ""}
+           ${isAgentChat(conversation) && "cometchat-conversations__list-item-agent"}
         
         ` }>
+          
             <CometChatListItem
               id={conversation.getConversationId()}
               avatarURL={getListItemAvatarURL(conversation)}
@@ -1655,8 +1683,8 @@ export function CometChatConversations(props: ConversationsProps) {
               leadingView={leadingView ? leadingView(conversation) : undefined}
               onListItemClicked={(e) => onItemClick?.(conversation)}
               subtitleView={getListItemSubtitleView(conversation)}
-              menuView={getListItemMenuView(conversation)}
-              trailingView={getListItemTailContentView(conversation)}
+              menuView={ getListItemMenuView(conversation)}
+              trailingView={(!isAgentChat(conversation) || trailingView) &&   getListItemTailContentView(conversation)}
             />
           </div>
         );

@@ -294,5 +294,17 @@
     "search_message_subtitle_you": "Jij",
     "search_message_title_you": "Jij",
     "search_error_title": "OOPS!",
-    "search_error_subtitle": "Het lijkt erop dat er iets mis is gegaan"
+    "search_error_subtitle": "Het lijkt erop dat er iets mis is gegaan",
+    "ai_assistant_chat_intro_message": "Ik ben hier om je te helpen!",
+    "ai_assistant_chat_composer_placeholder": "Vraag iets",
+    "ai_assistant_chat_new_chat": "nieuw gesprek",
+    "ai_assistant_chat_history": "chatgeschiedenis",
+    "ai_assistant_chat_history_title": "Chatgeschiedenis",
+    "ai_assistant_chat_thinking": "Denken…",
+    "ai_assistant_chat_executing_tool": "Hulpmiddel oproep uitvoeren...",
+    "ai_assistant_chat_no_internet": "Geen internetverbinding. Controleer je verbinding en probeer het opnieuw.",
+    "ai_assistant_chat_history_empty_title": "Nog Geen Gesprekken",
+    "ai_assistant_chat_history_empty_subtitle": "Uw AI-agent is klaar - vraag alles en begin het gesprek.",
+    "ai_assistant_chat_history_error_title": "OOPS!",
+    "ai_assistant_chat_history_error_subtitle": "Er ging iets mis aan onze kant. Probeer het opnieuw."
 }

@@ -25,10 +25,8 @@
     width: 100%;
     text-align: left;
     height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
     min-height: 17px;
+    display: block;
 }
 
 /* Subtitle styling for typing state in the message header */
@@ -57,7 +55,7 @@
 }
 
 .cometchat-message-header .cometchat-list-item__trailing-view {
-    display: none;
+    width: auto;
 }
 
 /* Styling for the back button in the message header */

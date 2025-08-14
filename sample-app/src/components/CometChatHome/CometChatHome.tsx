@@ -25,7 +25,7 @@ import { CometChatUserDetails } from "../CometChatDetails/CometChatUserDetails";
 import { CometChatThreadedMessages } from "../CometChatDetails/CometChatThreadedMessages";
 import { CometChatCallDetails } from "../CometChatCallLog/CometChatCallLogDetails";
 import { CometChatAlertPopup } from "../CometChatAlertPopup/CometChatAlertPopup";
-import { CometChatAvatar, CometChatButton, CometChatConfirmDialog, CometChatConversationEvents, CometChatGroupEvents, CometChatGroupMembers, CometChatGroups, CometChatIncomingCall, CometChatMessageEvents, CometChatSearch, CometChatToast, CometChatUIKit, CometChatUIKitConstants, CometChatUIKitLoginListener, CometChatUIKitUtility, CometChatUserEvents, CometChatUsers, CometChatUIEvents, getLocalizedString, IMessages, IMouseEvent, IActiveChatChanged, MessageStatus, IGroupMemberAdded, IGroupMemberKickedBanned, IGroupMemberJoined } from "@cometchat/chat-uikit-react";
+import { CometChatAvatar, CometChatButton, CometChatConfirmDialog, CometChatConversationEvents, CometChatGroupEvents, CometChatGroupMembers, CometChatGroups, CometChatIncomingCall, CometChatMessageEvents, CometChatSearch, CometChatToast, CometChatUIKit, CometChatUIKitConstants, CometChatUIKitLoginListener, CometChatUIKitUtility, CometChatUserEvents, CometChatUsers, CometChatUIEvents, getLocalizedString, IMessages, IMouseEvent, IActiveChatChanged, MessageStatus, IGroupMemberAdded, IGroupMemberKickedBanned, IGroupMemberJoined,CometChatAIAssistantChat } from "@cometchat/chat-uikit-react";
 import { CallLog } from "@cometchat/calls-sdk-javascript";
 import { CometChatSearchView } from "../CometChatSearchView/CometChatSearchView";
 
@@ -271,6 +271,16 @@ function CometChatHome(props: { theme?: string }) {
         const [messageUser, setMessageUser] = useState<CometChat.User>();
         const [messageGroup, setMessageGroup] = useState<CometChat.Group>();
         const [threadedMessage, setThreadedMsg] = useState<CometChat.BaseMessage | undefined>();
+        const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+        useEffect(() => {
+            const handleResize = () => {
+                setIsMobile(window.innerWidth < 768);
+            };
+
+            window.addEventListener("resize", handleResize);
+            return () => window.removeEventListener("resize", handleResize);
+        }, []);
 
 
         useEffect(() => {
@@ -427,17 +437,22 @@ function CometChatHome(props: { theme?: string }) {
                         setAppState({ type: "updateSelectedItemCall", payload: undefined });
                     }} />
                     :
-                    <CometChatMessages
+                    messageUser && messageUser.getRole() == "@agentic"  ? <CometChatAIAssistantChat 
                         user={messageUser}
-                        group={messageGroup}
-                        onBack={onBack}
-                        onHeaderClicked={showSideComponent}
-                        onThreadRepliesClick={(message) => updateThreadedMessage(message)}
-                        showComposer={showComposer}
-                        onSearchClicked={onSearchClicked}
-                        goToMessageId={appState.threadSearchMessage ? undefined : appState.goToMessageId}
-                        searchKeyword={appState.goToMessageId ? appState.searchKeyword : undefined}
-                    />
+                        onBackButtonClicked={onBack}
+                        showBackButton={isMobile}
+                    /> :
+                        (messageUser || messageGroup) && <CometChatMessages
+                            user={messageUser}
+                            group={messageGroup}
+                            onBack={onBack}
+                            onHeaderClicked={showSideComponent}
+                            onThreadRepliesClick={(message) => updateThreadedMessage(message)}
+                            showComposer={showComposer}
+                            onSearchClicked={onSearchClicked}
+                            goToMessageId={appState.threadSearchMessage ? undefined : appState.goToMessageId}
+                            searchKeyword={appState.goToMessageId ? appState.searchKeyword : undefined}
+                        />
                 }
             </>
         )

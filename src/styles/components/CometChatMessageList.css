@@ -482,7 +482,7 @@ width: fit-content;
     border-radius: var(--cometchat-radius-max, 8px);
     background: var(--cometchat-shimmer-gradient-color);
     background-size: 200% 100%;
-    animation: shimmer .8s infinite;
+    animation: listLoadingAnimation .8s infinite;
     margin-right: var(--cometchat-margin-2);
 
 }
@@ -515,7 +515,7 @@ width: fit-content;
     align-items: center;
     background: var(--cometchat-shimmer-gradient-color);
     background-size: 200% 100%;
-    animation: shimmer .8s infinite;
+    animation: listLoadingAnimation .8s infinite;
     border-radius: var(--cometchat-radius-2, 8px);
 }
 
@@ -524,7 +524,7 @@ width: fit-content;
     height: 53px;
     background: var(--cometchat-shimmer-gradient-color);
     background-size: 200% 100%;
-    animation: shimmer .8s infinite;
+    animation: listLoadingAnimation .8s infinite;
     border-radius: var(--cometchat-radius-2, 8px);
 }
 
@@ -653,7 +653,7 @@ width: fit-content;
 }
 
 
-@keyframes shimmer {
+@keyframes listLoadingAnimation {
     0% {
         background-position: 200% 0;
     }

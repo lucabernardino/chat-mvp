@@ -6,7 +6,8 @@ export class CometChatUIKitConstants {
         custom: CometChat.CATEGORY_CUSTOM,
         action: CometChat.CATEGORY_ACTION,
         call: CometChat.CATEGORY_CALL,
-        interactive: CometChat.CATEGORY_INTERACTIVE
+        interactive: CometChat.CATEGORY_INTERACTIVE,
+        agentic:CometChat.MessageCategory.AGENTIC
     })
     static MessageTypes = Object.freeze({
         text: CometChat.MESSAGE_TYPE.TEXT,
@@ -20,7 +21,12 @@ export class CometChatUIKitConstants {
         form: "form",
         card: "card",
         customInteractive: "customInteractive",
-        scheduler: "scheduler"
+        scheduler: "scheduler",
+        assistant:CometChat.MESSAGE_TYPE.ASSISTANT,
+        toolArguments: CometChat.MESSAGE_TYPE.TOOL_ARGUMENTS,
+        toolResults: CometChat.MESSAGE_TYPE.TOOL_RESULT,
+
+        
     })
     static groupMemberAction = Object.freeze({
         ROLE: "role",
@@ -152,5 +158,16 @@ export class CometChatUIKitConstants {
         groups: "groups",
         changeScope: "changeScope",
         groupMembers: "groupMembers",
+    })
+    static streamMessageTypes = Object.freeze({
+        run_started: CometChat.AI_ASSISTANT_EVENTS.RUN_STARTED,
+        text_message_start: CometChat.AI_ASSISTANT_EVENTS.TEXT_MESSAGE_START,
+        text_message_content: CometChat.AI_ASSISTANT_EVENTS.TEXT_MESSAGE_CONTENT,
+        text_message_end: CometChat.AI_ASSISTANT_EVENTS.TEXT_MESSAGE_END,
+        run_finished: CometChat.AI_ASSISTANT_EVENTS.RUN_FINISHED,
+        tool_call_start: CometChat.AI_ASSISTANT_EVENTS.TOOL_CALL_STARTED,
+        tool_call_end: CometChat.AI_ASSISTANT_EVENTS.TOOL_CALL_ENDED,
+        tool_call_args: CometChat.AI_ASSISTANT_EVENTS.TOOL_CALL_ARGUMENT,
+        tool_call_result: CometChat.AI_ASSISTANT_EVENTS.TOOL_CALL_RESULT
     })
 }

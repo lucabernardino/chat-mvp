@@ -294,5 +294,17 @@
     "search_message_subtitle_you": "Tu",
     "search_message_title_you": "Tu",
     "search_error_title": "OPS!",
-    "search_error_subtitle": "Sembra che qualcosa sia andato storto"
+    "search_error_subtitle": "Sembra che qualcosa sia andato storto",
+    "ai_assistant_chat_intro_message": "Sono qui per aiutarti!",
+    "ai_assistant_chat_composer_placeholder": "Chiedi qualsiasi cosa",
+    "ai_assistant_chat_new_chat": "nuova chat",
+    "ai_assistant_chat_history": "cronologia chat",
+    "ai_assistant_chat_history_title": "Cronologia chat",
+    "ai_assistant_chat_thinking": "Sto pensando…",
+    "ai_assistant_chat_executing_tool": "Esecuzione della chiamata dello strumento...",
+    "ai_assistant_chat_no_internet": "Nessuna connessione a Internet. Controlla la tua connessione e riprova.",
+    "ai_assistant_chat_history_empty_title": "Nessuna conversazione ancora",
+    "ai_assistant_chat_history_empty_subtitle": "Il tuo agente AI è pronto - chiedi qualsiasi cosa e inizia la conversazione.",
+    "ai_assistant_chat_history_error_title": "OPS!",
+    "ai_assistant_chat_history_error_subtitle": "Qualcosa è andato storto da parte nostra. Per favore, riprova."
 }

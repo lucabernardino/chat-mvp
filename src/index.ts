@@ -119,6 +119,7 @@ export { CometChatRadioButton } from './components/BaseComponents/CometChatRadio
 export { CometChatPopover } from './components/BaseComponents/CometChatPopover/CometChatPopover';
 export { CometChatMediaRecorder } from './components/BaseComponents/CometChatMediaRecorder/CometChatMediaRecorder';
 export { CometChatListItem } from './components/BaseComponents/CometChatListItem/CometChatListItem';
+export { CometChatErrorView } from './components/BaseComponents/CometChatErrorView/CometChatErrorView';
 export { CometChatImageBubble } from './components/BaseComponents/CometChatImageBubble/CometChatImageBubble';
 export { CometChatFullScreenViewer } from './components/BaseComponents/CometChatFullScreenViewer/CometChatFullScreenViewer';
 export { CometChatFileBubble } from './components/BaseComponents/CometChatFileBubble/CometChatFileBubble';
@@ -152,3 +153,10 @@ export * from './formatters/index'
 export * from './utils/SearchUtils'
 export {CometChatSearch} from './components/CometChatSearch/CometChatSearch'
 export {CometChatFrameProvider,useCometChatFrameContext} from './context/CometChatFrameContext'
+
+export {CometChatAIAssistantChat} from './components/CometChatAIAssistantChat/CometChatAIAssistantChat';
+export * from './services/stream-message.service';
+export {CometChatAIAssistantTools} from './modals/CometChatAIAssistantTools';
+export {CometChatStreamMessageBubble} from './components/BaseComponents/CometChatStreamMessageBubble/CometChatStreamMessageBubble';
+export {CometChatAIAssistantMessageBubble} from './components/BaseComponents/CometChatAIAssistantMessageBubble/CometChatAIAssistantMessageBubble';
+export {CometChatAIAssistantChatHistory} from './components/CometChatAIAssistantChatHistory/CometChatAIAssistantChatHistory'

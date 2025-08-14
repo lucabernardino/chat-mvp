@@ -294,5 +294,17 @@
     "search_message_subtitle_you": "당신",
     "search_message_title_you": "당신",
     "search_error_title": "앗!",
-    "search_error_subtitle": "문제가 발생한 것 같습니다."
+    "search_error_subtitle": "문제가 발생한 것 같습니다.",
+    "ai_assistant_chat_intro_message": "저는 여러분을 돕기 위해 여기 있습니다!",
+    "ai_assistant_chat_composer_placeholder": "무엇이든 물어보세요",
+    "ai_assistant_chat_new_chat": "새 채팅",
+    "ai_assistant_chat_history": "채팅 기록",
+    "ai_assistant_chat_history_title": "채팅 기록",
+    "ai_assistant_chat_thinking": "생각 중…",
+    "ai_assistant_chat_executing_tool": "도구 호출 실행 중...",
+    "ai_assistant_chat_no_internet": "인터넷 연결이 없습니다. 연결을 확인하고 다시 시도하세요.",
+    "ai_assistant_chat_history_empty_title": "아직 대화가 없습니다.",
+    "ai_assistant_chat_history_empty_subtitle": "AI 에이전트가 준비되었습니다 - 무엇이든 물어보고 대화를 시작하세요.",
+    "ai_assistant_chat_history_error_title": "앗!",
+    "ai_assistant_chat_history_error_subtitle": "우리 측에서 문제가 발생했습니다. 다시 시도해주세요."
 }

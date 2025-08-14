@@ -294,5 +294,17 @@
     "search_message_subtitle_you": "Te",
     "search_message_title_you": "Te",
     "search_error_title": "HOPPÁ!",
-    "search_error_subtitle": "Úgy tűnik, valami hiba történt"
+    "search_error_subtitle": "Úgy tűnik, valami hiba történt",
+    "ai_assistant_chat_intro_message": "Itt vagyok, hogy segítsek!",
+    "ai_assistant_chat_composer_placeholder": "Kérdezz bármit",
+    "ai_assistant_chat_new_chat": "új chat",
+    "ai_assistant_chat_history": "chat előzményei",
+    "ai_assistant_chat_history_title": "Chat előzményei",
+    "ai_assistant_chat_thinking": "Gondolkozom…",
+    "ai_assistant_chat_executing_tool": "Eszközhívás végrehajtása...",
+    "ai_assistant_chat_no_internet": "Nincs internetkapcsolat. Kérjük, ellenőrizze a kapcsolatát, és próbálja újra.",
+    "ai_assistant_chat_history_empty_title": "Még nincs beszélgetés",
+    "ai_assistant_chat_history_empty_subtitle": "Az Ön AI ügynöke készen áll - kérdezzen bármit, és kezdje el a beszélgetést.",
+    "ai_assistant_chat_history_error_title": "HOPPÁ!",
+    "ai_assistant_chat_history_error_subtitle": "Valami hiba történt nálunk. Kérjük, próbálja újra."
 }

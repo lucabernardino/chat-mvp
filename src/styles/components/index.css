@@ -55,7 +55,13 @@
 @import url('./CometChatThreadHeader.css');
 @import url('./CometChatToast.css');
 @import url('./CometChatSearch.css');
-
+@import url('./CometChatAIAssistantChat.css');
+@import url('./CometChatAIAssistantMessageBubble.css');
+@import url('./CometChatStreamMessageBubble.css');
+@import url('./CometChatAIAssistantChatHistory.css');
+@import url('./CometChatErrorView.css');
+/* @import url('./CometChatToolCallResultBubble.css');
+@import url('./CometChatToolCallArgumentBubble.css'); */
 .cometchat * {
     box-sizing: border-box;
 }

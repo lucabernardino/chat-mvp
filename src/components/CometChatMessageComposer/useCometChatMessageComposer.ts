@@ -58,6 +58,8 @@ type Args = {
   textMessageToEdit:CometChat.TextMessage | null;
   getCurrentWindow: () => Window;
   getCurrentDocument: () => Document;
+  onTextChange:((text: string) => void) | undefined;
+
 
 };
 
@@ -93,7 +95,7 @@ export function useCometChatMessageComposer(args: Args) {
     setUserMemberListType,
     getComposerId,
     isPartOfCurrentChatForUIEvent,
-    parentMessageIdPropRef, getCurrentInput,textMessageToEdit,getCurrentWindow,getCurrentDocument } = args;
+    parentMessageIdPropRef, getCurrentInput,textMessageToEdit,getCurrentWindow,getCurrentDocument,onTextChange } = args;
   const isPreviewVisible = useRef<boolean>(false);
   const autoFocusCompleted = useRef<boolean>(false);
 
@@ -201,6 +203,9 @@ export function useCometChatMessageComposer(args: Args) {
             dispatch({ type: "setText", text: "" });
             emptyInputField()
             pasteHtmlAtCaret(text);
+            if (onTextChange) {
+              onTextChange(text); // Call the onTextChange callback if provided
+            }
             dispatch({ type: "setText", text: text });
           }
         );
@@ -332,6 +337,9 @@ export function useCometChatMessageComposer(args: Args) {
         if (sanitizedData) {
           contentEditable.removeEventListener("paste", preventPaste);
           pasteHtmlAtCaret(sanitizedData);
+          if (onTextChange) {
+            onTextChange(sanitizedData);
+          }
           dispatch({ type: "setText", text: sanitizedData });
           setTimeout(() => {
             contentEditable.addEventListener("paste", preventPaste);

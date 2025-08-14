@@ -3,6 +3,7 @@ import React, {
   LegacyRef,
   useCallback,
   useEffect,
+  useMemo,
   useReducer,
   useRef,
   useState,
@@ -239,6 +240,11 @@ interface MessageComposerProps {
   * @defaultValue `false`
   */
   showScrollbar?: boolean;
+  /**
+ * The placeholder text to display in the message input field when it is empty.
+ * @defaultValue ""
+ */
+  placeholderText?: string;
 }
 
 /**
@@ -393,7 +399,8 @@ export function CometChatMessageComposer(props: MessageComposerProps) {
     enterKeyBehavior = EnterKeyBehavior.SendMessage,
     disableSoundForMessage = false,
     customSoundForMessage,
-    showScrollbar = false
+    showScrollbar = false,
+    placeholderText = getLocalizedString('message_composer_placeholder')
   } = props;
   
   /**
@@ -414,6 +421,7 @@ export function CometChatMessageComposer(props: MessageComposerProps) {
  */
   const textInputRef = useRef<HTMLDivElement | null>(null);
   const mediaFilePickerRef = useRef<HTMLInputElement | null>(null);
+  const uniqueIdRef = useRef<string | null>("");
   const aiBtnRef = React.createRef<{
     openPopover: () => void;
     closePopover: () => void;
@@ -925,6 +933,9 @@ try {
           textMessage = textFormatterArray[i].formatMessageForSending(
             textMessage
           ) as T;
+        }
+        if (onTextChange) {
+          onTextChange("")
         }
         const sentTextMessage = await CometChat.sendMessage(textMessage);
         mentionsTextFormatterInstanceRef.current.resetCometChatUserGroupMembers();
@@ -1519,7 +1530,10 @@ try {
 
   }
   function shouldShowAttachmentButton() {
-return hideAttachmentButton || (hideAudioAttachmentOption && hideVideoAttachmentOption && hideFileAttachmentOption && hideImageAttachmentOption && hidePollsOption && hideCollaborativeDocumentOption && hideCollaborativeWhiteboardOption) || (attachmentOptions && attachmentOptions?.length == 0);
+    return hideAttachmentButton || (ChatConfigurator.getDataSource().getAttachmentOptions(
+      getComposerId(),
+      { hideAudioAttachmentOption, hideCollaborativeDocumentOption, hideCollaborativeWhiteboardOption, hideFileAttachmentOption, hideImageAttachmentOption, hideVideoAttachmentOption, hidePollsOption }
+    ).length === 0) || (attachmentOptions && attachmentOptions?.length == 0);
   }
 
   /**
@@ -1738,11 +1752,20 @@ return hideAttachmentButton || (hideAudioAttachmentOption && hideVideoAttachment
     }
   }
 
+  const createUniqueUUID = useMemo(() => {
+    const parentMessageId = parentMessageIdPropRef.current ? parentMessageIdPropRef.current + "_" : "";
+    const uid = user?.getUid() ? user.getUid() + "_" : "";
+    const guid = group?.getGuid() ? group.getGuid() + "_" : "";
+    const uuid = uid + guid + parentMessageId + CometChatUIKitUtility.ID();
+    uniqueIdRef.current = "cometchat-message-composer__input-" + uuid;
+    return uniqueIdRef.current;
+  }, [user, group, parentMessageIdPropRef]);
+
   function getCurrentInput() {
-    if (parentMessageIdPropRef.current) {
-      return getCurrentDocument()?.querySelector(".cometchat-message-composer__input-thread")
+    if (!uniqueIdRef.current) {
+      return null;
     }
-    return getCurrentDocument()?.querySelector(".cometchat-message-composer__input")
+    return getCurrentDocument()?.querySelector(`.${uniqueIdRef.current}`)
   }
 
 
@@ -2242,11 +2265,12 @@ try {
           contentEditable={checkPlainTextAvailability(false)}
           onMouseDown={handleMouseDown}
           onInput={onTextInputChange}
-          className={`cometchat-message-composer__input ${parentMessageIdPropRef.current ? "cometchat-message-composer__input-thread" : ""} ${isMobileDevice() ? "cometchat-message-composer__input-mobile" : ""}`}
-          data-placeholder={getLocalizedString("message_composer_placeholder")}
+          className={`cometchat-message-composer__input ${parentMessageIdPropRef.current ? "cometchat-message-composer__input-thread" : ""} ${isMobileDevice() ? "cometchat-message-composer__input-mobile" : ""} ${createUniqueUUID}`}
+          data-placeholder={placeholderText}
           ref={textInputRef}
         ></div>
         <div
+        className="cometchat-message-composer__buttons"
           style={{
             display: "flex",
             padding: `${getThemeVariable('--cometchat-padding-2')} ${getThemeVariable('--cometchat-padding-2')}`,
@@ -2315,7 +2339,8 @@ try {
     isPartOfCurrentChatForUIEvent,
     textMessageToEdit:state.textMessageToEdit,
     getCurrentWindow,
-    getCurrentDocument
+    getCurrentDocument,
+    onTextChange
   });
   // Main rendering of the message composer component
   return (

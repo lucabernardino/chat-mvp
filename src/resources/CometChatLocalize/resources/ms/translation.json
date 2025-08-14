@@ -294,5 +294,17 @@
     "search_message_subtitle_you": "Anda",
     "search_message_title_you": "Anda",
     "search_error_title": "OOPS!",
-    "search_error_subtitle": "Nampaknya ada yang tidak kena"
+    "search_error_subtitle": "Nampaknya ada yang tidak kena",
+    "ai_assistant_chat_intro_message": "Saya di sini untuk membantu anda!",
+    "ai_assistant_chat_composer_placeholder": "Tanyakan apa-apa",
+    "ai_assistant_chat_new_chat": "sembang baru",
+    "ai_assistant_chat_history": "sejarah sembang",
+    "ai_assistant_chat_history_title": "Sejarah Sembang",
+    "ai_assistant_chat_thinking": "Berfikir…",
+    "ai_assistant_chat_executing_tool": "Melaksanakan panggilan alat...",
+    "ai_assistant_chat_no_internet": "Tiada sambungan internet. Sila semak sambungan anda dan cuba lagi.",
+    "ai_assistant_chat_history_empty_title": "Tiada Perbualan Lagi",
+    "ai_assistant_chat_history_empty_subtitle": "Ejen AI anda sedia - tanya apa sahaja dan mulakan perbualan.",
+    "ai_assistant_chat_history_error_title": "OOPS!",
+    "ai_assistant_chat_history_error_subtitle": "Sesuatu yang salah berlaku di pihak kami. Sila cuba lagi."
 }

@@ -1,6 +1,9 @@
 import { useCallback, useEffect, useRef } from "react";
 import WaveSurfer from "../components/BaseComponents/CometChatAudioBubble/src/wavesurfer";
 import { CalendarObject } from "./CalendarObject";
+import { CometChatUIKitLoginListener } from "../CometChatUIKit/CometChatUIKitLoginListener";
+import { CometChatUIKitConstants } from "../constants/CometChatUIKitConstants";
+import { CometChatUIKitUtility } from "../CometChatUIKit/CometChatUIKitUtility";
 
 interface MediaPlayer {
 video?:HTMLVideoElement | null,
@@ -269,3 +272,72 @@ export const useDebouncedCallback = (callback: () => void, delay: number) => {
   
     return { debouncedCallback, cleanup };
   };
+
+// function to create dummy message object.
+export function createMessageCopy(msg:CometChat.AIAssistantBaseEvent,user:CometChat.User,category?: string, type?: string) {
+  let message = {
+    ...msg,
+    getId: () => msg?.messageId || CometChatUIKitUtility.getUnixTimestamp(),
+    getMessageId: () => msg?.messageId || CometChatUIKitUtility.getUnixTimestamp(),
+    getSender: () => user,
+    getReceiverType: () => CometChatUIKitConstants.MessageReceiverType.user,
+    getReceiver: () => CometChatUIKitLoginListener.getLoggedInUser(),
+    getCategory: () => category || CometChatUIKitConstants.MessageCategory.custom,
+    getType: () => msg?.getType() || CometChatUIKitConstants.streamMessageTypes.run_started,
+    getText: () => "",
+    getParentMessageId: () => "",
+    getSentAt: () => "",
+    getReactions: () => [],
+    getMentions: () => [],
+    setId: (value: number) => { },
+    setSender: (value: any) => { },
+    setReceiverType: (value: string) => { },
+    setReceiver: (value: any) => { },
+    setCategory: (value: string) => { },
+    setType: (value: string) => { },
+    setText: (value: string) => { },
+    setParentMessageId: (value: number) => { },
+    setSentAt: (value: number) => { },
+    setReactions: (reactions: any) => [],
+    setMentionedUsers: (mentionedUsers: any[]) => { },
+    setMuid: (value: string) => { },
+    getConversationId: () => "",
+    setConversationId: (value: string) => { },
+    getUnreadRepliesCount: () => 0,
+    setUnreadRepliesCount: (value: number) => { },
+    getStatus: () => "",
+    setStatus: (value: string) => { },
+    getDeliveredAt: () => 0,
+    setDeliveredAt: (value: number) => { },
+    getDeliveredToMeAt: () => 0,
+    setDeliveredToMeAt: (value: number) => { },
+    getReadAt: () => 0,
+    setReadAt: (value: number) => { },
+    getReadByMeAt: () => 0,
+    setReadByMeAt: (value: number) => { },
+    getEditedAt: () => 0,
+    setEditedAt: (value: number) => { },
+    getEditedBy: () => "",
+    setEditedBy: (value: string) => { },
+    getDeletedAt: () => 0,
+    setDeletedAt: (value: number) => { },
+    getDeletedBy: () => "",
+    setDeletedBy: (value: string) => { },
+    getReplyCount: () => 0,
+    setReplyCount: (value: number) => { },
+    getRawMessage: () => ({}),
+    setRawMessage: (rawMessage: Object) => { },
+    setHasMentionedMe: (hasMentionedMe: boolean) => { },
+    hasMentionedMe: () => false,
+    getData: () => msg?.data,
+    setData: (value: object) => { },
+    getMuid: ()=> CometChatUIKitUtility.getUnixTimestamp()
+
+  }
+  return message as unknown as CometChat.BaseMessage;
+  }
+
+
+  export function isDarkMode(){
+      return document.querySelector('[data-theme="dark"]') ? true : false;
+  }

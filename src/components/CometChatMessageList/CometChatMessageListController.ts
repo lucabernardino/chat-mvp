@@ -1,6 +1,9 @@
+import { CometChatUIKitLoginListener } from '../../CometChatUIKit/CometChatUIKitLoginListener';
 import { CometChatUIKitConstants } from '../../constants/CometChatUIKitConstants';
+import { handleWebsocketMessage, startStreamingMessage } from '../../services/stream-message.service';
 import { ChatConfigurator } from "../../utils/ChatConfigurator";
 import { CometChat } from "@cometchat/chat-sdk-javascript";
+import { createMessageCopy } from '../../utils/util';
 
 /**
 The MessageListManager is  responsible for controlling chat operations like fetching messages and managing listener lifecycles. It  attaches listeners for group and call activities for a particular user or group, which are activated when the chat is open and deactivated when it's closed or when switching to a new chat.
@@ -11,6 +14,7 @@ export class MessageListManager {
     static groupListenerId: string = "group_" + new Date().getTime();
     static callListenerId: string = "call_" + new Date().getTime();
     static connectionListenerId: string = "MessageList_connection_" + String(Date.now());
+    static streamListenerId: string = "agent_" + new Date().getTime();
     private static errorHandler: (error: unknown, source?: string) => void;
     /**
      * Creates an instance of MessageListManager which constructs a request builder for fetching messages from a particular user/group in the chat.
@@ -22,7 +26,7 @@ export class MessageListManager {
      * @param {boolean} [hideGroupActionMessages]
      * @memberof MessageListManager
      */
-    constructor(errorHandler: (error: unknown, source?: string) => void,messagesRequestBuilder?: CometChat.MessagesRequestBuilder, user?: CometChat.User, group?: CometChat.Group, messageId?: number, parentMessageId?: number, hideGroupActionMessages?: boolean) {
+    constructor(errorHandler: (error: unknown, source?: string) => void, messagesRequestBuilder?: CometChat.MessagesRequestBuilder, user?: CometChat.User, group?: CometChat.Group, messageId?: number, parentMessageId?: number, hideGroupActionMessages?: boolean,isAgentChat?:boolean) {
         MessageListManager.errorHandler = errorHandler;
         if (messagesRequestBuilder) {
             let requestBuilder!: CometChat.MessagesRequestBuilder;
@@ -37,6 +41,7 @@ export class MessageListManager {
             if (messageId) {
                 requestBuilder!.setMessageId(messageId);
             }
+         
             this.messagesRequest = requestBuilder.build()!;
         } else {
             const builder: CometChat.MessagesRequestBuilder = new CometChat.MessagesRequestBuilder()
@@ -49,7 +54,12 @@ export class MessageListManager {
                 builder.setMessageId(messageId)
             }
             if (parentMessageId) {
-                builder.setParentMessageId(parentMessageId)
+
+                builder.setParentMessageId(parentMessageId);
+                if (isAgentChat) {
+                    builder.hideReplies(false)
+                    builder.withParent(true)
+                }
             }
             if (user) {
                 builder.setUID(user.getUid())
@@ -84,77 +94,99 @@ export class MessageListManager {
      *
      * @param {Function} callback
      */
-    static attachListeners: (callback: (key: string, mesage: CometChat.BaseMessage, group?: CometChat.Group) => void) => void = (callback: (key: string, mesage: CometChat.BaseMessage, group?: CometChat.Group) => void) => {
+    static attachListeners: (addStreamListener: boolean, callback: (key: string, mesage: CometChat.BaseMessage, group?: CometChat.Group) => void,addMessage:(message:CometChat.BaseMessage)=> void,user?:CometChat.User) => void = (addStreamListener: boolean = false, callback: (key: string, mesage: CometChat.BaseMessage, group?: CometChat.Group) => void,addMessage:(message:CometChat.BaseMessage)=> void,user?:CometChat.User) => {
 
-try {
-    
-        /** Add Group Listener to listen to group action messages */
-        CometChat.addGroupListener(
-            this.groupListenerId,
-            new CometChat.GroupListener({
-                onGroupMemberScopeChanged: (message: CometChat.BaseMessage, changedUser: CometChat.User, newScope: CometChat.GroupMemberScope, oldScope: CometChat.GroupMemberScope, changedGroup: CometChat.Group): void => {
-                    callback(CometChatUIKitConstants.MessageCategory.action, message, changedGroup);
-                },
-                onGroupMemberKicked: (message: CometChat.BaseMessage, kickedUser: CometChat.User, kickedBy: CometChat.User, kickedFrom: CometChat.Group): void => {
-                    callback(CometChatUIKitConstants.MessageCategory.action, message, kickedFrom);
-                },
-                onGroupMemberBanned: (message: CometChat.BaseMessage, bannedUser: CometChat.User, bannedBy: CometChat.User, bannedFrom: CometChat.Group): void => {
-                    callback(CometChatUIKitConstants.MessageCategory.action, message, bannedFrom);
-                },
-                onGroupMemberUnbanned: (message: CometChat.BaseMessage, unbannedUser: CometChat.User, unbannedBy: CometChat.User, unbannedFrom: CometChat.Group): void => {
-                    callback(CometChatUIKitConstants.MessageCategory.action, message, unbannedFrom);
-                },
-                onMemberAddedToGroup: (message: CometChat.BaseMessage, userAdded: CometChat.User, userAddedBy: CometChat.User, userAddedIn: CometChat.Group): void => {
-                    callback(CometChatUIKitConstants.MessageCategory.action, message, userAddedIn);
-                },
-                onGroupMemberLeft: (message: CometChat.BaseMessage, leavingUser: CometChat.GroupMember, group: CometChat.Group): void => {
-                    callback(CometChatUIKitConstants.MessageCategory.action, message, group);
-                },
-                onGroupMemberJoined: (message: CometChat.BaseMessage, joinedUser: CometChat.GroupMember, joinedGroup: CometChat.Group): void => {
-                    callback(CometChatUIKitConstants.MessageCategory.action, message, joinedGroup);
-                },
-            })
-        );
-        /** Add Calls Listener to listen to call activities if  Calling is enabled. */
-        if (ChatConfigurator.names.includes("calling")) {
-            CometChat.addCallListener(
-                this.callListenerId,
-                new CometChat.CallListener({
-                    onIncomingCallReceived: (call: CometChat.Call): void => {
-                        callback(CometChatUIKitConstants.MessageCategory.call, call);
-                    },
-                    onIncomingCallCancelled: (call: CometChat.Call): void => {
-                        callback(CometChatUIKitConstants.MessageCategory.call, call);
-                    },
-                    onOutgoingCallRejected: (call: CometChat.Call): void => {
-                        callback(CometChatUIKitConstants.MessageCategory.call, call);
-                    },
-                    onOutgoingCallAccepted: (call: CometChat.Call): void => {
-                        callback(CometChatUIKitConstants.MessageCategory.call, call);
-                    },
-                    onCallEndedMessageReceived: (call: CometChat.Call): void => {
-                        callback(CometChatUIKitConstants.MessageCategory.call, call);
-                    },
+        try {
+            if (addStreamListener && user) {
+                CometChat.addAIAssistantListener(this.streamListenerId, {
+                    onAIAssistantEventReceived: (message: CometChat.AIAssistantBaseEvent) => {
+                        if (message.getConversationId() && (!message.getConversationId().includes(user.getUid()) || !message.getConversationId().includes(CometChatUIKitLoginListener.getLoggedInUser()!.getUid()))) {
+                            return;
+                        }
+                        if (message.getType() == CometChatUIKitConstants.streamMessageTypes.run_started) {
+                             const copiedMessage = createMessageCopy(message, user);
+                            if (copiedMessage) {
+                                addMessage(copiedMessage);
+                            }
+                            startStreamingMessage();
+                        }
+                        else {
+                            handleWebsocketMessage(message);
+                        }
+                    }
                 })
-            );
+            }
+
+            else {
+                /** Add Group Listener to listen to group action messages */
+                CometChat.addGroupListener(
+                    this.groupListenerId,
+                    new CometChat.GroupListener({
+                        onGroupMemberScopeChanged: (message: CometChat.BaseMessage, changedUser: CometChat.User, newScope: CometChat.GroupMemberScope, oldScope: CometChat.GroupMemberScope, changedGroup: CometChat.Group): void => {
+                            callback(CometChatUIKitConstants.MessageCategory.action, message, changedGroup);
+                        },
+                        onGroupMemberKicked: (message: CometChat.BaseMessage, kickedUser: CometChat.User, kickedBy: CometChat.User, kickedFrom: CometChat.Group): void => {
+                            callback(CometChatUIKitConstants.MessageCategory.action, message, kickedFrom);
+                        },
+                        onGroupMemberBanned: (message: CometChat.BaseMessage, bannedUser: CometChat.User, bannedBy: CometChat.User, bannedFrom: CometChat.Group): void => {
+                            callback(CometChatUIKitConstants.MessageCategory.action, message, bannedFrom);
+                        },
+                        onGroupMemberUnbanned: (message: CometChat.BaseMessage, unbannedUser: CometChat.User, unbannedBy: CometChat.User, unbannedFrom: CometChat.Group): void => {
+                            callback(CometChatUIKitConstants.MessageCategory.action, message, unbannedFrom);
+                        },
+                        onMemberAddedToGroup: (message: CometChat.BaseMessage, userAdded: CometChat.User, userAddedBy: CometChat.User, userAddedIn: CometChat.Group): void => {
+                            callback(CometChatUIKitConstants.MessageCategory.action, message, userAddedIn);
+                        },
+                        onGroupMemberLeft: (message: CometChat.BaseMessage, leavingUser: CometChat.GroupMember, group: CometChat.Group): void => {
+                            callback(CometChatUIKitConstants.MessageCategory.action, message, group);
+                        },
+                        onGroupMemberJoined: (message: CometChat.BaseMessage, joinedUser: CometChat.GroupMember, joinedGroup: CometChat.Group): void => {
+                            callback(CometChatUIKitConstants.MessageCategory.action, message, joinedGroup);
+                        },
+                    })
+                );
+                /** Add Calls Listener to listen to call activities if  Calling is enabled. */
+                if (ChatConfigurator.names.includes("calling")) {
+                    CometChat.addCallListener(
+                        this.callListenerId,
+                        new CometChat.CallListener({
+                            onIncomingCallReceived: (call: CometChat.Call): void => {
+                                callback(CometChatUIKitConstants.MessageCategory.call, call);
+                            },
+                            onIncomingCallCancelled: (call: CometChat.Call): void => {
+                                callback(CometChatUIKitConstants.MessageCategory.call, call);
+                            },
+                            onOutgoingCallRejected: (call: CometChat.Call): void => {
+                                callback(CometChatUIKitConstants.MessageCategory.call, call);
+                            },
+                            onOutgoingCallAccepted: (call: CometChat.Call): void => {
+                                callback(CometChatUIKitConstants.MessageCategory.call, call);
+                            },
+                            onCallEndedMessageReceived: (call: CometChat.Call): void => {
+                                callback(CometChatUIKitConstants.MessageCategory.call, call);
+                            },
+                        })
+                    );
+                }
+            }
+        } catch (error) {
+            this.errorHandler(error, "attachListeners")
         }
-} catch (error) {
-    this.errorHandler(error,"attachListeners")
-}
     };
     /**
      * Function to remove the attached listeners for a particular user/group.
      *  */
     static removeListeners(): void {
-     try {
-        CometChat.removeGroupListener(this.groupListenerId);
-        CometChat.removeConnectionListener(this.connectionListenerId)
-        if (ChatConfigurator.names.includes("calling")) {
-            CometChat.removeCallListener(this.callListenerId);
+        try {
+            CometChat.removeGroupListener(this.groupListenerId);
+            CometChat.removeConnectionListener(this.connectionListenerId);
+            CometChat.removeAIAssistantListener(this.streamListenerId);
+            if (ChatConfigurator.names.includes("calling")) {
+                CometChat.removeCallListener(this.callListenerId);
+            }
+        } catch (error) {
+            this.errorHandler(error, "removeListeners")
         }
-     } catch (error) {
-        this.errorHandler(error,"removeListeners")
-     }
     }
     /**
 * Attaches an SDK websocket listener to monitor when the connection disconnects or reconnects.
@@ -162,23 +194,23 @@ try {
 * @returns - Function to remove the added SDK websocket listener
 */
     static attachConnectionListener(callback: () => void): void {
-      try {
-        CometChat.addConnectionListener(
-            this.connectionListenerId,
-            new CometChat.ConnectionListener({
-                onConnected: (): void => {
-                    console.log("ConnectionListener =>connected");
-                    if (callback) {
-                        callback()
+        try {
+            CometChat.addConnectionListener(
+                this.connectionListenerId,
+                new CometChat.ConnectionListener({
+                    onConnected: (): void => {
+                        console.log("ConnectionListener =>connected");
+                        if (callback) {
+                            callback()
+                        }
+                    },
+                    onDisconnected: (): void => {
+                        console.log("ConnectionListener => On Disconnected");
                     }
-                },
-                onDisconnected: (): void => {
-                    console.log("ConnectionListener => On Disconnected");
-                }
-            })
-        );
-      } catch (error) {
-        this.errorHandler(error,"attachConnectionListener")
-      }
+                })
+            );
+        } catch (error) {
+            this.errorHandler(error, "attachConnectionListener")
+        }
     }
 }

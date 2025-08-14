@@ -57,7 +57,7 @@ class CometChatMessageTemplate {
      * By default, it displays the receipt and the timestamp.
      * @type {(message:CometChat.BaseMessage,alignment:MessageBubbleAlignment)=> Element | JSX.Element | null}
      */
-    statusInfoView: ((message: CometChat.BaseMessage, alignment: MessageBubbleAlignment, hideReceipts?: boolean, messageSentAtDateTimeFormat?:CalendarObject) => Element | JSX.Element | null) | null = null;
+    statusInfoView: ((message: CometChat.BaseMessage, alignment: MessageBubbleAlignment, hideReceipts?: boolean, messageSentAtDateTimeFormat?:CalendarObject,showError?: boolean) => Element | JSX.Element | null) | null = null;
 
     /**
      * List of available actions that any user can perform on a message, like reacting, 

@@ -294,5 +294,17 @@
     "search_message_subtitle_you": "You",
     "search_message_title_you": "You",
     "search_error_title": "OOPS!",
-    "search_error_subtitle": "Looks like something went wrong"
+    "search_error_subtitle": "Looks like something went wrong",
+    "ai_assistant_chat_intro_message": "I am here to assist you!",
+    "ai_assistant_chat_composer_placeholder": "Ask anything",
+    "ai_assistant_chat_new_chat": "new chat",
+    "ai_assistant_chat_history": "chat history",
+    "ai_assistant_chat_history_title": "Chat History",
+    "ai_assistant_chat_thinking": "Thinking…",
+    "ai_assistant_chat_executing_tool": "Executing tool call...",
+    "ai_assistant_chat_no_internet": "No internet connection. Please check your connection and try again.",
+    "ai_assistant_chat_history_empty_title": "No Conversations Yet",
+    "ai_assistant_chat_history_empty_subtitle": "Your AI agent is ready - ask anything and start the conversation.",
+    "ai_assistant_chat_history_error_title": "OOPS!",
+    "ai_assistant_chat_history_error_subtitle": "Something went wrong on our end. Please try again"
 }

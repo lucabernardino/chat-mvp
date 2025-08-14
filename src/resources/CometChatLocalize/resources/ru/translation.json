@@ -294,5 +294,17 @@
     "search_message_subtitle_you": "Вы",
     "search_message_title_you": "Вы",
     "search_error_title": "УПС!",
-    "search_error_subtitle": "Похоже, что-то пошло не так"
+    "search_error_subtitle": "Похоже, что-то пошло не так",
+    "ai_assistant_chat_intro_message": "Я здесь, чтобы помочь вам!",
+    "ai_assistant_chat_composer_placeholder": "Спрашивайте все",
+    "ai_assistant_chat_new_chat": "Новый чат",
+    "ai_assistant_chat_history": "История",
+    "ai_assistant_chat_history_title": "История чата",
+    "ai_assistant_chat_thinking": "Думаю…",
+    "ai_assistant_chat_executing_tool": "Выполнение вызова инструмента...",
+    "ai_assistant_chat_no_internet": "Нет подключения к интернету. Проверьте соединение и попробуйте снова.",
+    "ai_assistant_chat_history_empty_title": "Пока нет разговоров",
+    "ai_assistant_chat_history_empty_subtitle": "Ваш ИИ-агент готов - спрашивайте что угодно и начинайте разговор.",
+    "ai_assistant_chat_history_error_title": "УПС!",
+    "ai_assistant_chat_history_error_subtitle": "Что-то пошло не так с нашей стороны. Попробуйте снова."
 }

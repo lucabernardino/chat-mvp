@@ -294,5 +294,17 @@
     "search_message_subtitle_you": "Vous",
     "search_message_title_you": "Vous",
     "search_error_title": "OUPS !",
-    "search_error_subtitle": "On dirait que quelque chose s'est mal passé"
+    "search_error_subtitle": "On dirait que quelque chose s'est mal passé",
+    "ai_assistant_chat_intro_message": "Je suis là pour vous aider !",
+    "ai_assistant_chat_composer_placeholder": "Demandez n'importe quoi",
+    "ai_assistant_chat_new_chat": "nouvelle conversation",
+    "ai_assistant_chat_history": "historique des chats",
+    "ai_assistant_chat_history_title": "Historique des chats",
+    "ai_assistant_chat_thinking": "En train de penser…",
+    "ai_assistant_chat_executing_tool": "Exécution de l'appel à l'outil...",
+    "ai_assistant_chat_no_internet": "Pas de connexion Internet. Vérifiez votre connexion et réessayez.",
+    "ai_assistant_chat_history_empty_title": "Aucune conversation pour le moment",
+    "ai_assistant_chat_history_empty_subtitle": "Votre agent IA est prêt - posez n'importe quelle question et commencez la conversation.",
+    "ai_assistant_chat_history_error_title": "OUPS !",
+    "ai_assistant_chat_history_error_subtitle": "Quelque chose a mal tourné de notre côté. Veuillez réessayer."
 }

@@ -7,7 +7,7 @@ import { CometChatTextFormatter } from "../formatters/CometChatFormatters/CometC
 import { CometChatUrlsFormatter } from "../formatters/CometChatFormatters/CometChatUrlsFormatter/CometChatUrlsFormatter";
 import { additionalParams } from "./ConversationUtils";
 import { CometChatActionsIcon, CometChatActionsView, CometChatMessageComposerAction, CometChatMessageTemplate } from "../modals/";
-import {  MessageBubbleAlignment } from "../Enums/Enums";
+import { MessageBubbleAlignment } from "../Enums/Enums";
 import { ComposerId } from "./MessagesDataSource";
 import { CalendarObject } from "./CalendarObject";
 import { JSX } from 'react';
@@ -54,7 +54,8 @@ export abstract class DataSource {
     message: CometChat.BaseMessage,
     alignment: MessageBubbleAlignment,
     hideReceipts?: boolean,
-    messageSentAtDateTimeFormat?:CalendarObject
+    messageSentAtDateTimeFormat?: CalendarObject,
+    showError?:boolean
   ): Element | JSX.Element | null;
   abstract getTextMessageContentView(
     message: CometChat.TextMessage,
@@ -81,6 +82,18 @@ export abstract class DataSource {
     alignment: MessageBubbleAlignment,
 
   ): Element | JSX.Element;
+  abstract getAgentAssistantMessageTemplate(
+    additionalConfigurations?: Object | undefined
+  ): CometChatMessageTemplate;
+    abstract getToolArgumentsMessageTemplate(
+    additionalConfigurations?: Object | undefined
+  ): CometChatMessageTemplate;
+    abstract getToolResultsMessageTemplate(
+    additionalConfigurations?: Object | undefined
+  ): CometChatMessageTemplate;
+  abstract getStreamMessageTemplate(
+    additionalConfigurations?: Object | undefined
+  ): CometChatMessageTemplate;
   abstract getTextMessageTemplate(
     additionalConfigurations?: Object | undefined
   ): CometChatMessageTemplate;
@@ -120,7 +133,7 @@ export abstract class DataSource {
   ): Array<CometChatActionsIcon | CometChatActionsView>;
   abstract getAttachmentOptions(
     id: ComposerId,
-    additionalConfigurations?:any
+    additionalConfigurations?: any
   ): CometChatMessageComposerAction[];
   abstract getAllMessageTypes(): Array<string>;
   abstract getAllMessageCategories(additionalConfigurations?: Object | undefined): Array<string>;
@@ -132,11 +145,31 @@ export abstract class DataSource {
   abstract getId(): string;
   abstract getDeleteMessageBubble(
     messageObject: CometChat.BaseMessage,
-    text?:string,
+    text?: string,
     alignment?: MessageBubbleAlignment,
   ): Element | JSX.Element;
   abstract getGroupActionBubble(
     message: CometChat.BaseMessage,
+  ): Element | JSX.Element;
+  abstract getStreamMessageBubble(
+    message: CometChat.CustomMessage,
+    alignment: MessageBubbleAlignment,
+    additionalConfigurations?: Object | undefined
+  ): Element | JSX.Element;
+  abstract getAgentAssistantMessageBubble(
+    message: CometChat.AIAssistantMessage,
+    alignment: MessageBubbleAlignment,
+    additionalConfigurations?: Object | undefined
+  ): Element | JSX.Element;
+    abstract getToolArgumentsMessageBubble(
+    message: CometChat.AIToolArgumentMessage,
+    alignment: MessageBubbleAlignment,
+    additionalConfigurations?: Object | undefined
+  ): Element | JSX.Element;
+    abstract getToolResultsMessageBubble(
+    message: CometChat.AIToolResultMessage,
+    alignment: MessageBubbleAlignment,
+    additionalConfigurations?: Object | undefined
   ): Element | JSX.Element;
   abstract getTextMessageBubble(
     messageText: string,
@@ -179,7 +212,7 @@ export abstract class DataSource {
   abstract getAuxiliaryHeaderMenu(
     user?: CometChat.User,
     group?: CometChat.Group,
-    additionalConfigurations?:any
+    additionalConfigurations?: any
   ): Element[] | JSX.Element[];
   abstract getAllTextFormatters(formatterParams: additionalParams): CometChatTextFormatter[];
   abstract getMentionsTextFormatter(
@@ -214,7 +247,7 @@ export abstract class DataSource {
   ): CometChatMessageTemplate;
   abstract getCardMessageTemplate(
 
-  ):CometChatMessageTemplate;
+  ): CometChatMessageTemplate;
   abstract getFormMessageBubble(
     message: CometChat.InteractiveMessage,
     alignment: MessageBubbleAlignment

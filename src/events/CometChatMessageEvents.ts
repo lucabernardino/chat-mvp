@@ -42,6 +42,9 @@ export class CometChatMessageEvents {
     static onFormMessageReceived: Subject<CometChat.InteractiveMessage> = new Subject<CometChat.InteractiveMessage>();
     static onCardMessageReceived: Subject<CometChat.InteractiveMessage> = new Subject<CometChat.InteractiveMessage>();
     static onSchedulerMessageReceived: Subject<CometChat.InteractiveMessage> = new Subject<CometChat.InteractiveMessage>();
+    static onAIAssistantMessageReceived: Subject<CometChat.AIAssistantMessage> = new Subject<CometChat.AIAssistantMessage>();
+    static onAIToolResultReceived: Subject<CometChat.AIToolResultMessage> = new Subject<CometChat.AIToolResultMessage>();
+     static onAIToolArgumentsReceived: Subject<CometChat.AIToolArgumentMessage> = new Subject<CometChat.AIToolArgumentMessage>();
 }
 /**
 * Interface for message-related events

@@ -294,5 +294,17 @@
     "search_message_subtitle_you": "Você",
     "search_message_title_you": "Você",
     "search_error_title": "OPS!",
-    "search_error_subtitle": "Parece que algo deu errado"
+    "search_error_subtitle": "Parece que algo deu errado",
+    "ai_assistant_chat_intro_message": "Estou aqui para te ajudar!",
+    "ai_assistant_chat_composer_placeholder": "Pergunte qualquer coisa",
+    "ai_assistant_chat_new_chat": "novo chat",
+    "ai_assistant_chat_history": "histórico de chat",
+    "ai_assistant_chat_history_title": "Histórico de chat",
+    "ai_assistant_chat_thinking": "Pensando…",
+    "ai_assistant_chat_executing_tool": "Executando chamada da ferramenta...",
+    "ai_assistant_chat_no_internet": "Sem conexão com a Internet. Verifique sua conexão e tente novamente.",
+    "ai_assistant_chat_history_empty_title": "Nenhuma conversa ainda",
+    "ai_assistant_chat_history_empty_subtitle": "Seu agente de IA está pronto - pergunte qualquer coisa e comece a conversa.",
+    "ai_assistant_chat_history_error_title": "OPS!",
+    "ai_assistant_chat_history_error_subtitle": "Algo deu errado do nosso lado. Por favor, tente novamente."
 }

@@ -294,5 +294,17 @@
     "search_message_subtitle_you": "あなた",
     "search_message_title_you": "あなた",
     "search_error_title": "エラー!",
-    "search_error_subtitle": "何か問題が発生したようです"
+    "search_error_subtitle": "何か問題が発生したようです",
+    "ai_assistant_chat_intro_message": "お手伝いするためにここにいます！",
+    "ai_assistant_chat_composer_placeholder": "何でも聞いてください",
+    "ai_assistant_chat_new_chat": "新しいチャット",
+    "ai_assistant_chat_history": "チャット履歴",
+    "ai_assistant_chat_history_title": "チャット履歴",
+    "ai_assistant_chat_thinking": "考え中…",
+    "ai_assistant_chat_executing_tool": "ツール呼び出しを実行中...",
+    "ai_assistant_chat_no_internet": "インターネット接続がありません。接続を確認して、もう一度試してください。",
+    "ai_assistant_chat_history_empty_title": "会話がまだありません",
+    "ai_assistant_chat_history_empty_subtitle": "あなたのAIエージェントは準備ができました - 何でも聞いて、会話を始めてください。",
+    "ai_assistant_chat_history_error_title": "エラー!",
+    "ai_assistant_chat_history_error_subtitle": "当社側で問題が発生しました。もう一度試してください。"
 }

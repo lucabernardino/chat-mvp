@@ -294,5 +294,17 @@
     "search_message_subtitle_you": "Du",
     "search_message_title_you": "Du",
     "search_error_title": "Ups!",
-    "search_error_subtitle": "Es scheint, dass etwas schief gelaufen ist"
+    "search_error_subtitle": "Es scheint, dass etwas schief gelaufen ist",
+    "ai_assistant_chat_intro_message": "Ich bin hier, um Ihnen zu helfen!",
+    "ai_assistant_chat_composer_placeholder": "Frag etwas",
+    "ai_assistant_chat_new_chat": "Neuer Chat",
+    "ai_assistant_chat_history": "Chat-Verlauf",
+    "ai_assistant_chat_history_title": "Chat-Verlauf",
+    "ai_assistant_chat_thinking": "Denken…",
+    "ai_assistant_chat_executing_tool": "Führe Tool-Aufruf aus...",
+    "ai_assistant_chat_no_internet": "Keine Internetverbindung. Bitte überprüfen Sie Ihre Verbindung und versuchen Sie es erneut.",
+    "ai_assistant_chat_history_empty_subtitle": "Ihr KI-Agent ist bereit – stellen Sie eine Frage und starten Sie das Gespräch.",
+    "ai_assistant_chat_history_empty_title": "Noch keine Gespräche",
+    "ai_assistant_chat_history_error_title": "Ups!",
+    "ai_assistant_chat_history_error_subtitle": "Etwas ist schief gelaufen. Bitte versuchen Sie es erneut."
 }

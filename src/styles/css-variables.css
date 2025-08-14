@@ -235,6 +235,7 @@ and errors.
   --cometchat-warning-color: #FFAB00;
   --cometchat-success-color: #09C26F;
   --cometchat-error-color: #F44649;
+  --cometchat-error-color-100: #FEF3F2;
 
   /*
     Static colors
@@ -293,6 +294,8 @@ Define border colors for UI elements,
      */
   --cometchat-shimmer-background-color: var(--cometchat-neutral-color-200);
   --cometchat-shimmer-gradient-color: linear-gradient(90deg, #E0E0E0 0%, #EEE 100%);
+  --cometchat-text-shimmer-gradient-color: linear-gradient(270deg, rgba(255, 255, 255, 0.00) 0%, rgba(255, 255, 255, 0.70) 50%, rgba(255, 255, 255, 0.00) 100%);
+
 
   /*
     Styling for buttons.
@@ -347,6 +350,7 @@ Define border colors for UI elements,
   --cometchat-success-color: #0B9F5D;
   --cometchat-message-seen-color: #56E8A7;
   --cometchat-error-color: #C73C3E;
+  --cometchat-error-color-100: #3A0C05;
   
     /*
     Static colors
@@ -401,6 +405,7 @@ Define border colors for UI elements,
    */
   --cometchat-shimmer-background-color: var(--cometchat-background-color-01);
   --cometchat-shimmer-gradient-color: linear-gradient(90deg, #383838 0%, #272727 100%);
+  --cometchat-text-shimmer-gradient-color: linear-gradient(270deg, rgba(26, 26, 26, 0.00) 0%, rgba(26, 26, 26, 0.70) 50%, rgba(26, 26, 26, 0.00) 100%);
 
   /*
    Styling for buttons.

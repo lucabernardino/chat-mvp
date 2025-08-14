@@ -294,5 +294,17 @@
     "search_message_subtitle_you": "你",
     "search_message_title_you": "你",
     "search_error_title": "糟糕！",
-    "search_error_subtitle": "看起来出了点问题"
+    "search_error_subtitle": "看起来出了点问题",
+    "ai_assistant_chat_intro_message": "我在这里为您提供帮助！",
+    "ai_assistant_chat_composer_placeholder": "询问任何问题",
+    "ai_assistant_chat_new_chat": "新聊天",
+    "ai_assistant_chat_history": "历史记录",
+    "ai_assistant_chat_history_title": "聊天历史",
+    "ai_assistant_chat_thinking": "思考中…",
+    "ai_assistant_chat_executing_tool": "执行工具调用...",
+    "ai_assistant_chat_no_internet": "无网络连接。请检查您的连接并重试。",
+    "ai_assistant_chat_history_empty_title": "暂无对话",
+    "ai_assistant_chat_history_empty_subtitle": "您的AI代理已准备好-问任何问题并开始对话。",
+    "ai_assistant_chat_history_error_title": "糟糕！",
+    "ai_assistant_chat_history_error_subtitle": "我们这边出了点问题，请重试。"
 }

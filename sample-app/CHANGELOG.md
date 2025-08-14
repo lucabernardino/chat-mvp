@@ -1,3 +1,17 @@
+## [6.2.0] - 14-08-2025
+
+## New
+- Added `CometChatAIAssistantChat` component for agent chats, enabling seamless integration of AI-driven conversations.
+
+## Enhancements
+- Changed the class name target from `messages-wrapper` to `cometchat-messages-wrapper` to fix conflicts between UI Kit and Sample App styling.
+
+## Fixes
+- None
+
+## Removals
+- None
+
 ## [6.1.0] - 16-06-2025
 
 ## New

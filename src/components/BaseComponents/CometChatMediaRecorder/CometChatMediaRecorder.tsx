@@ -202,7 +202,6 @@ const CometChatMediaRecorder: React.FC<MediaRecorderProps> = ({
             permissionStatus = status;
             status.onchange = () => {
                 if (status.state === "granted") {
-                    console.log(mediaPreviewUrl)
                     setHasError(false);
                     if (!mediaPreviewUrl) {
                         handleStartRecording();
