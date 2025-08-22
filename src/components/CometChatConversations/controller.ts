@@ -236,6 +236,9 @@ try {
         onMessageDeleted: (message: CometChat.BaseMessage) => {
             callback(message);
         },
+        onMessageModerated: (message: CometChat.BaseMessage) => {
+            callback(message);
+        },
     }))
     return () => {
         CometChat.removeMessageListener(messageListenerId)

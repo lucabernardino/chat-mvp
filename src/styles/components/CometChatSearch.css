@@ -231,6 +231,12 @@
   -webkit-mask-size: contain;
   mask-size: contain;
 }
+.cometchat-search__conversations-subtitle-receipts-wait{
+  -webkit-mask: url("../../assets/status_sending.svg") center center no-repeat;
+  mask: url("../../assets/status_sending.svg") center center no-repeat;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+}
 
 .cometchat-search__conversations-subtitle-receipts-delivered {
   -webkit-mask: url("../../assets/conversations_delivered.svg") center center no-repeat;
@@ -239,6 +245,13 @@
   mask-size: contain;
 }
 
+.cometchat-search__conversations-subtitle-receipts-error{
+  -webkit-mask: url("../../assets/error_icon.svg") center center no-repeat;
+  mask: url("../../assets/error_icon.svg") center center no-repeat;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  background-color: var(--cometchat-error-color);
+}
 
 .cometchat-search__conversations-subtitle-receipts-read {
   -webkit-mask: url("../../assets/conversations_read.svg") center center no-repeat;

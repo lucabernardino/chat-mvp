@@ -9,6 +9,12 @@ export class CometChatUIKitConstants {
         interactive: CometChat.CATEGORY_INTERACTIVE,
         agentic:CometChat.MessageCategory.AGENTIC
     })
+    static moderationStatus = Object.freeze({
+        pending: CometChat.ModerationStatus.PENDING,
+        approved: CometChat.ModerationStatus.APPROVED,
+        disapproved: CometChat.ModerationStatus.DISAPPROVED,
+        unmoderated: CometChat.ModerationStatus.UNMODERATED,
+    })
     static MessageTypes = Object.freeze({
         text: CometChat.MESSAGE_TYPE.TEXT,
         file: CometChat.MESSAGE_TYPE.FILE,

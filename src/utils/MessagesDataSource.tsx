@@ -319,21 +319,21 @@ export class MessagesDataSource implements DataSource {
 * Function for displaying the timestamp  next to messages.
 * @returns CalendarObject
 */
-  getMessageSentAtDateFormat(messageSentAtDateTimeFormat?: CalendarObject) {
-    const defaultFormat = {
-      yesterday: `hh:mm A`,
-      otherDays: `hh:mm A`,
-      today: `hh:mm A`
-    };
+getMessageSentAtDateFormat(messageSentAtDateTimeFormat?:CalendarObject) {
+  const defaultFormat = {
+    yesterday: `hh:mm A`,
+    otherDays: `hh:mm A`,
+    today: `hh:mm A`
+  };
 
-    const finalFormat = {
-      ...defaultFormat,
-      ...CometChatLocalize.calendarObject,
-      ...messageSentAtDateTimeFormat
-    };
+  const finalFormat = {
+    ...defaultFormat,
+    ...CometChatLocalize.calendarObject,
+    ...messageSentAtDateTimeFormat
+  };
 
-    return finalFormat;
-  }
+  return finalFormat;
+}
   /**
 * Function to get status and date for message bubble
 * @param {CometChat.BaseMessage} item - The message bubble for which the information needs to be fetched
@@ -787,6 +787,35 @@ export class MessagesDataSource implements DataSource {
     additionalParams?: additionalParamsOptions
   ): Array<CometChatActionsIcon | CometChatActionsView> {
     let _optionList: Array<CometChatActionsIcon | CometChatActionsView> = [];
+    let isParticipant: boolean = false;
+
+    let moderationStatus: string = CometChatUIKitConstants.moderationStatus.unmoderated;
+    
+    if (messageObject instanceof CometChat.TextMessage || messageObject instanceof CometChat.MediaMessage) {
+      moderationStatus = messageObject.getModerationStatus();
+    }
+
+    if (
+      group?.getScope() === CometChatUIKitConstants.groupMemberScope.participant
+    ) {
+      isParticipant = true;
+    }
+
+    if (moderationStatus === CometChatUIKitConstants.moderationStatus.pending) {
+      return [];
+    } else if (moderationStatus === CometChatUIKitConstants.moderationStatus.disapproved) {
+      let isSentByMe: boolean = this.isSentByMe(loggedInUser, messageObject);
+      _optionList = [];
+      if ((isSentByMe || (!isParticipant && group)) && !additionalParams?.hideDeleteMessageOption)
+        _optionList.push(this.getDeleteOption());
+
+      if (messageObject.getType() === 'text') {
+        if (!additionalParams?.hideCopyMessageOption) {
+          _optionList.push(this.getCopyOption());
+        }
+      }
+      return _optionList;
+    }
 
     if (
       messageObject.getCategory() ===
@@ -1266,7 +1295,7 @@ export class MessagesDataSource implements DataSource {
     fileUrl: string,
     message: CometChat.MediaMessage,
     title?: string,
-    alignment?: MessageBubbleAlignment): Element | JSX.Element {
+    alignment?: MessageBubbleAlignment  ): Element | JSX.Element {
     let attachment = message.getAttachments()[0];
     const metadataFile = (message.getMetadata() as any)?.file as File | undefined;
     const name = title ?? attachment?.getName() ?? metadataFile?.name;
@@ -1396,7 +1425,7 @@ export class MessagesDataSource implements DataSource {
     loggedInUser: CometChat.User,
     additionalConfigurations: additionalParams
   ): string {
-    let formatters: CometChatTextFormatter[] = additionalConfigurations.textFormatters || additionalConfigurations.textFormattersList || []
+    let formatters:CometChatTextFormatter[] = additionalConfigurations.textFormatters || additionalConfigurations.textFormattersList || []
     let config = {
       ...additionalConfigurations,
       textFormatters:

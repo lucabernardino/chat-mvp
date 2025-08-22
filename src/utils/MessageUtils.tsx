@@ -7,6 +7,7 @@ import {getLocalizedString} from "../resources/CometChatLocalize/cometchat-local
 import { CometChatMessageTemplate } from "../modals";
 import { CalendarObject } from "./CalendarObject";
 import { CometChatTextFormatter } from "../formatters";
+import {CometChatModerationView} from "../components/BaseComponents/CometChatModerationView/CometChatModerationView";
 
 /**
  * Utility class for handling message display and styling.
@@ -14,7 +15,7 @@ import { CometChatTextFormatter } from "../formatters";
  */
 
 export class MessageUtils {
-
+  
   /**
    * Retrieves the content view for a message based on the provided template.
    *
@@ -86,6 +87,16 @@ export class MessageUtils {
     } else {
       return null;
     }
+  }
+
+/**
+ * Retrieves the bottom view for moderated messages
+ *
+ * @returns {JSX.Element} The default view for moderated messages.
+ */
+
+  getModeratedMessageBottomView(): JSX.Element {
+    return <CometChatModerationView/>
   }
 
   /**

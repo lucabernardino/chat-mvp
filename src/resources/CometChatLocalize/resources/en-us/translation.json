@@ -107,6 +107,7 @@
     "incoming_call_subtitle": "Incoming Call",
     "incoming_call_confirm_yes": "Accept",
     "incoming_call_confirm_no": "Decline",
+    "moderation_block_message": "Your message was blocked due to moderation policies",
     "message_composer_placeholder": "Enter your message here",
     "message_composer_send_message_icon_hover": "Send Message",
     "message_composer_attach_icon_hover": "Attach",

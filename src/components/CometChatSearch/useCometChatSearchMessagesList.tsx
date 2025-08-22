@@ -1,4 +1,4 @@
-import { JSX, useCallback, useEffect, useReducer, useRef } from "react";
+import { JSX, useCallback, useEffect, useMemo, useReducer, useRef } from "react";
 import { useCometChatErrorHandler } from "../../CometChatCustomHooks";
 import { CometChat } from "@cometchat/chat-sdk-javascript";
 import { CometChatListItem } from "../BaseComponents/CometChatListItem/CometChatListItem";
@@ -471,6 +471,9 @@ export function useCometChatSearchMessagesList(props: UseCometChatSearchMessages
       );
     }
   }
+  const regexPatterns = useMemo(() => {
+    return textFormatters.map((f) => f.getRegexPatterns()).flat();
+  }, [textFormatters]);
 
   /**
    * Get formatted message text for display
@@ -478,6 +481,8 @@ export function useCometChatSearchMessagesList(props: UseCometChatSearchMessages
   const getFormattedMessageText = useCallback((message: CometChat.TextMessage): string => {
     try {
       let text = (message as CometChat.TextMessage).getText();
+      let finalText = text;
+      finalText = CometChatUIKitUtility.sanitizeHtml(finalText, regexPatterns);
       let formatters = textFormatters ?? ChatConfigurator.getDataSource().getAllTextFormatters({ mentionsTargetElement: MentionsTargetElement.conversation });
 
       if (message) {
@@ -518,15 +523,14 @@ export function useCometChatSearchMessagesList(props: UseCometChatSearchMessages
           message instanceof CometChat.TextMessage
         ) {
           for (let i = 0; i < formatters.length; i++) {
-            let temp_message = formatters[i].getFormattedText(text, { mentionsTargetElement: MentionsTargetElement.conversation });
+            let temp_message = formatters[i].getFormattedText(finalText, { mentionsTargetElement: MentionsTargetElement.conversation });
             if (typeof (temp_message) == "string") {
-              text = temp_message;
+              finalText = temp_message;
             }
           }
         }
       }
-
-      return text;
+      return finalText;
 
     }
       catch (error) {

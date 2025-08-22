@@ -26,6 +26,7 @@ export class CometChatMessageEvents {
     * message events wrapper of SDK listeners (e.g., media message, typing       indicator, read receipts, etc.)
     */
     static onTextMessageReceived: Subject<CometChat.TextMessage> = new Subject<CometChat.TextMessage>();
+    static onMessageModerated: Subject<CometChat.BaseMessage> = new Subject<CometChat.BaseMessage>();
     static onMediaMessageReceived: Subject<CometChat.MediaMessage> = new Subject<CometChat.MediaMessage>();
     static onCustomMessageReceived: Subject<CometChat.CustomMessage> = new Subject<CometChat.CustomMessage>();
     static onTypingStarted: Subject<CometChat.TypingIndicator> = new Subject<CometChat.TypingIndicator>();

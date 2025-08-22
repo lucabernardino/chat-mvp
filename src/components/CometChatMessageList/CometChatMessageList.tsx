@@ -47,6 +47,7 @@ import { CalendarObject } from "../../utils/CalendarObject";
 import { ComposerId } from "../../utils/MessagesDataSource";
 import { JSX } from 'react';
 import { useCometChatFrameContext } from "../../context/CometChatFrameContext";
+import { MessageUtils } from "../../utils/MessageUtils";
 import { streamingState$ } from "../../services/stream-message.service";
 
 /**
@@ -76,6 +77,12 @@ interface MessageListProps {
    * @default false
    */
   hideStickyDate?: boolean;
+
+  /**
+   * Hides the visibility of moderation status in the message list.
+   * @default false
+   */
+  hideModerationView?: boolean;
 
   /**
    * Hides the visibility of receipts in the message list.
@@ -213,14 +220,14 @@ interface MessageListProps {
   customSoundForMessages?: string;
 
   /**
-    * Specifies the keywords in incoming messages that will trigger Smart Replies.
-    * If set to an empty array [], Smart Replies will be generated for all messages.
-    * @default ['what', 'when', 'why', 'who', 'where', 'how', '?']
-    */
+   * Specifies the keywords in incoming messages that will trigger Smart Replies.
+   * If set to an empty array [], Smart Replies will be generated for all messages.
+   * @default ['what', 'when', 'why', 'who', 'where', 'how', '?']
+   */
   smartRepliesKeywords?: string[];
 
   /**
-   * Specifies the delay in milliseconds before Smart Replies are displayed. 
+   * Specifies the delay in milliseconds before Smart Replies are displayed.
    * Setting it to 0 fetches Smart Replies instantly without delay.
    * @default 10000
    */
@@ -280,19 +287,19 @@ interface MessageListProps {
    * A custom footer view component for the message list.
    */
   footerView?: JSX.Element;
-    /**
-   * Format for the date separators in the message list. 
+  /**
+   * Format for the date separators in the message list.
    */
   separatorDateTimeFormat?: CalendarObject;
-   /**
+  /**
    * Format for sticky date headers displayed in the message list.
    */
   stickyDateTimeFormat?: CalendarObject;
-    /**
+  /**
    * Format for the timestamp displayed next to messages.
    */
   messageSentAtDateTimeFormat?: CalendarObject;
-    /**
+  /**
    * Format for timestamps displayed in message details (e.g., delivery or read time).
    */
   messageInfoDateTimeFormat?: CalendarObject;
@@ -304,9 +311,9 @@ interface MessageListProps {
   goToMessageId?: string;
 
   /**
-    * Controls the visibility of the scrollbar in the list.
-    * @defaultValue `false`
-  */
+   * Controls the visibility of the scrollbar in the list.
+   * @defaultValue `false`
+   */
   showScrollbar?: boolean;
 
   /**
@@ -314,7 +321,6 @@ interface MessageListProps {
     * @defaultValue `false`
   */
   isAgentChat?: boolean;
-
 }
 
 const defaultProps: MessageListProps = {
@@ -327,6 +333,7 @@ const defaultProps: MessageListProps = {
   errorView: undefined,
   loadingView: undefined,
   hideReceipts: false,
+  hideModerationView: false,
   messageAlignment: MessageListAlignment.standard,
   hideDateSeparator: false,
   templates: [],
@@ -373,6 +380,7 @@ const CometChatMessageList = (props: MessageListProps) => {
     errorView,
     loadingView,
     hideReceipts,
+    hideModerationView,
     messageAlignment,
     hideDateSeparator,
     templates,
@@ -432,7 +440,6 @@ const CometChatMessageList = (props: MessageListProps) => {
   const [showFooterPanelView, setShowFooterPanelView] = useState<boolean>(false);
   const [showConversationStarter, setShowConversationStarter] = useState<boolean>(false);
   const [enableSmartReplies, setEnableSmartReplies] = useState<boolean>(false);
-
   const [showHeaderPanelView, setShowHeaderPanelView] = useState<boolean>(false);
   const [dateHeader, setDateHeader] = useState<number>(0);
   const [showDateHeader, setShowDateHeader] = useState<boolean>(false);
@@ -446,12 +453,8 @@ const CometChatMessageList = (props: MessageListProps) => {
   const [scrollToEnd, setScrollToEnd] = useState<boolean>(false);
   const [isFirstScroll, setIsFirstScroll] = useState<boolean>(true);
 
-
-
-
-
   /**
-  * All the useRef useCometChatMessageList are declaired here. These do not trigger a rerender. They are used to get the updated values wherever required in the code.
+   * All the useRef useCometChatMessageList are declaired here. These do not trigger a rerender. They are used to get the updated values wherever required in the code.
    */
   const stickyDateHeaderRef = useRef<number>(0);
   const loggedInUserRef = useRef<CometChat.User | null>(null);
@@ -522,28 +525,25 @@ const CometChatMessageList = (props: MessageListProps) => {
     }
   }), [groupRef]);
 
+  const scrollToMessage = useCallback(() => {
+    if (!goToMessageId) return;
+    setScrollListToBottom(false);
 
-const scrollToMessage = useCallback(() => {
-  if (!goToMessageId) return;
-  setScrollListToBottom(false);
-
- requestAnimationFrame(()=>{
-  const messageElement = elementRefs.current[goToMessageId]?.current;
-  if (messageElement) {
-    messageElement.scrollIntoView({ 
-      block: "center", 
-      behavior: "auto"  
-    });
-  }
- })
-}, [goToMessageId, messageList, elementRefs]);
-
-  
+    requestAnimationFrame(()=>{
+      const messageElement = elementRefs.current[goToMessageId]?.current;
+      if (messageElement) {
+        messageElement.scrollIntoView({
+          block: "center",
+          behavior: "auto"
+        });
+      }
+    })
+  }, [goToMessageId, messageList, elementRefs]);
 
   /**
-      * Function to play an audio notification for new messages if sound is enabled.
-      * @returns {void}
-      */
+   * Function to play an audio notification for new messages if sound is enabled.
+   * @returns {void}
+   */
   const playAudio: () => void = useCallback(() => {
     try {
       if (!disableSoundForMessages) {
@@ -576,11 +576,11 @@ const scrollToMessage = useCallback(() => {
         justifyContent: "flex-start"
       }}>
         <div className="cometchat-message-list__shimmer-leading-view"></div>
-  
+
         <div className="cometchat-message-list__shimmer-body" style={{
           alignSelf: `flex-${align}`
         }}>
-          <div className="cometchat-message-list__shimmer-item-header" />          
+          <div className="cometchat-message-list__shimmer-item-header" />
           <div className="cometchat-message-list__shimmer-item" />
         </div>
       </div>
@@ -602,10 +602,8 @@ const scrollToMessage = useCallback(() => {
     return <>{shimmers}</>;
   };
 
-
-
   /**
-  * All the Private variables are declaired here for internal use.
+   * All the Private variables are declaired here for internal use.
    */
   const errorHandler = useCometChatErrorHandler(onError);
   let isFetchingPreviousMessages = false,
@@ -690,7 +688,6 @@ const scrollToMessage = useCallback(() => {
   const isPartOfCurrentChatForUIEvent: (message: CometChat.BaseMessage) => boolean | undefined = useCallback(
     (message: CometChat.BaseMessage) => {
       try {
-
         const receiverId = message?.getReceiverId();
         const receiverType = message?.getReceiverType();
         if (parentMessageIdRef.current) {
@@ -713,7 +710,6 @@ const scrollToMessage = useCallback(() => {
           }
 
           return false
-
         }
       } catch (error) {
         errorHandler(error, "isPartOfCurrentChatForUIEvent")
@@ -723,12 +719,12 @@ const scrollToMessage = useCallback(() => {
   );
 
   /**
- * Function to validate if a transient message belongs to the current message list.
- * It checks if the message is not part of a thread even for the current list.
- * It only runs for SDK event because it needs senderId to check if the message is sent by the same user.
- * @param {CometChat.TransientMessage} message - The transient message to be validated
- * @returns {boolean | undefined} - Returns true if the message belongs to the current list, false otherwise
- */
+   * Function to validate if a transient message belongs to the current message list.
+   * It checks if the message is not part of a thread even for the current list.
+   * It only runs for SDK event because it needs senderId to check if the message is sent by the same user.
+   * @param {CometChat.TransientMessage} message - The transient message to be validated
+   * @returns {boolean | undefined} - Returns true if the message belongs to the current list, false otherwise
+   */
   const validateTransientMessage: (message: CometChat.TransientMessage) => boolean | undefined = useCallback(
     (message: CometChat.TransientMessage) => {
       try {
@@ -756,12 +752,10 @@ const scrollToMessage = useCallback(() => {
     }, []
   )
 
-
-
   /**
-  * Function for the date separators in the message list. 
-  * @returns CalendarObject
-  */
+   * Function for the date separators in the message list.
+   * @returns CalendarObject
+   */
   function getSeparatorDateFormat() {
     const defaultFormat = {
       yesterday: getLocalizedString("yesterday"),
@@ -769,9 +763,9 @@ const scrollToMessage = useCallback(() => {
       today: getLocalizedString("today")
     };
 
-        var globalCalendarFormat = sanitizeCalendarObject(CometChatLocalize.calendarObject)
-        var componentCalendarFormat = sanitizeCalendarObject(separatorDateTimeFormat)
-  
+    var globalCalendarFormat = sanitizeCalendarObject(CometChatLocalize.calendarObject)
+    var componentCalendarFormat = sanitizeCalendarObject(separatorDateTimeFormat)
+
     const finalFormat = {
       ...defaultFormat,
       ...globalCalendarFormat,
@@ -782,7 +776,7 @@ const scrollToMessage = useCallback(() => {
   /**
    * Function for displaying sticky date headers  in the message list.
    * @returns CalendarObject
-    */
+   */
   function getStickyDateFormat() {
     const defaultFormat = {
       yesterday: getLocalizedString("yesterday"),
@@ -792,7 +786,7 @@ const scrollToMessage = useCallback(() => {
 
     var globalCalendarFormat = sanitizeCalendarObject(CometChatLocalize.calendarObject)
     var componentCalendarFormat = sanitizeCalendarObject(stickyDateTimeFormat)
-  
+
     const finalFormat = {
       ...defaultFormat,
       ...globalCalendarFormat,
@@ -830,7 +824,6 @@ const scrollToMessage = useCallback(() => {
           }
 
           return false
-
         }
       } catch (error) {
         errorHandler(error, "isPartOfCurrentChatForSDKEvent")
@@ -869,7 +862,6 @@ const scrollToMessage = useCallback(() => {
     }, []
   );
 
-
   /*
     * isThreadOfCurrentChatForSDKEvent: To check if the message belongs thread of this list,
       it only runs for SDK event because it needs senderId to check if the message is sent by the same user
@@ -905,12 +897,12 @@ const scrollToMessage = useCallback(() => {
   );
 
   /**
-  * Function to retrieve a specific message by its ID from the message list.
-  * If the message is not found, the function will return 'undefined'.
-  *
-  * @param {number} id The ID of the message to be retrieved.
-  * @returns {CometChat.BaseMessage | undefined} Returns the message object if found, otherwise 'undefined'.
-  */
+   * Function to retrieve a specific message by its ID from the message list.
+   * If the message is not found, the function will return 'undefined'.
+   *
+   * @param {number} id The ID of the message to be retrieved.
+   * @returns {CometChat.BaseMessage | undefined} Returns the message object if found, otherwise 'undefined'.
+   */
   const getMessageById: (id: number) => CometChat.BaseMessage | undefined = useCallback(
     (id: number) => {
       try {
@@ -927,10 +919,10 @@ const scrollToMessage = useCallback(() => {
   );
 
   /**
- * Opens the thread view for a given message.
- * @param {CometChat.BaseMessage} message - The message object for which the thread view should be opened.
- * @returns {void}
- */
+   * Opens the thread view for a given message.
+   * @param {CometChat.BaseMessage} message - The message object for which the thread view should be opened.
+   * @returns {void}
+   */
   const openThreadView: (message: CometChat.BaseMessage) => void = useCallback(
     (message: CometChat.BaseMessage) => {
       try {
@@ -945,17 +937,17 @@ const scrollToMessage = useCallback(() => {
   );
 
   /**
- * Function to monitor the scrollbar position and update the 'isOnBottom' property.
- * This helps in showing the unread messages count in the message list if a new message is received while the scrollbar is not at the bottom.
- * @param {boolean | undefined} isOnBottom - Indicates whether the scrollbar has reached the bottom or not.
- * @returns {void}
- */
+   * Function to monitor the scrollbar position and update the 'isOnBottom' property.
+   * This helps in showing the unread messages count in the message list if a new message is received while the scrollbar is not at the bottom.
+   * @param {boolean | undefined} isOnBottom - Indicates whether the scrollbar has reached the bottom or not.
+   * @returns {void}
+   */
   const updateIsOnBottom: (isOnBottom?: boolean | undefined) => void = useCallback(
     (hasScrolled?: boolean) => {
       if (hasScrolled !== undefined) {
         isOnBottomRef.current = hasScrolled;
 
-        if(isOnBottomRef.current == true && messageListState == States.loaded && !showDateHeader){          
+        if(isOnBottomRef.current == true && messageListState == States.loaded && !showDateHeader){
           setShowDateHeader(true)
         }
         if(isOnBottomRef.current && UnreadMessagesRef.current.length > 0){
@@ -981,10 +973,10 @@ const scrollToMessage = useCallback(() => {
   );
 
   /**
-* Function to convert the user ID (UID) to the actual name of the mentioned user. This prevents the user's UID from being exposed when the message text is copied.
-* @param {CometChat.TextMessage} message - The message object, which contains the text with user mentions represented as UIDs.
-* @returns {string} The message text, with  mention replaced by the actual name of the user.
-*/
+   * Function to convert the user ID (UID) to the actual name of the mentioned user. This prevents the user's UID from being exposed when the message text is copied.
+   * @param {CometChat.TextMessage} message - The message object, which contains the text with user mentions represented as UIDs.
+   * @returns {string} The message text, with  mention replaced by the actual name of the user.
+   */
   const getMentionsTextWithoutStyle: (message: CometChat.TextMessage) => string = (message: CometChat.TextMessage) => {
     try {
       const regex = /<@uid:(.*?)>/g;
@@ -1012,10 +1004,10 @@ const scrollToMessage = useCallback(() => {
   };
 
   /**
- * Function to find the message in the list and replace it by matching the muid. This works when we send the message  in the ui before the success of the api for optmistic ui and then replace the message with actual message object by matching muid because message id is not generated before the api success.
- * @param {CometChat.BaseMessage} message - The message object, which needs to be replaced in the list.
- * @returns {void}
- */
+   * Function to find the message in the list and replace it by matching the muid. This works when we send the message  in the ui before the success of the api for optmistic ui and then replace the message with actual message object by matching muid because message id is not generated before the api success.
+   * @param {CometChat.BaseMessage} message - The message object, which needs to be replaced in the list.
+   * @returns {void}
+   */
   const updateMessageByMuid: (message: CometChat.BaseMessage) => void = useCallback(
     (message: CometChat.BaseMessage) => {
       try {
@@ -1040,18 +1032,18 @@ const scrollToMessage = useCallback(() => {
    * Completes the initial message load with a 100ms delay to ensure proper DOM rendering.
    * Prevents race conditions and UI flickering by allowing the current render cycle to finish.
    */
-   function markInitialLoadComplete() {
+  function markInitialLoadComplete() {
     setTimeout(() => {
       setHasCompletedInitialLoad(true);
       setMessageListState(States.loaded);
     }, 100);
-   }
+  }
 
   /**
- * Function to find a message in the list and replace it by matching the message ID. This function is useful when we need to edit, delete or update a message object and update it in the UI in real-time.
- * @param {CometChat.BaseMessage} message - The message object that needs to be replaced in the list.
- * @returns {void}
- */
+   * Function to find a message in the list and replace it by matching the message ID. This function is useful when we need to edit, delete or update a message object and update it in the UI in real-time.
+   * @param {CometChat.BaseMessage} message - The message object that needs to be replaced in the list.
+   * @returns {void}
+   */
   const updateMessageByMessageId: (message: CometChat.BaseMessage) => void = useCallback(
     (message: CometChat.BaseMessage) => {
       try {
@@ -1193,7 +1185,6 @@ const scrollToMessage = useCallback(() => {
         }
       } catch (error) {
         errorHandler(error, "reactToMessages");
-
       }
     }, [getMessageById, errorHandler, updateMessage]
   );
@@ -1222,7 +1213,6 @@ const scrollToMessage = useCallback(() => {
               reactToMessages(args, messageObject);
             }}
           />
-
         }
       } catch (error) {
         errorHandler(error, "onReactMessage");
@@ -1233,10 +1223,10 @@ const scrollToMessage = useCallback(() => {
   );
 
   /**
- *Function to retrieve a specific message, identified by its ID, from the message list. If the message is found, the text content of that message will be copied to the clipboard.
- * @param {number} id - The ID of the message to be retrieved.
- * @returns {void}
- */
+   *Function to retrieve a specific message, identified by its ID, from the message list. If the message is found, the text content of that message will be copied to the clipboard.
+   * @param {number} id - The ID of the message to be retrieved.
+   * @returns {void}
+   */
   const onCopyMessage: (id: number) => void = useCallback(
     (id: number) => {
       try {
@@ -1253,7 +1243,6 @@ const scrollToMessage = useCallback(() => {
           setShowToast(true);
           navigator?.clipboard?.writeText(text);
         }
-
       } catch (error: any) {
         errorHandler(error, "onCopyMessage");
       }
@@ -1262,12 +1251,12 @@ const scrollToMessage = useCallback(() => {
   );
 
   /**
- * Function to retrieve a specific message by its ID from the message list.
- * If the message is found, the CometChatMessageInformation component will be opened.
- *
- * @param {number} id - The ID of the message to be retrieved.
- * @returns {void}
- */
+   * Function to retrieve a specific message by its ID from the message list.
+   * If the message is found, the CometChatMessageInformation component will be opened.
+   *
+   * @param {number} id - The ID of the message to be retrieved.
+   * @returns {void}
+   */
   const onOpenMessageInfo: (id: number) => void = useCallback(
     (id: number) => {
       try {
@@ -1278,7 +1267,6 @@ const scrollToMessage = useCallback(() => {
           setActiveMessageInfo(message);
           setShowMessageInfoPopup(true);
         }
-
       } catch (error: any) {
         errorHandler(error, "onOpenMessageInfo");
       }
@@ -1287,19 +1275,18 @@ const scrollToMessage = useCallback(() => {
   );
 
   /**
- * Function to retrieve a specific message by its ID from the message list.
- * If the message is found, the CometChatThreadedMessages component will be opened.
- *
- * @param {number} id - The ID of the message to be retrieved.
- * @returns {void}
- */
+   * Function to retrieve a specific message by its ID from the message list.
+   * If the message is found, the CometChatThreadedMessages component will be opened.
+   *
+   * @param {number} id - The ID of the message to be retrieved.
+   * @returns {void}
+   */
   const onOpenThread: (id: number) => void = useCallback(
     (id: number) => {
       try {
         let messageObject: CometChat.BaseMessage | undefined = getMessageById(id);
         if (messageObject) {
           openThreadView(messageObject);
-
         }
       } catch (error: any) {
         errorHandler(error, "onOpenThread");
@@ -1309,12 +1296,12 @@ const scrollToMessage = useCallback(() => {
   );
 
   /**
-  * Function to retrieve a specific message by its ID from the message list.
-  * If the message is found, the chat will be opened for the particular user of that group to chat privately.
-  *
-  * @param {number} id - The ID of the message to be retrieved.
-  * @returns {void}
-  */
+   * Function to retrieve a specific message by its ID from the message list.
+   * If the message is found, the chat will be opened for the particular user of that group to chat privately.
+   *
+   * @param {number} id - The ID of the message to be retrieved.
+   * @returns {void}
+   */
   const onMessagePrivately: (id: number) => void = useCallback(
     (id: number) => {
       try {
@@ -1324,7 +1311,6 @@ const scrollToMessage = useCallback(() => {
           CometChatUIEvents.ccOpenChat.next({
             user: user,
           });
-
         }
       } catch (error: any) {
         errorHandler(error, "onMessagePrivately");
@@ -1334,11 +1320,11 @@ const scrollToMessage = useCallback(() => {
   );
 
   /**
- * Function to retrieve a specific message by its ID from the message list.
- * If  found, the message would be deleted.
- * @param {number} id - The ID of the message to be retrieved.
- * @returns {void}
- */
+   * Function to retrieve a specific message by its ID from the message list.
+   * If  found, the message would be deleted.
+   * @param {number} id - The ID of the message to be retrieved.
+   * @returns {void}
+   */
   const onDeleteMessage: (id: number) => void = useCallback(
     (id: number) => {
       try {
@@ -1365,11 +1351,11 @@ const scrollToMessage = useCallback(() => {
   );
 
   /**
-* Function to retrieve a specific message by its ID from the message list.
-* If found, the Edit preview will be opened to edit that particular message.
-* @param {number} id - The ID of the message to be retrieved.
-* @returns {void}
-*/
+   * Function to retrieve a specific message by its ID from the message list.
+   * If found, the Edit preview will be opened to edit that particular message.
+   * @param {number} id - The ID of the message to be retrieved.
+   * @returns {void}
+   */
   const onEditMessage: (id: number) => void = useCallback(
     (id: number) => {
       try {
@@ -1379,9 +1365,7 @@ const scrollToMessage = useCallback(() => {
             message: message,
             status: MessageStatus.inprogress,
           });
-
         }
-
       } catch (error: any) {
         errorHandler(error, "onEditMessage");
       }
@@ -1390,11 +1374,11 @@ const scrollToMessage = useCallback(() => {
   );
 
   /**
- * Function to set a default callback for each message option if none exists. This is called when default CometChatMessageTemplates for supported messages are fetched.
- * @param {(CometChatActionsIcon | CometChatActionsView)[]} options - The array of message options.
- * @param {number} id - Optional parameter. The ID of the option to which the options belong.
- * @returns {(CometChatActionsIcon | CometChatActionsView)[]} - Returns the array of message options with assigned callback functions.
- */
+   * Function to set a default callback for each message option if none exists. This is called when default CometChatMessageTemplates for supported messages are fetched.
+   * @param {(CometChatActionsIcon | CometChatActionsView)[]} options - The array of message options.
+   * @param {number} id - Optional parameter. The ID of the option to which the options belong.
+   * @returns {(CometChatActionsIcon | CometChatActionsView)[]} - Returns the array of message options with assigned callback functions.
+   */
   const setDefaultOptionsCallback: (options: (CometChatActionsIcon | CometChatActionsView)[], id?: number) => (CometChatActionsIcon | CometChatActionsView)[] = useCallback(
     (options: (CometChatActionsIcon | CometChatActionsView)[] = [], id?: number) => {
       try {
@@ -1460,10 +1444,10 @@ const scrollToMessage = useCallback(() => {
   );
 
   /**
-    * Function to get message options for each message based on the message type.
-    * @param {CometChat.BaseMessage} msgObject - The message for which the options are to be retrieved.
-    * @returns {Array<CometChatActionsIcon | CometChatActionsView>} - Returns the array of appropriate message options.
-    */
+   * Function to get message options for each message based on the message type.
+   * @param {CometChat.BaseMessage} msgObject - The message for which the options are to be retrieved.
+   * @returns {Array<CometChatActionsIcon | CometChatActionsView>} - Returns the array of appropriate message options.
+   */
   const getMessageOptions: (msgObject: CometChat.BaseMessage) => (CometChatActionsIcon | CometChatActionsView)[] = useCallback(
     (
       msgObject: CometChat.BaseMessage
@@ -1513,7 +1497,7 @@ const scrollToMessage = useCallback(() => {
         return options;
       }
     },
-    [ 
+    [
       messagesTemplate,
       setDefaultOptionsCallback,
       errorHandler,
@@ -1529,10 +1513,10 @@ const scrollToMessage = useCallback(() => {
   );
 
   /**
-      * Function to set the alignment of the message bubble based on message list alignment and the sender of the message. The MessageBubble then adjusts itself based on the passed alignment.
-      * @param {CometChat.BaseMessage} message - Message for which the alignment is to be determined.
-      * @returns {MessageBubbleAlignment} - Returns the alignment for the message.
-      */
+   * Function to set the alignment of the message bubble based on message list alignment and the sender of the message. The MessageBubble then adjusts itself based on the passed alignment.
+   * @param {CometChat.BaseMessage} message - Message for which the alignment is to be determined.
+   * @returns {MessageBubbleAlignment} - Returns the alignment for the message.
+   */
   const setBubbleAlignment: (message: CometChat.BaseMessage) => MessageBubbleAlignment = useCallback(
     (message: CometChat.BaseMessage) => {
       let bubbleAlignment = MessageBubbleAlignment.center;
@@ -1565,22 +1549,22 @@ const scrollToMessage = useCallback(() => {
   );
 
   /**
-       * Function to return the content view for each item based on its type and category.
-       * @param {CometChat.BaseMessage} item - The message for which the content view is to be returned.
-       * @returns {any} - Returns the content view or null.
-       */
+   * Function to return the content view for each item based on its type and category.
+   * @param {CometChat.BaseMessage} item - The message for which the content view is to be returned.
+   * @returns {any} - Returns the content view or null.
+   */
   const getContentView: (item: CometChat.BaseMessage) => any = useCallback(
     (item: CometChat.BaseMessage) => {
       try {
         let _alignment = setBubbleAlignment(item);
         if (
           messagesTypesMap[item?.getCategory() + "_" + item?.getType()] &&
-          messagesTypesMap[item?.getCategory() + "_" + item?.getType()]?.contentView
+          messagesTypesMap[item?.getCategory() + "_" + item?.getType()]
+            ?.contentView
         ) {
-          return messagesTypesMap[item?.getCategory() + "_" + item?.getType()].contentView(
-            item,
-            _alignment
-          );
+          return messagesTypesMap[
+            item?.getCategory() + "_" + item?.getType()
+          ].contentView(item, _alignment);
         }
         return null;
       } catch (error: any) {
@@ -1592,22 +1576,27 @@ const scrollToMessage = useCallback(() => {
   );
 
   /**
-       * Function to return the bottom view for each item based on its type and category.
-       * @param {CometChat.BaseMessage} item - The message for which the bottom view is to be returned.
-       * @returns {any} - Returns the bottom view or null.
-       */
+   * Function to return the bottom view for each item based on its type and category.
+   * @param {CometChat.BaseMessage} item - The message for which the bottom view is to be returned.
+   * @returns {any} - Returns the bottom view or null.
+   */
   const getBottomView: (item: CometChat.BaseMessage) => any = useCallback(
     (item: CometChat.BaseMessage) => {
       try {
         let _alignment = setBubbleAlignment(item);
-        if (
+         if (
           messagesTypesMap[item?.getCategory() + "_" + item?.getType()] &&
-          messagesTypesMap[item?.getCategory() + "_" + item?.getType()]?.bottomView
+          messagesTypesMap[item?.getCategory() + "_" + item?.getType()]
+            ?.bottomView &&
+          messagesTypesMap[
+            item?.getCategory() + "_" + item?.getType()
+          ]?.bottomView(item, _alignment)
         ) {
-          return messagesTypesMap[item?.getCategory() + "_" + item?.getType()]?.bottomView(
-            item,
-            _alignment
-          );
+          return messagesTypesMap[
+            item?.getCategory() + "_" + item?.getType()
+          ]?.bottomView(item, _alignment);
+        } else if (getIsMessageModerated(item) && !hideModerationView) {
+          return new MessageUtils().getModeratedMessageBottomView();
         }
         return null;
       } catch (error: any) {
@@ -1615,14 +1604,14 @@ const scrollToMessage = useCallback(() => {
         return null;
       }
     },
-    [messagesTypesMap, errorHandler, setBubbleAlignment]
+    [messagesTypesMap, errorHandler, setBubbleAlignment, hideModerationView]
   );
 
   /**
-    * Function to return the header view for each item based on its type and category.
-    * @param {CometChat.BaseMessage} item - The message for which the header view is to be returned.
-    * @returns {any} - Returns the header view or null.
-    */
+   * Function to return the header view for each item based on its type and category.
+   * @param {CometChat.BaseMessage} item - The message for which the header view is to be returned.
+   * @returns {any} - Returns the header view or null.
+   */
   const getHeaderView: (item: CometChat.BaseMessage) => any = useCallback(
     (item: CometChat.BaseMessage) => {
       try {
@@ -1643,21 +1632,50 @@ const scrollToMessage = useCallback(() => {
     [messagesTypesMap, errorHandler]
   );
 
+  const getIsMessageModerated = (message: CometChat.BaseMessage) => {
+    let isModerated = false;
+
+    if(message instanceof CometChat.MediaMessage || message instanceof CometChat.TextMessage){
+      isModerated = message.getModerationStatus() === CometChatUIKitConstants.moderationStatus.disapproved && loggedInUserRef.current?.getUid() === message.getSender()?.getUid();
+    }
+    return isModerated;
+  }
+
+  const shouldIncludeBottomViewHeight = (item: CometChat.BaseMessage) => {
+    try {
+      let _alignment = setBubbleAlignment(item);
+
+      const hasBottomView =
+        messagesTypesMap[item?.getCategory() + "_" + item?.getType()] &&
+        messagesTypesMap[item?.getCategory() + "_" + item?.getType()]
+          ?.bottomView &&
+        messagesTypesMap[
+          item?.getCategory() + "_" + item?.getType()
+        ]?.bottomView(item, _alignment);
+      return getIsMessageModerated(item) && !hideModerationView && !hasBottomView;
+    } catch (error) {
+      errorHandler(error, "shouldIncludeBottomViewHeight");    
+    }
+  };
+
   /**
-     * Function to return the footer view for each item based on its type and category.
-     * @param {CometChat.BaseMessage} item - The message for which the footer view is to be returned.
-     * @returns {any} - Returns the footer view or null.
-     */
+   * Function to return the footer view for each item based on its type and category.
+   * @param {CometChat.BaseMessage} item - The message for which the footer view is to be returned.
+   * @returns {any} - Returns the footer view or null.
+   */
   const getFooterView: (item: CometChat.BaseMessage) => any = useCallback(
     (item: CometChat.BaseMessage) => {
       try {
         let view: JSX.Element | null = null;
         if (
           messagesTypesMap[item?.getCategory() + "_" + item?.getType()] &&
-          messagesTypesMap[item?.getCategory() + "_" + item?.getType()]?.footerView
+          messagesTypesMap[item?.getCategory() + "_" + item?.getType()]
+            ?.footerView
         ) {
           view =
-            messagesTypesMap[item?.getCategory() + "_" + item?.getType()]?.footerView(item);
+            messagesTypesMap[
+              item?.getCategory() + "_" + item?.getType()
+            ]?.footerView(item);
         }
         return view;
       } catch (error: any) {
@@ -1669,10 +1687,10 @@ const scrollToMessage = useCallback(() => {
   );
 
   /**
-       * Function to return the bubble wrapper for each item based on its type and category.
-       * @param {CometChat.BaseMessage} item - The message for which the bubble wrapper is to be returned.
-       * @returns {JSX.Element | null} - Returns the bubble wrapper or null.
-       */
+   * Function to return the bubble wrapper for each item based on its type and category.
+   * @param {CometChat.BaseMessage} item - The message for which the bubble wrapper is to be returned.
+   * @returns {JSX.Element | null} - Returns the bubble wrapper or null.
+   */
   const getBubbleWrapper: (item: CometChat.BaseMessage) => any = useCallback(
     (item: CometChat.BaseMessage) => {
       let view: JSX.Element | null = null;
@@ -1694,10 +1712,10 @@ const scrollToMessage = useCallback(() => {
   );
 
   /**
-     * Function to mark a given message as read.
-     * @param {CometChat.BaseMessage} message - The message to be marked as read.
-     * @returns {void}
-     */
+   * Function to mark a given message as read.
+   * @param {CometChat.BaseMessage} message - The message to be marked as read.
+   * @returns {void}
+   */
   const markMessageRead: (message: CometChat.BaseMessage) => void = useCallback((message: CometChat.BaseMessage) => {
     CometChat.markAsRead(message).then(
       () => {
@@ -1710,10 +1728,10 @@ const scrollToMessage = useCallback(() => {
   }, [errorHandler])
 
   /**
-     * Function to check and mark a message as read if `hideReceipts` is false and the message is not sent by the logged-in user.
-     * @param {CometChat.BaseMessage} message - The message to be checked and marked as read.
-     * @returns {void}
-     */
+   * Function to check and mark a message as read if `hideReceipts` is false and the message is not sent by the logged-in user.
+   * @param {CometChat.BaseMessage} message - The message to be checked and marked as read.
+   * @returns {void}
+   */
   const checkAndMarkMessageAsRead: (message: CometChat.BaseMessage) => void = useCallback(
     (message: CometChat.BaseMessage) => {
       try {
@@ -1733,7 +1751,6 @@ const scrollToMessage = useCallback(() => {
 
   const clearNewMessagesCount: () => void = useCallback(() => {
     try {
-
       isOnBottomRef.current = true;
       const lastMessage: CometChat.BaseMessage =
         UnreadMessagesRef.current[UnreadMessagesRef.current.length - 1];
@@ -1753,12 +1770,11 @@ const scrollToMessage = useCallback(() => {
     }
   }, [checkAndMarkMessageAsRead, showNewMessagesBanner])
 
-
   /**
-    * Function to prepend messages to the beginning of the current message list.
-    * @param {CometChat.BaseMessage[]} messages - The messages to be prepended.
-    * @returns {Promise<boolean | CometChat.CometChatException>} - Returns a promise that resolves if the operation is successful or rejects with an error if it fails.
-    */
+   * Function to prepend messages to the beginning of the current message list.
+   * @param {CometChat.BaseMessage[]} messages - The messages to be prepended.
+   * @returns {Promise<boolean | CometChat.CometChatException>} - Returns a promise that resolves if the operation is successful or rejects with an error if it fails.
+   */
   const prependMessages: (messages: CometChat.BaseMessage[]) => Promise<boolean | CometChat.CometChatException> = useCallback(
     (messages: CometChat.BaseMessage[]) => {
       return new Promise((resolve, reject) => {
@@ -1797,9 +1813,9 @@ const scrollToMessage = useCallback(() => {
     [messageList, isPartOfCurrentChatForSDKEvent, errorHandler,isFirstScroll]
   );
   /**
-     * Function to fetch previous messages.
-     * @returns {Promise<boolean | CometChat.CometChatException>} - Returns a promise that resolves if the operation is successful or rejects with an error if it fails.
-     */
+   * Function to fetch previous messages.
+   * @returns {Promise<boolean | CometChat.CometChatException>} - Returns a promise that resolves if the operation is successful or rejects with an error if it fails.
+   */
   const fetchPreviousMessages: () => Promise<boolean | CometChat.CometChatException> = useCallback(() => {
     return new Promise(async (resolve, reject) => {
       try {
@@ -1953,7 +1969,7 @@ const scrollToMessage = useCallback(() => {
                   } else {
                     markInitialLoadComplete()
                   }
-                 }, 0);
+                }, 0);
               }
               isFetchingPreviousMessages = false;
               if (messagesList && messagesList.length > 0) {
@@ -1962,18 +1978,18 @@ const scrollToMessage = useCallback(() => {
                 let isMyMessage = lastMessage?.getSender().getUid() == loggedInUserRef.current?.getUid()
                 if (!lastMessage.getDeliveredAt()  && !isMyMessage) {
                   CometChat.markAsDelivered(lastMessage).then(() => {
-                      if(lastMessage.getReceiverType() == CometChatUIKitConstants.MessageReceiverType.user && !hideReceipts){
-                        messagesList.forEach((m: CometChat.BaseMessage) => {
-                          if (
-                            m?.getId() <= lastMessage?.getId() &&
-                            !isMyMessage &&
-                            !m.getDeliveredAt()
-                          ) {
-                            m.setDeliveredAt(new Date().getTime());
-                          }
-                          return m;
-                        });
-                      }
+                    if(lastMessage.getReceiverType() == CometChatUIKitConstants.MessageReceiverType.user && !hideReceipts){
+                      messagesList.forEach((m: CometChat.BaseMessage) => {
+                        if (
+                          m?.getId() <= lastMessage?.getId() &&
+                          !isMyMessage &&
+                          !m.getDeliveredAt()
+                        ) {
+                          m.setDeliveredAt(new Date().getTime());
+                        }
+                        return m;
+                      });
+                    }
                   });
                 }
                 if (
@@ -1999,11 +2015,11 @@ const scrollToMessage = useCallback(() => {
                     } else {
                       UnreadMessagesRef.current = [];
                     }
-                
+
                     CometChatMessageEvents.ccMessageRead.next(lastMessage);
 
                   });
-             
+
                 } else if (!isMyMessage) {
                   CometChatMessageEvents.ccMessageRead.next(lastMessage);
 
@@ -2011,10 +2027,10 @@ const scrollToMessage = useCallback(() => {
 
                 prependMessages(messagesList).then(
                   (success) => {
-                  if (!goToMessageId && !hasCompletedInitialLoad) {
-                    markInitialLoadComplete()
-                  }
-                  resolve(success);
+                    if (!goToMessageId && !hasCompletedInitialLoad) {
+                      markInitialLoadComplete()
+                    }
+                    resolve(success);
                   },
                   (error) => {
                     reject(error);
@@ -2067,9 +2083,9 @@ const scrollToMessage = useCallback(() => {
   ]);
 
   /**
- * Adds the selected reply to the composer and closes the view.
- * @returns Void.
- */
+   * Adds the selected reply to the composer and closes the view.
+   * @returns Void.
+   */
   function onSuggestionClicked(reply: string) {
     CometChatUIEvents.ccComposeMessage.next(reply);
     setShowConversationStarter(false);
@@ -2140,17 +2156,15 @@ const scrollToMessage = useCallback(() => {
           setEnableSmartReplies(false);
         }} />
       </div>
-
     }
     return null;
-
   }
 
   /**
-    * Function to append  to the end of the current message list.
-    * @param {CometChat.BaseMessage[]} messages - The messages to be appended.
-    * @returns {Promise<boolean | CometChat.CometChatException>} - Returns a promise that resolves if the operation is successful or rejects with an error if it fails.
-    */
+   * Function to append  to the end of the current message list.
+   * @param {CometChat.BaseMessage[]} messages - The messages to be appended.
+   * @returns {Promise<boolean | CometChat.CometChatException>} - Returns a promise that resolves if the operation is successful or rejects with an error if it fails.
+   */
 
   const appendMessages: (messages: CometChat.BaseMessage[]) => Promise<boolean | CometChat.CometChatException> = useCallback(
     (messages: CometChat.BaseMessage[]) => {
@@ -2193,10 +2207,10 @@ const scrollToMessage = useCallback(() => {
             } else {
               setScrollListToBottom(false);
             }
-           if(!shouldScrollToMessage && !goToMessageId){
-            UnreadMessagesRef.current.push(...messages);
-            newMessageTextRef.current = UnreadMessagesRef.current.length < 999 ? String(UnreadMessagesRef.current.length) : "999+";
-           }
+            if(!shouldScrollToMessage && !goToMessageId){
+              UnreadMessagesRef.current.push(...messages);
+              newMessageTextRef.current = UnreadMessagesRef.current.length < 999 ? String(UnreadMessagesRef.current.length) : "999+";
+            }
             setShowNewMessagesBanner(true);
           }
           setMessageListState(States.loaded);
@@ -2219,9 +2233,9 @@ const scrollToMessage = useCallback(() => {
   );
 
   /**
-     * Function to fetch action messages.
-     * @returns {Promise<boolean | CometChat.CometChatException>} - Returns a promise that resolves if the operation is successful or rejects with an error if it fails.
-     */
+   * Function to fetch action messages.
+   * @returns {Promise<boolean | CometChat.CometChatException>} - Returns a promise that resolves if the operation is successful or rejects with an error if it fails.
+   */
   const fetchActionMessages: () => Promise<boolean | CometChat.CometChatException> = useCallback(() => {
     return new Promise((resolve, reject) => {
       try {
@@ -2265,11 +2279,10 @@ const scrollToMessage = useCallback(() => {
     });
   }, [errorHandler]);
 
-
   /**
-      * Function to fetch the next set of messages.
-      * @returns {Promise<boolean | CometChat.CometChatException>} - Returns a promise that resolves if the operation is successful or rejects with an error if it fails.
-      */
+   * Function to fetch the next set of messages.
+   * @returns {Promise<boolean | CometChat.CometChatException>} - Returns a promise that resolves if the operation is successful or rejects with an error if it fails.
+   */
 
   const fetchNextMessages: () => Promise<boolean | CometChat.CometChatException> = useCallback(() => {
     return new Promise((resolve, reject) => {
@@ -2383,10 +2396,10 @@ const scrollToMessage = useCallback(() => {
   );
 
   /**
-     * Function to update unread reply count for a specific message.
-     * @param {CometChat.BaseMessage} message - The message for which the unread reply count is updated.
-     * @returns {void}
-     */
+   * Function to update unread reply count for a specific message.
+   * @param {CometChat.BaseMessage} message - The message for which the unread reply count is updated.
+   * @returns {void}
+   */
   const updateUnreadReplyCount: (message: CometChat.BaseMessage) => void = useCallback((message: CometChat.BaseMessage) => {
     try {
       setMessageList((prevMessageList: CometChat.BaseMessage[]) => {
@@ -2450,13 +2463,11 @@ const scrollToMessage = useCallback(() => {
     }
 
   }, [loggedInUserRef, smartRepliesDelayDuration, smartRepliesKeywords, setEnableSmartReplies]);
-
-
   /**
-     * Function to add a new message to the current message list.
-     * @param {CometChat.BaseMessage} message - The message to be added.
-     * @returns {void}
-     */
+   * Function to add a new message to the current message list.
+   * @param {CometChat.BaseMessage} message - The message to be added.
+   * @returns {void}
+   */
   const addMessage: (message: CometChat.BaseMessage) => void = useCallback(
     (message: CometChat.BaseMessage) => {
       try {
@@ -2468,17 +2479,18 @@ const scrollToMessage = useCallback(() => {
         if (totalMessagesCountRef.current > 0 && messageListState != States.loaded && hasCompletedInitialLoad) {
           setMessageListState(States.loaded);
         }
-        if (hideGroupActionMessages) {
-          if (message.getCategory() !== CometChatUIKitConstants.MessageCategory.action) {
-            setMessageList((prevMessageList: CometChat.BaseMessage[]) => {
-              const messages = [...prevMessageList, message];
-              return messages;
-            });
-          }
-        } else {
+        if (!hideGroupActionMessages || (hideGroupActionMessages && message.getCategory() !== CometChatUIKitConstants.MessageCategory.action)) {
           setMessageList((prevMessageList: CometChat.BaseMessage[]) => {
-            const messages = [...prevMessageList, message];
-            return messages;
+            const lastMessage = prevMessageList.at(-1);
+            if (
+              message.getType() === CometChatUIKitConstants.streamMessageTypes.run_started
+            ) {
+              if (lastMessage?.getId() === message.getId()) {
+                return [...prevMessageList, message];
+              }
+              return prevMessageList;
+            }
+            return [...prevMessageList, message];
           });
         }
         if (!message.getSender() || (message.getSender().getUid() == loggedInUserRef.current?.getUid())) {
@@ -2492,15 +2504,11 @@ const scrollToMessage = useCallback(() => {
     [errorHandler, scrollListToBottom, hasCompletedInitialLoad]
   );
 
-
-
-
-
   /**
-     * Function to show and increment the count of unread messages.
-     * @param {CometChat.BaseMessage} message - The unread message to be counted.
-     * @returns {void}
-     */
+   * Function to show and increment the count of unread messages.
+   * @param {CometChat.BaseMessage} message - The unread message to be counted.
+   * @returns {void}
+   */
   const showAndIncrementUnreadCount: (message: CometChat.BaseMessage) => void = useCallback((message: CometChat.BaseMessage) => {
     try {
       if (!isOnBottomRef.current && message.getSender() && message.getSender().getUid() != loggedInUserRef.current?.getUid()) {
@@ -2516,11 +2524,12 @@ const scrollToMessage = useCallback(() => {
     }
   }, []);
 
+
   /**
-    * Function to mark all messages up to a certain point as delivered.
-    * @param {CometChat.MessageReceipt} message - The receipt message up to which all messages are marked as delivered.
-    * @returns {void}
-    */
+   * Function to mark all messages up to a certain point as delivered.
+   * @param {CometChat.MessageReceipt} message - The receipt message up to which all messages are marked as delivered.
+   * @returns {void}
+   */
 
   const markAllMessagAsDelivered: (message: CometChat.MessageReceipt) => void = useCallback(
     (message: CometChat.MessageReceipt) => {
@@ -2548,10 +2557,10 @@ const scrollToMessage = useCallback(() => {
 
 
   /**
-     * Function to mark all messages up to a certain point as read.
-     * @param {CometChat.MessageReceipt} message - The receipt message up to which all messages are marked as read.
-     * @returns {void}
-     */
+   * Function to mark all messages up to a certain point as read.
+   * @param {CometChat.MessageReceipt} message - The receipt message up to which all messages are marked as read.
+   * @returns {void}
+   */
   const markAllMessageAsRead: (message: CometChat.MessageReceipt) => void = useCallback(
     (message: CometChat.MessageReceipt) => {
       try {
@@ -2587,10 +2596,10 @@ const scrollToMessage = useCallback(() => {
   );
 
   /**
-     * Function to handle the marking of messages as read or delivered
-     * @param {CometChat.MessageReceipt} messageReceipt - The receipt message
-     * @returns {void}
-     */
+   * Function to handle the marking of messages as read or delivered
+   * @param {CometChat.MessageReceipt} messageReceipt - The receipt message
+   * @returns {void}
+   */
 
   const messageReadAndDelivered: (message: CometChat.MessageReceipt) => void = useCallback(
     (messageReceipt: CometChat.MessageReceipt) => {
@@ -2624,14 +2633,12 @@ const scrollToMessage = useCallback(() => {
       errorHandler]
   );
 
-
   /**
-    * Function to check whether to scroll to the bottom of the message list
-    * @param {boolean} forceScroll - A boolean indicating whether to force the scroll to the bottom
-    * @returns {void}
-    */
+   * Function to check whether to scroll to the bottom of the message list
+   * @param {boolean} forceScroll - A boolean indicating whether to force the scroll to the bottom
+   * @returns {void}
+   */
   const checkAndScrollToBottom: (forceScroll?: boolean) => void = useCallback((forceScroll: boolean = false) => {
-
     try {
       if (forceScroll || scrollToBottomOnNewMessages) {
         setTimeout(() => {
@@ -2647,10 +2654,10 @@ const scrollToMessage = useCallback(() => {
   }, [scrollToBottomOnNewMessages]);
 
   /**
-    * Function to handle when a new message is received
-    * @param {CometChat.BaseMessage} message - The new message received.
-    * @returns {void}
-    */
+   * Function to handle when a new message is received
+   * @param {CometChat.BaseMessage} message - The new message received.
+   * @returns {void}
+   */
   const messageReceivedHandler: (message: CometChat.BaseMessage) => void = useCallback(
     (message: CometChat.BaseMessage) => {
       try {
@@ -2699,11 +2706,11 @@ const scrollToMessage = useCallback(() => {
   );
 
   /**
-     * Function to handle when a group action message is received
-     * @param {CometChat.Action} actionMessage - The action message received.
-     * @param {CometChat.Group} group - The group where the action message is received.
-     * @returns {void}
-     */
+   * Function to handle when a group action message is received
+   * @param {CometChat.Action} actionMessage - The action message received.
+   * @param {CometChat.Group} group - The group where the action message is received.
+   * @returns {void}
+   */
 
   const groupActionMessageReceived: (message: CometChat.Action, group: CometChat.Group) => void = useCallback(
     (actionMessage: CometChat.Action, group: CometChat.Group) => {
@@ -2737,10 +2744,10 @@ const scrollToMessage = useCallback(() => {
   );
 
   /**
-     * Checks if receipt is of the current list.
-     * @param {CometChat.ReactionEvent} receipt - The reaction event object.
-     * @returns {boolean} - Returns true if the receipt is of the current list, otherwise returns false.
-     */
+   * Checks if receipt is of the current list.
+   * @param {CometChat.ReactionEvent} receipt - The reaction event object.
+   * @returns {boolean} - Returns true if the receipt is of the current list, otherwise returns false.
+   */
   const isReactionOfThisList: (receipt: CometChat.ReactionEvent) => boolean = useCallback((receipt: CometChat.ReactionEvent) => {
     try {
       const receiverId = receipt?.getReceiverId();
@@ -2784,7 +2791,6 @@ const scrollToMessage = useCallback(() => {
   const messageReactionUpdated: (receipt: CometChat.ReactionEvent, isAdded: boolean) => boolean | undefined = useCallback(
     (receipt: CometChat.ReactionEvent, isAdded: boolean) => {
       try {
-
         if (!isReactionOfThisList(receipt)) {
           return false;
         }
@@ -2824,10 +2830,10 @@ const scrollToMessage = useCallback(() => {
   );
 
   /**
- * Function to handle when a call action message is received
- * @param {CometChat.Call} callMessage - The call message received.
- * @returns {void}
- */
+   * Function to handle when a call action message is received
+   * @param {CometChat.Call} callMessage - The call message received.
+   * @returns {void}
+   */
   const callActionMessageReceived: (callMessage: CometChat.Call) => void = useCallback(
     (callMessage: CometChat.Call) => {
       try {
@@ -2949,9 +2955,9 @@ const scrollToMessage = useCallback(() => {
   );
 
   /**
- * Callback to be executed when the message list is scrolled to the bottom.
- * @returns {Promise<boolean | CometChat.CometChatException>} Returns a promise that resolves to a boolean value or a CometChat exception.
- */
+   * Callback to be executed when the message list is scrolled to the bottom.
+   * @returns {Promise<boolean | CometChat.CometChatException>} Returns a promise that resolves to a boolean value or a CometChat exception.
+   */
   const onBottomCallback: () => Promise<boolean | CometChat.CometChatException> = useCallback(() => {
     return new Promise((resolve, reject) => {
       try {
@@ -2983,9 +2989,9 @@ const scrollToMessage = useCallback(() => {
   ]);
 
   /**
- * Callback to be executed when the message list is scrolled to the top.
- * @returns {Promise<boolean | CometChat.CometChatException>} Returns a promise that resolves to a boolean value or a CometChat exception.
- */
+   * Callback to be executed when the message list is scrolled to the top.
+   * @returns {Promise<boolean | CometChat.CometChatException>} Returns a promise that resolves to a boolean value or a CometChat exception.
+   */
 
   const onTopCallback: () => Promise<boolean | CometChat.CometChatException> = useCallback(() => {
     return new Promise((resolve, reject) => {
@@ -3010,10 +3016,10 @@ const scrollToMessage = useCallback(() => {
   }, [fetchPreviousMessages, errorHandler, isOnBottomRef]);
 
   /**
- * Function to update the view to focus on a specific message.
- * @param {CometChat.BaseMessage} message - The message to focus on.
- * @returns {void}
- */
+   * Function to update the view to focus on a specific message.
+   * @param {CometChat.BaseMessage} message - The message to focus on.
+   * @returns {void}
+   */
   const updateView: (message: CometChat.BaseMessage) => void = useCallback(
     (message: CometChat.BaseMessage) => {
       try {
@@ -3043,9 +3049,9 @@ const scrollToMessage = useCallback(() => {
   ]);
 
   /**
- * Function to scroll the message list to the bottom.
- * @returns {void}
- */
+   * Function to scroll the message list to the bottom.
+   * @returns {void}
+   */
   const scrollToBottom: () => void = useCallback(() => {
     try {
       if (!isOnBottomRef.current && hasTargetMessageId) {
@@ -3068,10 +3074,10 @@ const scrollToMessage = useCallback(() => {
   ]);
 
   /**
- * Function to reset the count of unread messages in a thread.
- * @param {number | string} parentMessageId - The parent message ID of the thread.
- * @returns {void}
- */
+   * Function to reset the count of unread messages in a thread.
+   * @param {number | string} parentMessageId - The parent message ID of the thread.
+   * @returns {void}
+   */
 
   const resetCountForUnreadMessagesInThread: (parentMessageId: number | string) => void = useCallback(
     (parentMessageId: number | string) => {
@@ -3104,9 +3110,9 @@ const scrollToMessage = useCallback(() => {
   };
 
   /**
- * Function to subscribe to UI events for handling various scenarios such as showing a dialog, handling group member events, handling message edits, etc.
- * @returns {() => void} A cleanup function to unsubscribe from the events.
- */
+   * Function to subscribe to UI events for handling various scenarios such as showing a dialog, handling group member events, handling message edits, etc.
+   * @returns {() => void} A cleanup function to unsubscribe from the events.
+   */
   const subscribeToUIEvents: () => (() => void) | undefined = useCallback(() => {
     try {
       let ccMessageEdit: Subscription;
@@ -3142,6 +3148,7 @@ const scrollToMessage = useCallback(() => {
       let onSchedulerMessageReceived: Subscription;
       let onCardMessageReceived: Subscription;
       let onCustomInteractiveMessageReceived: Subscription;
+      let onMessageModerated: Subscription;
       // let onAIToolResultReceived:Subscription;
       // let onAIToolArgumentsReceived:Subscription;
       let onAIAssistantMessageReceived: Subscription;
@@ -3179,7 +3186,6 @@ const scrollToMessage = useCallback(() => {
                 headerViewRef.current = data.child;
                 setShowHeaderPanelView(true);
               }, 0);
-
             }
           }
         }
@@ -3190,12 +3196,10 @@ const scrollToMessage = useCallback(() => {
             panelViewRef.current = null;
             setShowNewMessagesBanner(false);
             setShowFooterPanelView(false);
-
           }
           else if (alignment === PanelAlignment.messageListHeader) {
             headerViewRef.current = null;
             setShowHeaderPanelView(false);
-
           }
         }
       );
@@ -3408,6 +3412,12 @@ const scrollToMessage = useCallback(() => {
         onCustomInteractiveMessageReceived = CometChatMessageEvents.onCustomInteractiveMessageReceived.subscribe((customInteractiveMessage: CometChat.InteractiveMessage) => {
           messageReceivedHandler(customInteractiveMessage);
         });
+        onMessageModerated =
+        CometChatMessageEvents.onMessageModerated.subscribe(
+          (moderatedMessage: CometChat.BaseMessage) => {
+            updateMessageByMessageId(moderatedMessage);
+          }
+        );
       }
        else{
         onAIAssistantMessageReceived = CometChatMessageEvents.onAIAssistantMessageReceived.subscribe((message:CometChat.AIAssistantMessage)=>{
@@ -3478,6 +3488,7 @@ const scrollToMessage = useCallback(() => {
           ccMessageTranslated?.unsubscribe();
           ccMessageRead?.unsubscribe();
           onTextMessageReceived?.unsubscribe();
+          onMessageModerated?.unsubscribe();
           onMediaMessageReceived?.unsubscribe();
           onCustomMessageReceived?.unsubscribe();
           onMessagesDelivered?.unsubscribe();
@@ -3520,21 +3531,21 @@ const scrollToMessage = useCallback(() => {
     isAgentChat,
   ]);
 
-const { debouncedCallback: debouncedUpdateVisibleArea } = useDebouncedCallback(
-  () => {
-    const messageListBody = getCurrentDocument().querySelector(".cometchat-message-list .cometchat-list__body");
-    if (!messageListBody) return;
-    
-    const { scrollTop, scrollHeight, clientHeight } = messageListBody;
-    const isVisible = (scrollHeight - scrollTop - clientHeight) > 50;
-    
-    if (hasVisibleAreaRef.current !== isVisible) {
-      hasVisibleAreaRef.current = isVisible;
-      setHasVisibleArea(isVisible);
-    }
-  },
-  100
-);
+  const { debouncedCallback: debouncedUpdateVisibleArea } = useDebouncedCallback(
+    () => {
+      const messageListBody = getCurrentDocument().querySelector(".cometchat-message-list .cometchat-list__body");
+      if (!messageListBody) return;
+
+      const { scrollTop, scrollHeight, clientHeight } = messageListBody;
+      const isVisible = (scrollHeight - scrollTop - clientHeight) > 50;
+
+      if (hasVisibleAreaRef.current !== isVisible) {
+        hasVisibleAreaRef.current = isVisible;
+        setHasVisibleArea(isVisible);
+      }
+    },
+    100
+  );
   /**
    * Fuction to handle realtime date seperator update.
    *
@@ -3568,7 +3579,6 @@ const { debouncedCallback: debouncedUpdateVisibleArea } = useDebouncedCallback(
             if (isDateDifferent(stickyDateHeaderRef.current, messageDate)) {
               setDateHeader(messageDate);
               stickyDateHeaderRef.current = messageDate
-
             }
           }, 0);
         }
@@ -3602,11 +3612,11 @@ const { debouncedCallback: debouncedUpdateVisibleArea } = useDebouncedCallback(
   }
 
   /**
- * Function to check if two dates are different
- * @param {number | undefined} firstDate - The first date to compare
- * @param {number | undefined} secondDate - The second date to compare
- * @returns {boolean | undefined} Returns true if dates are different, false otherwise
- */
+   * Function to check if two dates are different
+   * @param {number | undefined} firstDate - The first date to compare
+   * @param {number | undefined} secondDate - The second date to compare
+   * @returns {boolean | undefined} Returns true if dates are different, false otherwise
+   */
   const isDateDifferent: (firstDate: number | undefined, secondDate: number | undefined) => boolean | undefined = useCallback(
     (firstDate: number | undefined, secondDate: number | undefined) => {
       try {
@@ -3660,15 +3670,14 @@ const { debouncedCallback: debouncedUpdateVisibleArea } = useDebouncedCallback(
   );
 
   /**
- * Function to get leading view for message bubble
- * @param {CometChat.BaseMessage} message - The message for which leading view needs to be fetched
- * @returns {any} Returns JSX.Element or null for leading view of a message bubble
- */
+   * Function to get leading view for message bubble
+   * @param {CometChat.BaseMessage} message - The message for which leading view needs to be fetched
+   * @returns {any} Returns JSX.Element or null for leading view of a message bubble
+   */
 
   const getBubbleLeadingView: (message: CometChat.BaseMessage) => any = useCallback(
     (item: CometChat.BaseMessage) => {
       try {
-
         if (
          (( item?.getCategory() !==
           CometChatUIKitConstants.MessageCategory.action &&
@@ -3693,10 +3702,10 @@ const { debouncedCallback: debouncedUpdateVisibleArea } = useDebouncedCallback(
   );
 
   /**
- * Function to get header date for message bubble
- * @param {CometChat.BaseMessage} item - The message bubble for which header date needs to be fetched
- * @returns {JSX.Element} Returns JSX.Element for header date of a message bubble
- */
+   * Function to get header date for message bubble
+   * @param {CometChat.BaseMessage} item - The message bubble for which header date needs to be fetched
+   * @returns {JSX.Element} Returns JSX.Element for header date of a message bubble
+   */
   const getBubbleHeaderDate: (item: CometChat.BaseMessage) => JSX.Element = useCallback(
     (item: CometChat.BaseMessage) => {
       return (
@@ -3712,10 +3721,10 @@ const { debouncedCallback: debouncedUpdateVisibleArea } = useDebouncedCallback(
   );
 
   /**
- * Function to get header title for message bubble
- * @param {CometChat.BaseMessage} item - The message bubble for which header title needs to be fetched
- * @returns {JSX.Element} Returns JSX.Element for header title of a message bubble
- */
+   * Function to get header title for message bubble
+   * @param {CometChat.BaseMessage} item - The message bubble for which header title needs to be fetched
+   * @returns {JSX.Element} Returns JSX.Element for header title of a message bubble
+   */
 
   const getBubbleHeaderTitle: (item: CometChat.BaseMessage) => JSX.Element = useCallback(
     (item: CometChat.BaseMessage) => {
@@ -3727,10 +3736,10 @@ const { debouncedCallback: debouncedUpdateVisibleArea } = useDebouncedCallback(
   );
 
   /**
- * Function to get the header of a message bubble
- * @param {CometChat.BaseMessage} item - The message bubble for which the header needs to be fetched
- * @returns {any} Returns JSX.Element or null for header view of a message bubble
- */
+   * Function to get the header of a message bubble
+   * @param {CometChat.BaseMessage} item - The message bubble for which the header needs to be fetched
+   * @returns {any} Returns JSX.Element or null for header view of a message bubble
+   */
 
   const getBubbleHeader: (item: CometChat.BaseMessage) => any = useCallback(
     (item: CometChat.BaseMessage) => {
@@ -3754,14 +3763,12 @@ const { debouncedCallback: debouncedUpdateVisibleArea } = useDebouncedCallback(
       }
     },
     [
-
       getBubbleHeaderDate,
       showHeaderTitle,
       getHeaderView,
       getBubbleHeaderTitle,
     ]
   );
-
 
   const reactionItemClicked = useCallback((
     reaction: CometChat.Reaction,
@@ -3776,13 +3783,11 @@ const { debouncedCallback: debouncedUpdateVisibleArea } = useDebouncedCallback(
     }
   }, [reactToMessages])
 
-
-
   /**
- * Function to get reaction view for message bubble
- * @param {CometChat.BaseMessage} item - The message bubble for which the reaction view needs to be fetched
- * @returns {JSX.Element | null} Returns JSX.Element for reaction view of a message bubble or null
- */
+   * Function to get reaction view for message bubble
+   * @param {CometChat.BaseMessage} item - The message bubble for which the reaction view needs to be fetched
+   * @returns {JSX.Element | null} Returns JSX.Element for reaction view of a message bubble or null
+   */
   const getReactionView: (item: CometChat.BaseMessage) => JSX.Element | null = useCallback(
     (item: CometChat.BaseMessage) => {
       const reactions = item?.getReactions() || [];
@@ -3809,15 +3814,18 @@ const { debouncedCallback: debouncedUpdateVisibleArea } = useDebouncedCallback(
     }, [reactToMessages, setBubbleAlignment]
   );
   /**
- * Function to get footer view for message bubble
- * @param {CometChat.BaseMessage} item - The message bubble for which the footer view needs to be fetched
- * @returns {any} Returns JSX.Element for footer view of a message bubble
- */
+   * Function to get footer view for message bubble
+   * @param {CometChat.BaseMessage} item - The message bubble for which the footer view needs to be fetched
+   * @returns {any} Returns JSX.Element for footer view of a message bubble
+   */
   const getBubbleFooterView: (item: CometChat.BaseMessage) => any = useCallback(
     (item: CometChat.BaseMessage) => {
       if (getFooterView(item)) {
         return getFooterView(item);
       } else {
+        if (getIsMessageModerated(item)) {
+          return null;
+        }
         return getReactionView(item);
       }
     },
@@ -3825,21 +3833,21 @@ const { debouncedCallback: debouncedUpdateVisibleArea } = useDebouncedCallback(
   );
 
   /**
- * Function to get thread view for message bubble
- * @param {CometChat.BaseMessage} item - The message bubble for which the thread view needs to be fetched
- * @returns {any} Returns JSX.Element for thread view of a message bubble
- */
+   * Function to get thread view for message bubble
+   * @param {CometChat.BaseMessage} item - The message bubble for which the thread view needs to be fetched
+   * @returns {any} Returns JSX.Element for thread view of a message bubble
+   */
   const getBubbleThreadView: (item: CometChat.BaseMessage) => any = useCallback(
     (item: CometChat.BaseMessage) => {
+      if (getIsMessageModerated(item)) {
+        return null;
+      }
       if (item?.getReplyCount() && !item?.getDeletedAt()) {
-
         return (
-          <div className='cometchat-message-bubble__thread-view-replies'>
+          <div className="cometchat-message-bubble__thread-view-replies">
             <CometChatButton text={getThreadCount(item)} hoverText={getThreadCount(item)} iconURL={repliesRightIcon} onClick={() => {
               openThreadView(item)
             }} />
-
-
           </div>
         );
       }
@@ -3851,10 +3859,10 @@ const { debouncedCallback: debouncedUpdateVisibleArea } = useDebouncedCallback(
   );
 
   /**
-* Function to create status view for the message
-* @param {CometChat.BaseMessage} item - The message for which the status view needs to be fetched
-* @returns {any} - Returns JSX.Element or null for status view of a message
-*/
+   * Function to create status view for the message
+   * @param {CometChat.BaseMessage} item - The message for which the status view needs to be fetched
+   * @returns {any} - Returns JSX.Element or null for status view of a message
+   */
 
   const getStatusInfoView: (item: CometChat.BaseMessage) => any = useCallback(
     (item: CometChat.BaseMessage) => {
@@ -3889,12 +3897,32 @@ const { debouncedCallback: debouncedUpdateVisibleArea } = useDebouncedCallback(
     ]
   );
 
+  const MODERATED_MESSAGE_QUICK_OPTIONS_COUNT = 3;
+
   /**
- * Function to generate a message bubble
- * @param {CometChat.BaseMessage} item - The message for which the bubble needs to be created
- * @param {number} i - The index of the message
- * @returns {JSX.Element} - Returns JSX.Element for a message bubble
+ * Function to compute quick option count if the message is moderated
+ * @param {CometChat.BaseMessage} message - The message for which the count needs to be updated
+ * @param {number} baseCount - The default count of quick options
+ * @returns {number} - Returns JSX.Element for a message bubble
  */
+
+  const computeQuickOptionsCount = (
+    message: CometChat.BaseMessage,
+    baseCount?: number | undefined
+  ): number | undefined => {
+   
+    if (getIsMessageModerated(message)) {
+      return MODERATED_MESSAGE_QUICK_OPTIONS_COUNT;
+    }
+    return baseCount;
+  };
+
+  /**
+   * Function to generate a message bubble
+   * @param {CometChat.BaseMessage} item - The message for which the bubble needs to be created
+   * @param {number} i - The index of the message
+   * @returns {JSX.Element} - Returns JSX.Element for a message bubble
+   */
 
   const getMessageBubbleItem: (item: CometChat.BaseMessage, i: number) => JSX.Element = useCallback(
     (item: CometChat.BaseMessage, i: number) => {
@@ -3912,11 +3940,12 @@ const { debouncedCallback: debouncedUpdateVisibleArea } = useDebouncedCallback(
           options={getMessageOptions(item)}
           alignment={setBubbleAlignment(item)}
           replyView={null}
+          includeBottomViewHeight={shouldIncludeBottomViewHeight(item)}
           threadView={!isAgentChat &&  getBubbleThreadView(item)}
           statusInfoView={getStatusInfoView(item)}
           type={item.getDeletedAt() ? CometChatUIKitConstants.MessageTypes.delete : item.getType()}
           category={item.getDeletedAt() ? CometChatUIKitConstants.MessageCategory.action : item.getCategory()}
-          topMenuSize={quickOptionsCount}
+          topMenuSize={computeQuickOptionsCount(item, quickOptionsCount)}
         ></CometChatMessageBubble>
       );
     },
@@ -3931,16 +3960,16 @@ const { debouncedCallback: debouncedUpdateVisibleArea } = useDebouncedCallback(
       getStatusInfoView,
       getMessageOptions,
       getBottomView,
+      quickOptionsCount
     ]
   );
 
-
   /**
- * Function to create date for the message bubble
- * @param {CometChat.BaseMessage} item - The message for which the date needs to be fetched
- * @param {number} i - The index of the message
- * @returns {JSX.Element | null} - Returns JSX.Element or null for date of a message bubble
- */
+   * Function to create date for the message bubble
+   * @param {CometChat.BaseMessage} item - The message for which the date needs to be fetched
+   * @param {number} i - The index of the message
+   * @returns {JSX.Element | null} - Returns JSX.Element or null for date of a message bubble
+   */
   const getMessageBubbleDateHeader: (item: CometChat.BaseMessage, i: number) => JSX.Element | null = useCallback(
     (item: CometChat.BaseMessage, i: number) => {
       if (
@@ -3974,11 +4003,11 @@ const { debouncedCallback: debouncedUpdateVisibleArea } = useDebouncedCallback(
   );
 
   /**
- * Function to create a message bubble
- * @param {CometChat.BaseMessage} m - The message for which the bubble needs to be created
- * @param {number} i - The index of the message
- * @returns {JSX.Element} - Returns JSX.Element for a message bubble
- */
+   * Function to create a message bubble
+   * @param {CometChat.BaseMessage} m - The message for which the bubble needs to be created
+   * @param {number} i - The index of the message
+   * @returns {JSX.Element} - Returns JSX.Element for a message bubble
+   */
   const getMessageBubble: (m: CometChat.BaseMessage, i: number) => JSX.Element = useCallback(
     (m: CometChat.BaseMessage, i: number) => {
       let _alignment = setBubbleAlignment(m);
@@ -3995,17 +4024,21 @@ const { debouncedCallback: debouncedUpdateVisibleArea } = useDebouncedCallback(
           marginLeft: "auto"
         };
       }
+      const moderationStatus = shouldIncludeBottomViewHeight(m)
+        ? CometChatUIKitConstants.moderationStatus.disapproved
+        : CometChatUIKitConstants.moderationStatus.approved;
+
       const isHighlighted = goToMessageId === String(m.getId());
       return (
         <>
           {getMessageBubbleDateHeader(m, i)}
 
           <div
-            className={isHighlighted ? 'cometchat-message-list__bubble-highlight' : ''}
+            className={isHighlighted ? "cometchat-message-list__bubble-highlight" : moderationStatus ? `cometchat-message-list__bubble-moderation-${moderationStatus}` : ""}
             style={{
-            width: "100%",
-            ...(m.getSender() ? {} : style)
-          }}
+              width: "100%",
+              ...(m.getSender() ? {} : style)
+            }}
             key={m.getId()}>
             {getBubbleWrapper(m)
               ? getBubbleWrapper(m)
@@ -4021,8 +4054,6 @@ const { debouncedCallback: debouncedUpdateVisibleArea } = useDebouncedCallback(
       goToMessageId
     ]
   );
-
-
   /**
  * Function to get the footer of the message list
  * @returns {JSX.Element} - Returns JSX.Element for the footer of the message list
@@ -4045,9 +4076,9 @@ const { debouncedCallback: debouncedUpdateVisibleArea } = useDebouncedCallback(
   ]);
 
   /**
- * Function to get the header of the message list
- * @returns {JSX.Element} - Returns JSX.Element for the header of the message list
- */
+   * Function to get the header of the message list
+   * @returns {JSX.Element} - Returns JSX.Element for the header of the message list
+   */
   const getMessageListHeader: () => JSX.Element = useCallback(() => {
     return (
       <>
@@ -4060,10 +4091,10 @@ const { debouncedCallback: debouncedUpdateVisibleArea } = useDebouncedCallback(
     showHeaderPanelView
   ]);
   /**
- * Function to get the thread count of a message
- * @param {CometChat.BaseMessage} message - The message for which the thread count needs to be fetched
- * @returns {string} - Returns the thread count of the message as a string
- */
+   * Function to get the thread count of a message
+   * @param {CometChat.BaseMessage} message - The message for which the thread count needs to be fetched
+   * @returns {string} - Returns the thread count of the message as a string
+   */
   const getThreadCount: (message: CometChat.BaseMessage) => string = (message: CometChat.BaseMessage) => {
     const replyCount = message?.getReplyCount() || 0;
     const suffix = replyCount === 1 ? getLocalizedString("message_list_thread_reply") : getLocalizedString("message_list_thread_replies");
@@ -4084,9 +4115,9 @@ const { debouncedCallback: debouncedUpdateVisibleArea } = useDebouncedCallback(
   }, [getMessageBubble]);
 
   /**
- * Function to get the current state of the message list
- * @returns {States} - Returns the current state of the message list
- */
+   * Function to get the current state of the message list
+   * @returns {States} - Returns the current state of the message list
+   */
   const getCurrentMessageListState: () => States = useCallback(() => {
     return messageListState
   }, [messageListState]);
@@ -4098,10 +4129,10 @@ const { debouncedCallback: debouncedUpdateVisibleArea } = useDebouncedCallback(
   };
 
   /**
- * Function to get the message template based on the message type and category
- * @param {CometChat.BaseMessage} selectedMessage - The message for which the template needs to be fetched
- * @returns {CometChatMessageTemplate} - Returns the template of the selected message
- */
+   * Function to get the message template based on the message type and category
+   * @param {CometChat.BaseMessage} selectedMessage - The message for which the template needs to be fetched
+   * @returns {CometChatMessageTemplate} - Returns the template of the selected message
+   */
   const getMessageTemplate: (selectedMessage: CometChat.BaseMessage) => CometChatMessageTemplate = (selectedMessage: CometChat.BaseMessage) => {
     return messagesTypesMap[
       `${selectedMessage?.getCategory() + "_" + selectedMessage?.getType()}`
@@ -4186,12 +4217,11 @@ const { debouncedCallback: debouncedUpdateVisibleArea } = useDebouncedCallback(
           </div> : null}
 
           <div
-            className='cometchat-message-list__header'
+            className="cometchat-message-list__header"
           >
             {getMessageListHeader()}
           </div>
-          <div className='cometchat-message-list__body
-'
+          <div className="cometchat-message-list__body"
           >
             <CometChatList
               showShimmerOnTop={isAgentChat && !parentMessageId ? false :  !hasCompletedInitialLoad}
@@ -4213,12 +4243,10 @@ const { debouncedCallback: debouncedUpdateVisibleArea } = useDebouncedCallback(
               scrollToBottom={isAgentChat ? isFirstScroll : scrollListToBottom}
               scrollToEnd={isAgentChat ? scrollToEnd : false}
             />
-
-
           </div>
           { !isMessageInProgress && showScrollToBottom && hasCompletedInitialLoad && hasVisibleArea ? (
             <div
-              className='cometchat-message-list__message-indicator'>
+              className="cometchat-message-list__message-indicator">
               <CometChatButton
                 text={newMessageTextRef.current}
                 iconURL={downArrow}
@@ -4234,16 +4262,14 @@ const { debouncedCallback: debouncedUpdateVisibleArea } = useDebouncedCallback(
                   }
                 }}
               ></CometChatButton>
-
             </div>
           ) : null}
           <div
-            className='cometchat-message-list__footer'
+            className="cometchat-message-list__footer"
           >
             {getMessageListFooter()}
           </div>
           {showToast ? <CometChatToast text={toastTextRef.current} onClose={closeToast} /> : null}
-
         </div>
       </div>
       {showCallScreen ? ongoingCallView : null}
@@ -4264,7 +4290,6 @@ const { debouncedCallback: debouncedUpdateVisibleArea } = useDebouncedCallback(
           />
         </div>
       )}
-    
     </>
   );
 };

@@ -19,6 +19,7 @@ type Args = {
   mySetAddToMsgInputText: (text: string) => void;
   errorHandler: (error: unknown, source?: string) => void;
   pasteHtmlAtCaret: (text: string) => void;
+  renderSanitizedHtml: (text: string) => void;
   textFormatters: Array<CometChatTextFormatter>;
   disableMentions: boolean;
   textFormatterArray: Array<CometChatTextFormatter>;
@@ -69,6 +70,7 @@ export function useCometChatMessageComposer(args: Args) {
     mySetAddToMsgInputText,
     errorHandler,
     pasteHtmlAtCaret,
+    renderSanitizedHtml,
     propsText,
     text,
     disableMentions,
@@ -151,13 +153,13 @@ export function useCometChatMessageComposer(args: Args) {
                     textMessageToEdit: object.message,
                   });
                   emptyInputField()
-                  if (pasteHtmlAtCaret) {
+                  if (renderSanitizedHtml) {
                     const sel = getCurrentWindow()?.getSelection();
                     setSelection(sel);
                     let finalText: string | void = object.message.getText();
                     if (textFormatterArray && textFormatterArray.length) {
                       for (let i = 0; i < textFormatterArray.length; i++) {
-                        if (textFormatterArray[i] instanceof CometChatMentionsFormatter && (textFormatterArray[i] as CometChatMentionsFormatter).getCometChatUserGroupMembers()?.length <= 0) {
+                        if (textFormatterArray[i] instanceof CometChatMentionsFormatter) {
                           (textFormatterArray[i] as CometChatMentionsFormatter).setCometChatUserGroupMembers(object.message.getMentionedUsers())
                         }
 
@@ -178,7 +180,7 @@ export function useCometChatMessageComposer(args: Args) {
                         );
                       }
                     }
-                    pasteHtmlAtCaret(finalText as string)
+                    renderSanitizedHtml(finalText as string)
                   }
                 }
                 if ((object.status === MessageStatus.success &&
@@ -244,7 +246,8 @@ export function useCometChatMessageComposer(args: Args) {
       dispatch,
       textInputRef,
       mentionsFormatterInstanceId,
-      text
+      text,
+      textFormatterArray
     ]
   );
   /**

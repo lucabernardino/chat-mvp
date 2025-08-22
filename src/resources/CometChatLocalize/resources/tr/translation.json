@@ -15,6 +15,7 @@
     "calls_unanswered_call": "Cevapsız Arama",
     "calls_incoming_call": "Gelen Arama",
     "calls_busy_call": "Meşgul Arama",
+    "moderation_block_message": "Mesajınız moderasyon politikaları nedeniyle engellendi",
     "message_list_join_call": "Katıl",
     "message_list_voice_call": "Sesli arama",
     "message_list_video_call": "Görüntülü arama",

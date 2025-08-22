@@ -15,6 +15,7 @@
     "calls_unanswered_call": "Meg nem válaszolt hívás",
     "calls_incoming_call": "Bejövő hívás",
     "calls_busy_call": "A vonal foglalt",
+    "moderation_block_message": "Üzenetét moderálási irányelvek miatt blokkolták",
     "message_list_join_call": "Csatlakozás",
     "message_list_voice_call": "Hanghívás",
     "message_list_video_call": "Videóhívás",

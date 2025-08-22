@@ -54,27 +54,12 @@
 
 .cometchat-ai-assistant-message-bubble__code-block {
   max-height: 300px;
-  overflow: scroll;
+  overflow: auto;
   border: 1px solid var(--cometchat-border-color-default);
+  width: 100%;
 }
 
-@media (min-width: 620px) and (max-width: 780px) {
-  .cometchat-ai-assistant-message-bubble__code-block {
-    max-width: 600px;
-  }
-}
 
-@media (min-width: 480px) and (max-width: 619px) {
-  .cometchat-ai-assistant-message-bubble__code-block {
-    max-width: 400px;
-  }
-}
-
-@media (min-width: 320px) and (max-width: 479px) {
-  .cometchat-ai-assistant-message-bubble__code-block {
-    max-width: 320px;
-  }
-}
 
 .cometchat-ai-assistant-message-bubble *:not(pre *) {
   color: var(--cometchat-text-color-primary);
@@ -83,4 +68,51 @@
 }
 .cometchat-ai-assistant-message-bubble .cometchat-ai-assistant-message-bubble__code-block,.cometchat-ai-assistant-message-bubble .cometchat-ai-assistant-message-bubble__code-block *{
   font-size: 14px;
+}
+
+.cometchat-ai-assistant-message-bubble__code-block::-webkit-scrollbar {
+  width: 0px;
+  height: 8px;
+  background: transparent;
+}
+
+.cometchat-ai-assistant-message-bubble__code-block::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.cometchat-ai-assistant-message-bubble__code-block::-webkit-scrollbar-thumb {
+  background: var(--cometchat-icon-color-secondary);
+  border-radius: var(--cometchat-radius-2);
+}
+
+.cometchat-ai-assistant-message-bubble table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: auto;
+  display: block;
+  overflow-x: auto;
+}
+
+.cometchat-ai-assistant-message-bubble th,
+.cometchat-ai-assistant-message-bubble td {
+  padding: var(--cometchat-padding-2);
+  border: 1px solid var(--cometchat-border-color-light);
+  text-align: left;
+  word-break: break-word; /* prevents text overflow in cells */
+  min-width: 100px;
+}
+
+.cometchat-ai-assistant-message-bubble table::-webkit-scrollbar {
+  width: 0px;
+  height: 8px;
+  background: transparent;
+}
+
+.cometchat-ai-assistant-message-bubble table::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.cometchat-ai-assistant-message-bubble table::-webkit-scrollbar-thumb {
+  background: var(--cometchat-icon-color-secondary);
+  border-radius: var(--cometchat-radius-2);
 }

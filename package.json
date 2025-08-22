@@ -1,6 +1,6 @@
 {
   "name": "@cometchat/chat-uikit-react",
-  "version": "6.2.0",
+  "version": "6.2.1",
   "description": "Ready-to-use Chat UI Components for React(Javascript/Web)",
   "author": "CometChat",
   "exports": {
@@ -8,12 +8,13 @@
     "./css-variables.css": "./dist/styles/css-variables.css"
   },
   "dependencies": {
-    "@cometchat/chat-sdk-javascript": "^4.1.0",
+    "@cometchat/chat-sdk-javascript": "^4.1.1",
     "@rollup/plugin-json": "^6.1.0",
     "rxjs": "^7.8.1",
     "react-markdown": "^10.1.0",
     "@types/react-syntax-highlighter": "^15.5.13",
-    "react-syntax-highlighter": "^15.6.1"
+    "react-syntax-highlighter": "^15.6.1",
+    "remark-gfm": "^4.0.1"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

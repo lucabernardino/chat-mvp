@@ -1205,12 +1205,18 @@ export function CometChatConversations(props: ConversationsProps) {
       const receipt = MessageReceiptUtils.getReceiptStatus(conversation.getLastMessage())
       let messageStatus = "";
 
-      if (receipt === Receipts.sent) {
+      if (receipt === Receipts.error) {
+        messageStatus = "error";
+      }
+      else if (receipt === Receipts.sent) {
         messageStatus = "sent";
-      } else if (receipt === Receipts.delivered) {
+      }
+      else if (receipt === Receipts.delivered) {
         messageStatus = "delivered";
       } else if (receipt === Receipts.read) {
         messageStatus = "read";
+      } else {
+        messageStatus = "wait"
       }
 
 
@@ -1273,7 +1279,6 @@ export function CometChatConversations(props: ConversationsProps) {
         const isGroupSubtitle = lastMessage && conversation?.getConversationType() != CometChat.RECEIVER_TYPE.USER;
         const isMessageFromLoggedInUser = lastMessage?.getSender().getUid() == state.loggedInUser?.getUid();
         const getLastMessageSenderName = isMessageFromLoggedInUser ? getLocalizedString("conversation_subtitle_you_message") : lastMessage?.getSender().getName()
-
         let subtitle =
           ChatConfigurator.getDataSource().getLastConversationMessage(
             conversation,
@@ -1296,7 +1301,7 @@ export function CometChatConversations(props: ConversationsProps) {
             subtitle = getLocalizedString("conversation_subtitle_voice_call")
           }
         }
-
+        
         if (lastMessage &&
           lastMessage.getCategory() !==
           CometChatUIKitConstants.MessageCategory.call &&
@@ -1335,7 +1340,7 @@ export function CometChatConversations(props: ConversationsProps) {
             />
             <div
               className={`cometchat-conversations__subtitle-text`}
-              dangerouslySetInnerHTML={{ __html: preserveEntities(subtitle) }}
+              dangerouslySetInnerHTML={{ __html:  subtitle }}
             >
 
             </div>

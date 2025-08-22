@@ -144,31 +144,32 @@
     padding: var(--cometchat-padding-2, 8px) var(--cometchat-padding-2, 8px) var(--cometchat-padding-3, 12px) var(--cometchat-padding-2, 8px);
     ;
 }
-.cometchat-fullscreen-viewer .cometchat-fullscreen-viewer__body-image{
-   max-width: 100%;
-   max-height: 84vh;
-   object-fit: contain;
+.cometchat-fullscreen-viewer .cometchat-fullscreen-viewer__body-image {
+    max-width: 100%;
+    max-height: 84vh;
+    object-fit: contain;
 }
 
 .cometchat-message-bubble__audio-call .cometchat-call-bubble .cometchat-call-bubble__body {
     padding: 0;
 }
-.cometchat-message-bubble__thread-view-replies .cometchat-button{
+.cometchat-message-bubble__thread-view-replies .cometchat-button {
     align-items: flex-end;
-    
+
 }
-.cometchat-reactions-info-wrapper > .cometchat{
-    width:fit-content;
-}
-.cometchat-message-bubble__thread-view-replies .cometchat-button .cometchat-button__text{
-    margin-bottom: -2px;
-}
-.cometchat-message-bubble__body-footer-view .cometchat-reactions  .cometchat{
+.cometchat-reactions-info-wrapper>.cometchat {
     width: fit-content;
 }
-.cometchat-reactions  .cometchat-popover,.cometchat-reactions  .cometchat-popover__button{
-width: fit-content;
+.cometchat-message-bubble__thread-view-replies .cometchat-button .cometchat-button__text {
+    margin-bottom: -2px;
 }
+.cometchat-message-bubble__body-footer-view .cometchat-reactions .cometchat {
+    width: fit-content;
+}
+.cometchat-reactions .cometchat-popover, .cometchat-reactions .cometchat-popover__button{
+    width: fit-content;
+}
+
 /* Date header inside message list */
 .cometchat-message-list__date-header {
     position: absolute;
@@ -416,6 +417,20 @@ width: fit-content;
 
 }
 
+.cometchat-message-list__bubble-moderation-disapproved .cometchat-message-bubble__body {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+
+.cometchat-message-list__bubble-moderation-disapproved .cometchat-message-bubble__body-content-view .cometchat-video-bubble{
+    min-width: 240px;
+}
+
+.cometchat-message-list__bubble-moderation-disapproved .cometchat-message-bubble__body-content-view .cometchat-image-bubble{
+    min-width: 240px;
+}
+
 /* Status view for "delivered" receipt inside message bubble */
 .cometchat-message-bubble__status-info-view-receipts-delivered .cometchat-message-list__receipt {
     -webkit-mask: url("../../assets/status_delivered.svg") center center no-repeat;
@@ -429,7 +444,7 @@ width: fit-content;
     -webkit-mask: url("../../assets/status_read.svg") center center no-repeat;
     -webkit-mask-size: contain;
     background: var(--cometchat-message-seen-color,#56E8A7);
-    
+
 
 }
 
@@ -665,7 +680,7 @@ width: fit-content;
 
 }
 
- /**
+/**
  * Setting transparent background and gap for sticker message bubble
  */
 .cometchat-message-bubble__body-wrapper .cometchat-message-bubble__sticker-message {
@@ -709,7 +724,7 @@ width: fit-content;
 .cometchat-message-information__popup-wrapper {
     display: flex;
     position: fixed;
-    z-index: 2;
+    z-index: 3;
     left: 0;
     top: 0;
     width: 100%;

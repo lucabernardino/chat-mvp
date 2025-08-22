@@ -1391,13 +1391,18 @@ export function useCometChatSearchConversationsList(props: UseCometChatSearchCon
 
       const receipt = MessageReceiptUtils.getReceiptStatus(conversation.getLastMessage());
       let messageStatus = "";
-
-      if (receipt === Receipts.sent) {
+      if (receipt === Receipts.error) {
+        messageStatus = "error";
+      }
+      else if (receipt === Receipts.sent) {
         messageStatus = "sent";
       } else if (receipt === Receipts.delivered) {
         messageStatus = "delivered";
       } else if (receipt === Receipts.read) {
         messageStatus = "read";
+      }
+      else {
+        messageStatus = "wait"
       }
 
       return (
@@ -1412,14 +1417,7 @@ export function useCometChatSearchConversationsList(props: UseCometChatSearchCon
       return null;
     }
   }
-
-  const preserveEntities = (input: string): string => {
-    return input
-      .replace(/&/g, "&amp;")
-      .replace(/&(?!amp;|lt;|gt;|quot;|#39;|#\d+;)/g, "&amp;")
-      .replace(/&amp;(?!lt;|gt;|quot;|#39;|#\d+;)/g, "&amp;");
-  };
-
+  
   /**
    * Determines the icon class name based on the type of a call message.
    */
@@ -1594,7 +1592,7 @@ export function useCometChatSearchConversationsList(props: UseCometChatSearchCon
             />
             <div
               className={`cometchat-search__conversations-subtitle-text`}
-              dangerouslySetInnerHTML={{ __html: preserveEntities(subtitle) }}
+              dangerouslySetInnerHTML={{ __html: subtitle }}
             />
           </div>
         );

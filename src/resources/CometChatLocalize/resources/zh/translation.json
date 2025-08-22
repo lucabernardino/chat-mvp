@@ -15,6 +15,7 @@
     "calls_unanswered_call": "未接听",
     "calls_incoming_call": "来电",
     "calls_busy_call": "通话中",
+    "moderation_block_message": "您的消息因审核政策而被屏蔽",
     "message_list_join_call": "加入",
     "message_list_voice_call": "语音通话",
     "message_list_video_call": "视频通话",

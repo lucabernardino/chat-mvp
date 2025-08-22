@@ -59,7 +59,6 @@ interface AIAssistantChatProps {
 const MessageComposerView = React.memo(({ user, parentMessageId, startNewChat, onError, setParentMessageId }: MessageComposerViewProps) => {
     const [isButtonDisabled, setIsButtonDisabled] = useState(true);
     const [isStreaming, setIsStreaming] = useState(false);
-    
     useEffect(() => {
         const streamSubscription = streamingState$.subscribe(setIsStreaming);
         const ccMessageSent = CometChatMessageEvents.ccMessageSent.subscribe((data: IMessages) => {
@@ -70,12 +69,15 @@ const MessageComposerView = React.memo(({ user, parentMessageId, startNewChat, o
                 setIsStreaming(true)
             }
             else {
-                setIsStreaming(false)
+                setIsStreaming(false);
             }
         })
         return () => {
              streamSubscription?.unsubscribe();
              ccMessageSent?.unsubscribe();
+             setIsStreaming(false);
+             setIsButtonDisabled(true);
+             stopStreamingMessage();
         };
     }, [user, parentMessageId, setParentMessageId]);
 

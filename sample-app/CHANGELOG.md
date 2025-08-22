@@ -1,3 +1,19 @@
+## [6.2.1] - 22-08-2025
+
+## New
+- None
+
+## Enhancements
+- None
+
+## Fixes
+- Resolved a bug where the search input remained active even when the **Message Information** modal was open.
+- User detail shimmer was missing in the call log detail view.
+- Fixed an issue where the **Messages Search** component did not close if its conversation was deleted from the details page.
+
+## Removals
+- None
+
 ## [6.2.0] - 14-08-2025
 
 ## New

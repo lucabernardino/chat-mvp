@@ -15,6 +15,7 @@
     "calls_unanswered_call": "Chamada não atendida",
     "calls_incoming_call": "Chamada recebida",
     "calls_busy_call": "Chamada ocupada",
+    "moderation_block_message": "Sua mensagem foi bloqueada devido às políticas de moderação",
     "message_list_join_call": "Entrar",
     "message_list_voice_call": "Chamada de voz",
     "message_list_video_call": "Chamada de vídeo",

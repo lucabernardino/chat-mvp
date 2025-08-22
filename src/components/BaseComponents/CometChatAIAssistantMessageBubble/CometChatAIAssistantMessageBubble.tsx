@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneDark, oneLight } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import remarkGfm from 'remark-gfm';
 
 interface CometChatAIAssistantMessageBubbleProps {
   message?: CometChat.AIAssistantMessage
@@ -33,8 +34,7 @@ const CometChatAIAssistantMessageBubble: React.FC<CometChatAIAssistantMessageBub
         className='cometchat-ai-assistant-message-bubble'
       >
         <ReactMarkdown
-
-
+          remarkPlugins={[remarkGfm]}
           children={message?.getAssistantMessageData()?.getText() || ''}
           components={{
             code({ node, className, children, ...props }: any) {

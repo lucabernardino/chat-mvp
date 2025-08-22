@@ -131,8 +131,11 @@ const CometChatContextMenu = (props: ContextMenuProps) => {
     const getMenu = useCallback((menu: Array<CometChatActionsIcon | CometChatActionsView | CometChatOption>, isSubMenu: boolean) => {
         if (menu.length > 0) {
             return menu?.map((menuData, index: number) => {
+                // Don't apply outer menu wrapper class for:
+                // - First item in main menu
+                // - Menus with fewer than 3 items
                 const className =
-                index == 0 && !isSubMenu
+                (index == 0 || menu.length <= 2) && !isSubMenu
                     ? ""
                     : "cometchat-menu-list__menu";
                 let menuButton, moreButton = null;

@@ -55,6 +55,7 @@
 @import url('./CometChatThreadHeader.css');
 @import url('./CometChatToast.css');
 @import url('./CometChatSearch.css');
+@import url('./CometChatModerationView.css');
 @import url('./CometChatAIAssistantChat.css');
 @import url('./CometChatAIAssistantMessageBubble.css');
 @import url('./CometChatStreamMessageBubble.css');

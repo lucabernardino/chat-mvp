@@ -15,6 +15,7 @@
     "calls_unanswered_call": "응답 없는 통화",
     "calls_incoming_call": "수신 통화",
     "calls_busy_call": "통화 중",
+    "moderation_block_message": "귀하의 메시지는 관리 정책으로 인해 차단되었습니다",
     "message_list_join_call": "참여",
     "message_list_voice_call": "음성 통화",
     "message_list_video_call": "영상 통화",

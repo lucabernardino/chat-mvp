@@ -27,8 +27,11 @@ const CometChatMediaRecorder: React.FC<MediaRecorderProps> = ({
     const counterRunning = useRef<boolean>(true);
     const createMedia = useRef<boolean>(false);
     const hasInitializedRef = useRef(false);
+    const userCancelledRecording = useRef<boolean>(false);
     const [hasError, setHasError] = useState(false);
-
+    const [permissionState, setPermissionState] = useState<PermissionState>('prompt');
+    const permissionStatusRef = useRef<PermissionStatus | null>(null);
+    
 
   function pauseActiveMedia(){
      if (currentAudioPlayer.instance && currentAudioPlayer.setIsPlaying) {
@@ -40,15 +43,45 @@ const CometChatMediaRecorder: React.FC<MediaRecorderProps> = ({
         currentMediaPlayer.video.pause();
       }
   }
+
+      // Enhanced permission check function
+    const checkMicrophonePermission = async (): Promise<PermissionState> => {
+        try {
+            const permission = await navigator.permissions.query({ name: 'microphone' as PermissionName });
+            return permission.state;
+        } catch (error) {
+            // Fallback for browsers that don't support permissions API
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                stream.getTracks().forEach(track => track.stop());
+                return 'granted';
+            } catch (err: any) {
+                if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+                    return 'denied';
+                }
+                return 'prompt';
+            }
+        }
+    };
     useEffect(() => {
+        let timeoutId: NodeJS.Timeout | null = null;
+
         if (autoRecording) {
-            handleStartRecording();
+            timeoutId = setTimeout(() => {
+                handleStartRecording();
+            }, 100);
         }
         return () => {
+            if (timeoutId) {
+                clearTimeout(timeoutId);
+            }
             handleStopRecording();
             clearInterval(timerIntervalRef.current);
             clearStream();
             hasInitializedRef.current = false;
+            if (permissionStatusRef.current) {
+                permissionStatusRef.current.onchange = null;
+            }
         };
     }, []);
 
@@ -95,6 +128,25 @@ const CometChatMediaRecorder: React.FC<MediaRecorderProps> = ({
                     audioChunks.current = [];
                 }
             };
+                        
+            // Firefox-specific: Add error handler for stream loss
+            audioRecorder.onerror = (event: any) => {
+                console.error('MediaRecorder error:', event.error);
+                setHasError(true);
+                setIsRecording(false);
+                setIsPaused(false);
+                clearStream();
+                hasInitializedRef.current = false;
+            };
+
+            // Add stream track ended handler for permission revocation
+            stream.getTracks().forEach(track => {
+                track.onended = () => {
+                    setHasError(true);
+                    setIsRecording(false);
+                };
+            });
+            
             audioRecorder.start();
             setMediaRecorder(audioRecorder);
             setHasError(false);
@@ -102,6 +154,8 @@ const CometChatMediaRecorder: React.FC<MediaRecorderProps> = ({
         } catch (error: any) {
             if (error.name === "NotAllowedError" || error.name === "PermissionDeniedError") {
                 setHasError(true);
+                setPermissionState('denied');
+
             } 
             hasInitializedRef.current = false;
             return null;
@@ -115,14 +169,29 @@ const CometChatMediaRecorder: React.FC<MediaRecorderProps> = ({
         if (!hasAudioInput) {
             return;
         }
+        
+        // Check permission state before starting
+        const currentPermissionState = await checkMicrophonePermission();
+        if (currentPermissionState === 'denied') {
+            setHasError(true);
+            setPermissionState('denied');
+            return;
+        }
         counterRunning.current = true;
         createMedia.current = true;
+        const recorder = mediaRecorder as MediaRecorder;
+
         if (isPaused) {
-            currentMediaPlayer.mediaRecorder = mediaRecorder as MediaRecorder;
-            (mediaRecorder as MediaRecorder)?.resume();
-            setIsPaused(false);
-            startTimer();
-            setIsRecording(true);
+            currentMediaPlayer.mediaRecorder = recorder;
+            try {
+                recorder?.resume();
+                setIsPaused(false);
+                startTimer();
+                setIsRecording(true);
+            } catch (error) {
+                console.error("Failed to resume recording:", error);
+                setHasError(true);
+            }
         } else {
             reset();
             const recorder = await initMediaRecorder();
@@ -132,6 +201,10 @@ const CometChatMediaRecorder: React.FC<MediaRecorderProps> = ({
                 startTimer();
                 setIsRecording(true);
                 setHasError(false);
+                setPermissionState('granted');
+            } else {
+                setIsRecording(false);
+                createMedia.current = false;
             }
         }
     };
@@ -150,10 +223,9 @@ const CometChatMediaRecorder: React.FC<MediaRecorderProps> = ({
         pauseActiveMedia();
         currentMediaPlayer.mediaRecorder = null;
         createMedia.current = false;
+        userCancelledRecording.current = true;
         onCloseRecording?.();
         reset();
-        hasInitializedRef.current = false;
-
     };
 
     const handleSubmitRecording = () => {
@@ -176,9 +248,15 @@ const CometChatMediaRecorder: React.FC<MediaRecorderProps> = ({
     };
 
     const clearStream = () => {
-        streamRef.current?.getTracks().forEach((track) => track.stop());
-        streamRef.current = undefined;
+        if (streamRef.current) {
+            streamRef.current.getTracks().forEach((track) => {
+                track.stop();
+                track.onended = null;
+            });
+            streamRef.current = undefined;
+        }
     };
+
 
     const formatTime = (timeInSeconds: number): string => {
         const minutes = Math.floor(timeInSeconds / 60);
@@ -197,29 +275,61 @@ const CometChatMediaRecorder: React.FC<MediaRecorderProps> = ({
         hasInitializedRef.current = false;        
     }
     useEffect(() => {
-        let permissionStatus: PermissionStatus;
-        navigator.permissions.query({ name: 'microphone' as PermissionName }).then((status) => {
-            permissionStatus = status;
-            status.onchange = () => {
-                if (status.state === "granted") {
-                    setHasError(false);
-                    if (!mediaPreviewUrl) {
-                        handleStartRecording();
+        const setupPermissionMonitoring = async () => {
+            try {
+                const permission = await navigator.permissions.query({ name: 'microphone' as PermissionName });
+                permissionStatusRef.current = permission;
+                const recorder = mediaRecorder as MediaRecorder;
+
+                permission.onchange = async () => {
+                    const newState = permission.state;
+                    setPermissionState(newState);
+                    if (newState === "granted") {
+                        setHasError(false);
+                    } else if (newState === "denied") {
+                        setHasError(true);
+                        setIsRecording(false);
+                        setIsPaused(false);
+                        clearStream();
+                        stopTimer();
+                        
+                        if (mediaRecorder) {
+                            try {
+                                if (recorder.state !== 'inactive') {
+                                    recorder.stop();
+                                }
+                            } catch (error) {
+                                console.error('Error stopping recorder on permission denial:', error);
+                            }
+                            setMediaRecorder(undefined);
+                        }
                     }
-                } else if (status.state === "denied") {
-                    if (!mediaPreviewUrl) {
-                        handleCloseRecording();
-                    }
-                    setHasError(true);
-                }
-            };
-        });
-        return () => {
-            if (permissionStatus) {
-                permissionStatus.onchange = null;
+                };
+            } catch (error) {
+                console.error('Permission monitoring setup failed:', error);
             }
         };
-    }, [mediaPreviewUrl]);
+        
+        setupPermissionMonitoring();
+        
+        return () => {
+            if (permissionStatusRef.current) {
+                permissionStatusRef.current.onchange = null;
+            }
+        };
+    }, []);
+    // Separate effect to handle auto-recording when permission is granted
+    useEffect(() => {
+        if (permissionState === 'granted' && !hasError && !mediaPreviewUrl && !isRecording && autoRecording && !userCancelledRecording.current) {
+            // Small delay to ensure state is updated
+            const timer = setTimeout(() => {
+                handleStartRecording();
+            }, 100);
+            
+            return () => clearTimeout(timer);
+        }
+    }, [permissionState, hasError, mediaPreviewUrl, isRecording, autoRecording]);
+
     return (
         <div className="cometchat" style={{
             height: "inherit",

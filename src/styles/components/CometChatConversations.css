@@ -56,6 +56,22 @@
   mask-size: contain;
 }
 
+
+.cometchat-conversations__subtitle-receipts-wait{
+  -webkit-mask: url("../../assets/status_sending.svg") center center no-repeat;
+  mask: url("../../assets/status_sending.svg") center center no-repeat;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+}
+
+.cometchat-conversations__subtitle-receipts-error{
+  -webkit-mask: url("../../assets/error_icon.svg") center center no-repeat;
+  mask: url("../../assets/error_icon.svg") center center no-repeat;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  background-color: var(--cometchat-error-color);
+}
+
 .cometchat-conversations__subtitle-receipts-delivered{
   -webkit-mask: url("../../assets/conversations_delivered.svg") center center no-repeat;
   mask: url("../../assets/conversations_delivered.svg") center center no-repeat;

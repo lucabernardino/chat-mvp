@@ -15,6 +15,7 @@
     "calls_unanswered_call": "Appel sans réponse",
     "calls_incoming_call": "Appel entrant",
     "calls_busy_call": "Appel occupé",
+    "moderation_block_message": "Votre message a été bloqué en raison des politiques de modération",
     "message_list_join_call": "Rejoindre",
     "message_list_voice_call": "Appel vocal",
     "message_list_video_call": "Appel vidéo",

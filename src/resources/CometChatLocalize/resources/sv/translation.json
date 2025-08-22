@@ -15,6 +15,7 @@
     "calls_unanswered_call": "Samtal obesvarat",
     "calls_incoming_call": "Inkommande samtal",
     "calls_busy_call": "Samtal upptaget",
+    "moderation_block_message": "Ditt meddelande blockerades på grund av modereringspolicyer",
     "message_list_join_call": "Gå med",
     "message_list_voice_call": "Röst samtal",
     "message_list_video_call": "Videosamtal",

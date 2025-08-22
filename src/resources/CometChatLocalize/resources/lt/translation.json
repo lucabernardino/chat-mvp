@@ -15,6 +15,7 @@
     "calls_unanswered_call": "Skambutis nepriimtas",
     "calls_incoming_call": "Atvykstamas skambutis",
     "calls_busy_call": "Skambutis užimtas",
+    "moderation_block_message": "Jūsų žinutė buvo užblokuota dėl moderavimo politikos",
     "message_list_join_call": "Prisijungti",
     "message_list_voice_call": "Balsinis skambutis",
     "message_list_video_call": "Vaizdo skambutis",

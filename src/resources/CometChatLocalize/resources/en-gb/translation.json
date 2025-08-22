@@ -15,6 +15,7 @@
     "calls_unanswered_call": "Call Unanswered",
     "calls_incoming_call": "Incoming Call",
     "calls_busy_call": "Call Busy",
+    "moderation_block_message":"Your message was blocked due to moderation policies",
     "message_list_join_call": "Join",
     "message_list_voice_call": "Voice call",
     "message_list_video_call": "Video call",

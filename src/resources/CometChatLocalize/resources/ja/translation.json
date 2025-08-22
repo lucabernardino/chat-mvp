@@ -15,6 +15,7 @@
     "calls_unanswered_call": "応答のない通話",
     "calls_incoming_call": "着信中の通話",
     "calls_busy_call": "通話中",
+    "moderation_block_message": "あなたのメッセージはモデレーションポリシーによりブロックされました",
     "message_list_join_call": "参加",
     "message_list_voice_call": "音声通話",
     "message_list_video_call": "ビデオ通話",

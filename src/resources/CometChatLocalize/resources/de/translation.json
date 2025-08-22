@@ -15,6 +15,7 @@
     "calls_unanswered_call": "Anruf unbeantwortet",
     "calls_incoming_call": "Eingehender Anruf",
     "calls_busy_call": "Anruf besetzt",
+    "moderation_block_message": "Ihre Nachricht wurde aufgrund der Moderationsrichtlinien blockiert",
     "message_list_join_call": "Beitreten",
     "message_list_voice_call": "Sprachanruf",
     "message_list_video_call": "Videoanruf",

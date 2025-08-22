@@ -21,6 +21,7 @@ interface MessageBubbleProps {
   threadView?: JSX.Element | null;
   footerView?: JSX.Element | null;
   statusInfoView?: JSX.Element | null;
+  includeBottomViewHeight?: boolean;
   options: (CometChatActionsIcon | CometChatActionsView)[];
   alignment: MessageBubbleAlignment;
   topMenuSize?: number,
@@ -43,6 +44,7 @@ const CometChatMessageBubble = (props: MessageBubbleProps) => {
     threadView = null,
     footerView = null,
     statusInfoView = null,
+    includeBottomViewHeight = false,
     options = [],
     alignment = MessageBubbleAlignment.right,
     topMenuSize = 2,
@@ -217,7 +219,7 @@ const CometChatMessageBubble = (props: MessageBubbleProps) => {
         style={{
           transition: isHovering ? 'opacity 0.2s ease-in-out' : 'opacity 0s ease-in-out',
           ...visibilityStyles,
-          ...(isHovering && (footerView || bottomView || threadView ) && style)
+          ...(isHovering && (footerView || (!includeBottomViewHeight && bottomView) || threadView ) && style)
         }}
       >
         <CometChatContextMenu

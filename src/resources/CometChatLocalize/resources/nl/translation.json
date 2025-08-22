@@ -15,6 +15,7 @@
     "calls_unanswered_call": "Oproep Niet Beantwoord",
     "calls_incoming_call": "Binnenkomende Oproep",
     "calls_busy_call": "Oproep Bezet",
+    "moderation_block_message": "Je bericht werd geblokkeerd vanwege het moderatiebeleid",
     "message_list_join_call": "Deelnemen",
     "message_list_voice_call": "Gesprek",
     "message_list_video_call": "Videobel",

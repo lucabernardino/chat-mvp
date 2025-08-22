@@ -15,6 +15,7 @@
     "calls_unanswered_call": "कॉल का जवाब नहीं दिया गया",
     "calls_incoming_call": "इनकमिंग कॉल",
     "calls_busy_call": "कॉल व्यस्त",
+    "moderation_block_message": "आपका संदेश मोडरेशन नीतियों के कारण ब्लॉक कर दिया गया",
     "message_list_join_call": "शामिल हों",
     "message_list_voice_call": "वॉइस कॉल",
     "message_list_video_call": "वीडियो कॉल",

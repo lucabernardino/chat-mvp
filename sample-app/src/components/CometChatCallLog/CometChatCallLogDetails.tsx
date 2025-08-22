@@ -13,7 +13,6 @@ export const CometChatCallDetails = (props: { selectedItem: any, onBack?: () => 
     const [activeTab, setActiveTab] = useState("Participants");
     const [user, setUser] = useState<CometChat.User>();
     const [subtitleText, setSubtitleText] = useState<string>();
-
     function verifyCallUser(call: any, loggedInUser: CometChat.User) {
         if (call.getInitiator().getUid() === loggedInUser.getUid()) {
             return call.getReceiver();
@@ -70,6 +69,27 @@ export const CometChatCallDetails = (props: { selectedItem: any, onBack?: () => 
     </div>
     }
 
+    const getLoadingView = () => {
+        return (
+            <div className='cometchat-call-logs-details__header__shimmer__shimmer'>
+              {[...Array(1)].map((_, index) => (
+                <div key={index} className='cometchat-call-logs-details__header__shimmer-item'>
+                  <div className='cometchat-call-logs-details__header__shimmer-item-avatar'></div>
+                  <div className='cometchat-call-logs-details__header__shimmer-item-body'>
+                    <div className='cometchat-call-logs-details__header__shimmer-item-body-title-wrapper'>
+                      <div className='cometchat-call-logs-details__header__shimmer-item-body-title'></div>
+                      <div className='cometchat-call-logs-details__shimmer-item-body-subtitle'></div>
+                    </div>
+    
+                    <div className='cometchat-call-logs-details__header__shimmer-item-body-tail'></div>
+                    <div className='cometchat-call-logs-details__header__shimmer-item-body-tail'></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          );
+      };
+
     return (
         <div className="cometchat-call-log-details">
             <div className="cometchat-call-log-details__header">
@@ -77,9 +97,9 @@ export const CometChatCallDetails = (props: { selectedItem: any, onBack?: () => 
                 {getLocalizedString("call_details")}
             </div>
             <div className="cometchat-call-log-details__call-log-item">
-            <CometChatListItem avatarName={user?.getName()}
+            {user ? <CometChatListItem avatarName={user?.getName()}
                         avatarURL={user?.getAvatar()}
-                        title={user?.getName() || ""} subtitleView={getSubtitleView()}  trailingView={getTrailingView()}/>
+                        title={user?.getName() || ""} subtitleView={getSubtitleView()}  trailingView={getTrailingView()}/>: getLoadingView()}
             </div>
             <CometChatCallDetailsInfo call={selectedItem} />
             <div className="cometchat-call-log-details__tabs">

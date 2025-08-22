@@ -15,6 +15,7 @@
     "calls_unanswered_call": "Звонок не принят",
     "calls_incoming_call": "Входящий звонок",
     "calls_busy_call": "Занято",
+    "moderation_block_message": "Ваше сообщение было заблокировано из-за политик модерации",
     "message_list_join_call": "Присоединиться",
     "message_list_voice_call": "Голосовой звонок",
     "message_list_video_call": "Видеозвонок",

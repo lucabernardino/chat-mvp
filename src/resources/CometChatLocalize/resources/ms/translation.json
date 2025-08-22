@@ -15,6 +15,7 @@
     "calls_unanswered_call": "Panggilan Tidak Dijawab",
     "calls_incoming_call": "Panggilan Masuk",
     "calls_busy_call": "Panggilan Sibuk",
+    "moderation_block_message": "Mesej anda telah disekat kerana dasar moderasi",
     "message_list_join_call": "Sertai",
     "message_list_voice_call": "Panggilan suara",
     "message_list_video_call": "Panggilan video",

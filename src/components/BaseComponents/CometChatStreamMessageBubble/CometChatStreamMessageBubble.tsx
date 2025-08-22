@@ -6,6 +6,7 @@ import { CometChatUIKitConstants } from '../../../constants/CometChatUIKitConsta
 import { getAIAssistantTools, IStreamData, messageStream, stopStreamingMessage, streamingState$ } from '../../../services/stream-message.service';
 import { getLocalizedString } from '../../../resources/CometChatLocalize/cometchat-localize';
 import CometChatErrorView from '../CometChatErrorView/CometChatErrorView';
+import remarkGfm from 'remark-gfm';
 interface CometChatStreamMessageBubbleProps {
   message?: CometChat.AIAssistantBaseEvent
 }
@@ -141,6 +142,7 @@ const CometChatStreamMessageBubble: React.FC<CometChatStreamMessageBubbleProps> 
 
         {fullMessage && (
           <ReactMarkdown
+            remarkPlugins={[remarkGfm]}
             children={fullMessage}
             components={{
               code({ node, className, children, ...props }: any) {
