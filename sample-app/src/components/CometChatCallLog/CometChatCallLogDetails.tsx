@@ -27,18 +27,18 @@ export const CometChatCallDetails = (props: { selectedItem: any, onBack?: () => 
             setSubtitleText("")
             return;
         }
-        setSubtitleText(user?.getStatus());
+        setSubtitleText(getLocalizedString(`call_logs_user_status_${user?.getStatus().toLowerCase()}`));
         CometChat.addUserListener(
             userListenerId,
             new CometChat.UserListener({
                 onUserOnline: (onlineUser: CometChat.User) => {
                     if (user?.getUid() === onlineUser.getUid()) {
-                        setSubtitleText(onlineUser?.getStatus())
+                        setSubtitleText(getLocalizedString(`call_logs_user_status_online`));
                     }
                 },
                 onUserOffline: (offlineUser: CometChat.User) => {
                     if (user?.getUid() === offlineUser?.getUid()) {
-                        setSubtitleText(offlineUser?.getStatus())
+                        setSubtitleText(getLocalizedString(`call_logs_user_status_offline`));
                     }
                 },
             })

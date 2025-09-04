@@ -3879,7 +3879,11 @@ const CometChatMessageList = (props: MessageListProps) => {
             messageSentAtDateTimeFormat,
             isAgentChat
             );
-        } else {
+        }  
+        else if (item.getCategory() === CometChatUIKitConstants.MessageCategory.custom) {
+          return ChatConfigurator.getDataSource().getStatusInfoView(item, _alignment, hideReceipts, messageSentAtDateTimeFormat)
+        }
+        else{
           return null;
         }
       } catch (error: any) {
@@ -4166,6 +4170,10 @@ const CometChatMessageList = (props: MessageListProps) => {
     };
   }, [processPendingMessages]);
 
+  const shouldShowEmptyState =
+  isAgentChat && !parentMessageId && messageList.length === 0;
+
+
   /**
    * Custom useCometChatMessageList for CometChatMessageList component.
    */
@@ -4235,7 +4243,7 @@ const CometChatMessageList = (props: MessageListProps) => {
               onScrolledToBottom={isAgentChat ? undefined : onBottomCallback}
               onScrolledToTop={isAgentChat && !parentMessageId ? undefined : onTopCallback}
               listItemKey='getMuid'
-              state={getCurrentMessageListState()}
+              state={shouldShowEmptyState ? States.empty :  getCurrentMessageListState()}
               loadingView={getLoaderHtml}
               hideError={hideError}
               errorView={getErrorHtml}

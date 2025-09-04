@@ -52,6 +52,19 @@ const CometChatAIAssistantMessageBubble: React.FC<CometChatAIAssistantMessageBub
                   {children}
                 </code>
               );
+            },
+            a({ href, children, ...props }: any) {
+              return (
+                <a
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className='cometchat-ai-assistant-message-bubble__link'
+                  {...props}
+                >
+                  {children}
+                </a>
+              );
             }
           }}
         />

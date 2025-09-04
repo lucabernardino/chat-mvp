@@ -15,10 +15,10 @@ import swedish from '../locales/sv/sv.json';
 import chinese from '../locales/zh/zh.json';
 import chineseTaiwan from '../locales/zh-tw/zh-tw.json';
 import japanese from '../locales/ja/ja.json';
-import korean from '../locales/ja/ja.json';
-import turkish from '../locales/ja/ja.json';
-import italian from '../locales/ja/ja.json';
-import dutch from '../locales/ja/ja.json';
+import korean from '../locales/ko/ko.json';
+import turkish from '../locales/tr/tr.json';
+import italian from '../locales/it/it.json';
+import dutch from '../locales/nl/nl.json';
 
 /**
  * Initializes the localization for both the sample app and the UI Kit.

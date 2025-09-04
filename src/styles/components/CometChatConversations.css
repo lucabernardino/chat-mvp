@@ -10,7 +10,10 @@
   background: var(--cometchat-background-color-01, #FFF);
   position: relative;
 }
-
+.cometchat-conversations .cometchat-conversations-header{
+min-height: 64px;
+box-sizing: border-box;
+}
 .cometchat-conversations .cometchat-list__body>div:not([class]):first-child {
   display: none;
 }

@@ -69,7 +69,7 @@ const CometChatCreateGroup = ({ setShowCreateGroup, onGroupCreated = () => { } }
             <input
               type="text"
               className='cometchat-create-group__input'
-              placeholder='Enter the group name'
+              placeholder={getLocalizedString("create_group_name_placeholder")}
               value={groupName}
               onChange={(e) => setGroupName(e.target.value)}
               required
@@ -82,7 +82,7 @@ const CometChatCreateGroup = ({ setShowCreateGroup, onGroupCreated = () => { } }
                 autoComplete="new-password"
                 type="password"
                 className='cometchat-create-group__input'
-                placeholder='Enter a password'
+                placeholder={getLocalizedString("create_group_password_placeholder")}
                 value={groupPassword}
                 onChange={(e) => setGroupPassword(e.target.value)}
                 required

@@ -1,3 +1,20 @@
+## [6.2.2] - 04-09-2025
+
+## New
+- None
+
+## Enhancements
+- None
+
+## Fixes
+- Fixed missing **localization** in the sample app for **call log details** and the **create group** components.
+
+## Deprecations
+- None
+
+## Removals
+- None
+
 ## [6.2.1] - 22-08-2025
 
 ## New

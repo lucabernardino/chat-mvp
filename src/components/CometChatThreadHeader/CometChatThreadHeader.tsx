@@ -372,7 +372,7 @@ const CometChatThreadHeader = (props: CometChatThreadHeaderProps) => {
             onErrorCallback(error, 'getBubbleView');
         }
         return null;
-    }, [updatedMessage, messageBubbleView,messageSentAtDateTimeFormat]);
+    }, [updatedMessage, hideReceipts, messageBubbleView,messageSentAtDateTimeFormat]);
 
     const getAdditionalClassName = useCallback(() => {
         try {

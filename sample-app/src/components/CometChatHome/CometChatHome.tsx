@@ -548,7 +548,7 @@ function CometChatHome(props: { theme?: string }) {
                         setShowNewChat(false);
 
                     }} />
-                    <div className='cometchat-new-chat-view__header-title'>New Chat</div>
+                    <div className='cometchat-new-chat-view__header-title'>{getLocalizedString('new_chat_title')}</div>
                 </div>
 
                 {/* Tabs for User and Group */}

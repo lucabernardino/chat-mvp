@@ -160,6 +160,19 @@ const CometChatStreamMessageBubble: React.FC<CometChatStreamMessageBubbleProps> 
                     {children}
                   </code>
                 );
+              },
+              a({ href, children, ...props }: any) {
+                return (
+                  <a
+                    href={href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className='cometchat-stream-message-bubble__link'
+                    {...props}
+                  >
+                    {children}
+                  </a>
+                );
               }
             }}
           />

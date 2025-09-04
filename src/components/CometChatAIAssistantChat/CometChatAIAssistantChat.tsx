@@ -157,6 +157,7 @@ const CometChatAIAssistantChatComponent = (props: AIAssistantChatProps) => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [goToMessage, setGoToMessage] = useState<CometChat.BaseMessage | null>(null);
     const [parentMessageId, setParentMessageId] = useState<number | null>(null);
+    const parentMessageIdRef = useRef<number | null>(null);
 
     // Use suggestions from props if available, otherwise use default suggestions
     const displaySuggestions = suggestedMessages.length > 0 ? suggestedMessages : (user.getMetadata() as any)?.suggestedMessages as string[];
@@ -176,7 +177,7 @@ const CometChatAIAssistantChatComponent = (props: AIAssistantChatProps) => {
         return <div className='cometchat-ai-assistant-chat__header-auxiliary-view'>
             {!hideNewChat && <div className='cometchat-ai-assistant-chat__header-auxiliary-view-new-chat'><CometChatButton hoverText={getLocalizedString("ai_assistant_chat_new_chat")} onClick={onNewChatButtonClick} iconURL={newChatIcon} /></div>}
             {!hideChatHistory && <div className='cometchat-ai-assistant-chat__header-auxiliary-view-chat-history'>
-                <CometChatButton hoverText={getLocalizedString("ai_assistant_chat_history")} onClick={onHistoryButtonClick} iconURL={chatHistoryIcon} />
+                <CometChatButton hoverText={getLocalizedString("ai_assistant_chat_history_title")} onClick={onHistoryButtonClick} iconURL={chatHistoryIcon} />
 
             </div>}
             {showCloseButton && <div className='cometchat-ai-assistant-chat__header-auxiliary-view-close-button'>
@@ -191,7 +192,8 @@ const CometChatAIAssistantChatComponent = (props: AIAssistantChatProps) => {
         setStartNewChat(prev => !prev);
         stopStreamingMessage();
         setGoToMessage(null)
-        setParentMessageId(null)
+        setParentMessageId(null);
+        parentMessageIdRef.current = null;
     }
 
     const onHistoryButtonClick = () => {
@@ -242,6 +244,18 @@ const CometChatAIAssistantChatComponent = (props: AIAssistantChatProps) => {
             </div>
         </div>
     );
+
+    function onDeleteChat(id?: number) {
+        if (id) {
+            if (parentMessageIdRef.current && id === parentMessageIdRef.current) {
+                onNewChatButtonClick();
+            }
+        }
+        else {
+            onNewChatButtonClick();
+            setIsSidebarOpen(false);
+        }
+    }
     return (
         <div className='cometchat' style={{ height: '100%', width: '100%', overflow: 'hidden' }}>
             <div className='cometchat-ai-assistant-chat__wrapper'>
@@ -300,9 +314,11 @@ const CometChatAIAssistantChatComponent = (props: AIAssistantChatProps) => {
 
                     <div className="cometchat-ai-assistant-chat__sidebar-content">
                         <CometChatAIAssistantChatHistory
+                            onNewChatClicked={onDeleteChat}
                             onMessageClicked={(message: CometChat.BaseMessage) => {
                                 setGoToMessage(message);
-                                setParentMessageId(message.getId())
+                                setParentMessageId(message.getId());
+                                parentMessageIdRef.current = message.getId();
                                 setIsSidebarOpen(false);
 
                             }}
