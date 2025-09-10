@@ -3880,7 +3880,7 @@ const CometChatMessageList = (props: MessageListProps) => {
             isAgentChat
             );
         }  
-        else if (item.getCategory() === CometChatUIKitConstants.MessageCategory.custom) {
+        else if (item.getCategory() === CometChatUIKitConstants.MessageCategory.custom && item.getType() != CometChatUIKitConstants.streamMessageTypes.run_started) {
           return ChatConfigurator.getDataSource().getStatusInfoView(item, _alignment, hideReceipts, messageSentAtDateTimeFormat)
         }
         else{
