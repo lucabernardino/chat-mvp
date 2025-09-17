@@ -282,15 +282,15 @@ padding-bottom: var(--cometchat-padding-2);
 }
 
 .cometchat-ai-assistant-chat__empty-state-greeting-message {
-    color: var(--cometchat-text-color-secondary);
+    color: var(--cometchat-text-color-primary);
     text-align: center;
-    font: var(--cometchat-font-heading3-regular);
+    font: var(--cometchat-font-heading4-medium);
 }
 
 .cometchat-ai-assistant-chat__empty-state-intro-message {
-    color: var(--cometchat-text-color-primary);
+    color: var(--cometchat-text-color-tertiary);
     text-align: center;
-    font: var(--cometchat-font-title-regular);
+    font: var(--cometchat-font-body-regular);
     padding-top: var(--cometchat-padding-1);
 }
 .cometchat-ai-assistant-chat .cometchat-message-bubble-outgoing .cometchat-message-bubble__body
@@ -393,7 +393,6 @@ background: var(--cometchat-error-color);
     display: flex;
     justify-content: flex-start;
     align-items: flex-start;
-    margin-top: var(--cometchat-margin-3);
     height: 20px;
     width: 20px;
     background: var(--cometchat-icon-color-secondary);

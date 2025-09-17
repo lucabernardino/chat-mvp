@@ -108,11 +108,8 @@ export class MessageListManager {
                             if (copiedMessage) {
                                 addMessage(copiedMessage);
                             }
-                            startStreamingMessage();
                         }
-                        else {
-                            handleWebsocketMessage(message);
-                        }
+                        handleWebsocketMessage(message);
                     }
                 })
             }

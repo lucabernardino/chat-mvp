@@ -9,8 +9,17 @@ import { ChatConfigurator, CometChatListItem, CometChatMessageHeader, CometChatU
 
 export const CometChatCallDetails = (props: { selectedItem: any, onBack?: () => void }) => {
     const { selectedItem, onBack } = props;
-    const callDetailTabItems = [getLocalizedString("participants"), getLocalizedString("recording"), getLocalizedString("history")];
-    const [activeTab, setActiveTab] = useState("Participants");
+    const callDetailTabItems = [{
+        id: "participants",
+        name: getLocalizedString("participants"),
+    }, {
+        id: "recording",
+        name: getLocalizedString("recording"),
+    }, {
+        id: "history",
+        name: getLocalizedString("history"),
+    }];
+    const [activeTab, setActiveTab] = useState("participants");
     const [user, setUser] = useState<CometChat.User>();
     const [subtitleText, setSubtitleText] = useState<string>();
     function verifyCallUser(call: any, loggedInUser: CometChat.User) {
@@ -105,18 +114,19 @@ export const CometChatCallDetails = (props: { selectedItem: any, onBack?: () => 
             <div className="cometchat-call-log-details__tabs">
                 {callDetailTabItems.map((tabItem) => (
                     <div
-                        onClick={() => setActiveTab(tabItem)}
-                        className={activeTab === tabItem ? "cometchat-call-log-details__tabs-tab-item-active" : "cometchat-call-log-details__tabs-tab-item"}
+                        key={tabItem.id}
+                        onClick={() => setActiveTab(tabItem.id)}
+                        className={activeTab === tabItem.id ? "cometchat-call-log-details__tabs-tab-item-active" : "cometchat-call-log-details__tabs-tab-item"}
                     >
-                        {tabItem}
+                        {tabItem.name}
                     </div>
                 ))}
             </div>
 
             <>
-                {activeTab === "Participants" ? <CometChatCallDetailsParticipants call={selectedItem} />
-                    : activeTab === "Recording" ? <CometChatCallDetailsRecording call={selectedItem} />
-                        : activeTab === "History" ? <CometChatCallDetailsHistory call={selectedItem} />
+                {activeTab === "participants" ? <CometChatCallDetailsParticipants call={selectedItem} />
+                    : activeTab === "recording" ? <CometChatCallDetailsRecording call={selectedItem} />
+                        : activeTab === "history" ? <CometChatCallDetailsHistory call={selectedItem} />
                             : null
                 }
             </>

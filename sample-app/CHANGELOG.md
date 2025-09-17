@@ -1,3 +1,15 @@
+## [6.2.3] - 17-09-2025
+
+## New
+- None
+
+## Enhancements
+- None
+
+## Fixes
+- Resolved a UI issue in call log details where the interface broke when switching tabs after changing the localization language.
+- Resolved an issue where leaving a group still kept the chat window for that group open.
+
 ## [6.2.2] - 04-09-2025
 
 ## New

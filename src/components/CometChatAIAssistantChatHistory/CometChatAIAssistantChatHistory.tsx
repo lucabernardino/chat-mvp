@@ -1,6 +1,6 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { CometChat } from "@cometchat/chat-sdk-javascript";
-import { States } from '../../Enums/Enums';
+import { MessageStatus, States } from '../../Enums/Enums';
 import { useCometChatErrorHandler } from "../../CometChatCustomHooks";
 import { CometChatUIKitLoginListener } from "../../CometChatUIKit/CometChatUIKitLoginListener";
 import { getThemeMode, sanitizeCalendarObject } from '../../utils/util';
@@ -16,6 +16,7 @@ import { CometChatDate } from '../BaseComponents/CometChatDate/CometChatDate';
 import { CometChatContextMenu } from '../BaseComponents/CometChatContextMenu/CometChatContextMenu';
 import { CometChatOption } from '../../modals';
 import { CometChatUIKitConstants } from '../../constants/CometChatUIKitConstants';
+import { CometChatMessageEvents, IMessages } from '../../events/CometChatMessageEvents';
 
 interface CometChatAIAssistantChatHistoryProps {
   /**
@@ -47,6 +48,12 @@ interface CometChatAIAssistantChatHistoryProps {
  * Callback function triggered when clicked on new chat button
  */
   onNewChatClicked?: ((id?:number) => void) | undefined;
+  /**
+    * Hides new chat button.
+    * @default false
+  */
+   hideNewChat?: boolean;
+
 }
 
 const CometChatAIAssistantChatHistory = (props: CometChatAIAssistantChatHistoryProps) => {
@@ -56,7 +63,8 @@ const CometChatAIAssistantChatHistory = (props: CometChatAIAssistantChatHistoryP
     onError,
     onClose,
     onMessageClicked,
-    onNewChatClicked
+    onNewChatClicked,
+    hideNewChat
   } = props;
 
   // State variables
@@ -316,6 +324,21 @@ const CometChatAIAssistantChatHistory = (props: CometChatAIAssistantChatHistoryP
       });
   }, [user, group, errorHandler]);
 
+  useEffect(() => {
+    let ccMessageSentEvent = CometChatMessageEvents.ccMessageSent.subscribe((data: IMessages) => {
+      if (data.status == MessageStatus.success) {
+        let message = data.message;
+        if (user && message.getType() == CometChatUIKitConstants.MessageTypes.text && message.getReceiverId() == user.getUid() && !message.getParentMessageId() && message.getSender().getUid() == loggedInUserRef.current?.getUid()) {
+          setMessageList((prevMessages) => {
+            messagesCountRef.current = prevMessages.length + 1;
+            return [message, ...prevMessages];
+          });
+        }
+      }
+    })
+    return () => ccMessageSentEvent?.unsubscribe();
+  }, [user]);
+
   /**
    * Initialize message list manager when user or group changes
    */
@@ -423,7 +446,7 @@ const CometChatAIAssistantChatHistory = (props: CometChatAIAssistantChatHistoryP
           <span className="cometchat-ai-assistant-chat-history__close-icon"></span>
         </button>
       </div>
-      {getNewChatButton()}
+      {!hideNewChat && getNewChatButton()}
     </div>
   }
 

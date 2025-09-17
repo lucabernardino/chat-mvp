@@ -3,25 +3,29 @@ import ReactMarkdown from 'react-markdown';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { oneDark, oneLight } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import remarkGfm from 'remark-gfm';
+import { getThemeMode } from '../../../utils/util';
 
 interface CometChatAIAssistantMessageBubbleProps {
   message?: CometChat.AIAssistantMessage
 }
 
 const CometChatAIAssistantMessageBubble: React.FC<CometChatAIAssistantMessageBubbleProps> = ({ message }) => {
-      const [theme, setTheme] = useState<any>(window.matchMedia('(prefers-color-scheme: dark)').matches ? oneDark : oneLight);
+  function getMarkDownTheme() {
+    return getThemeMode() === 'dark' ? oneDark : oneLight;
+  }
+  const [theme, setTheme] = useState<any>(getMarkDownTheme());
 
-    useEffect(() => {
-        const handleThemeChange = (e: MediaQueryListEvent) => {
-            setTheme(e.matches ? oneDark : oneLight);
-        };
-        const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-        setTheme(mediaQuery.matches ? oneDark : oneLight);
-        mediaQuery.addEventListener('change', handleThemeChange);
-        return () => {
-            mediaQuery.removeEventListener('change', handleThemeChange);
-        };
-    }, [message]);
+  useEffect(() => {
+    const handleThemeChange = (e: MediaQueryListEvent) => {
+      setTheme(getMarkDownTheme());
+    };
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    setTheme(getMarkDownTheme());
+    mediaQuery.addEventListener('change', handleThemeChange);
+    return () => {
+      mediaQuery.removeEventListener('change', handleThemeChange);
+    };
+  }, [message]);
   return (
     <div className='cometchat'
       style={{

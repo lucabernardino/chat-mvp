@@ -314,6 +314,7 @@ const CometChatAIAssistantChatComponent = (props: AIAssistantChatProps) => {
 
                     <div className="cometchat-ai-assistant-chat__sidebar-content">
                         <CometChatAIAssistantChatHistory
+                            hideNewChat={hideNewChat}
                             onNewChatClicked={onDeleteChat}
                             onMessageClicked={(message: CometChat.BaseMessage) => {
                                 setGoToMessage(message);

@@ -33,37 +33,30 @@
 /* Target all <p> tags without a class */
 .cometchat-stream-message-bubble>p:not([class]) {
   text-align: left;
-  line-height: 1.4 !important;
-  /* color: var(--cometchat-text-color-secondary); */
 }
 
 .cometchat-stream-message-bubble>ol:not([class]) {
   padding-left: 0px !important;
   margin-top: 0px !important;
   text-align: left !important;
-  /* color: var(--cometchat-text-color-secondary); */
 
 }
 
 .cometchat-stream-message-bubble li:not([class]) {
   text-align: left !important;
-  /* color: var(--cometchat-text-color-secondary); */
 
 }
 
-.cometchat-stream-message-bubble>ol:not([class]) ul:not([class]) {
-  padding-left: 20px !important;
+.cometchat-stream-message-bubble ol:not([class]),.cometchat-stream-message-bubble  ul:not([class]) {
+  padding-left: var(--cometchat-padding-5) !important;
   text-align: left !important;
-  /* color: var(--cometchat-text-color-secondary); */
 
 }
 
-.cometchat-stream-message-bubble>ul:not([class]) {
+.cometchat-stream-message-bubble ul:not([class]) {
   text-align: left !important;
-  /* color: var(--cometchat-text-color-secondary); */
 
 }
-
 .cometchat-stream-message-bubble__code-block {
   max-height: 300px;
   overflow: auto;
@@ -94,6 +87,7 @@
   height: fit-content;
   width: fit-content;
   min-width: fit-content;
+  padding-top: 1px;
 }
 
 
@@ -114,6 +108,7 @@
   width: fit-content;
   text-align: left;
   color: var(--cometchat-text-color-secondary);
+  padding-top: 1px;
 
 }
 
@@ -142,22 +137,38 @@
 }
 
 .cometchat-stream-message-bubble table {
-  width: 100%;
-  border-collapse: collapse;
+  width: fit-content;
+  max-width: 100%;
   table-layout: auto;
   display: block;
   overflow-x: auto;
+  border-radius: var(--cometchat-radius-2);
+  margin: var(--cometchat-margin-2) 0;
+  border-collapse: separate;
+  border-spacing: 0;
+  overflow: hidden;
 }
 
+/* Round only outer cells */
+.cometchat-stream-message-bubble tr:first-child th:first-child {
+  border-top-left-radius: var(--cometchat-radius-2);
+}
+.cometchat-stream-message-bubble tr:first-child th:last-child {
+  border-top-right-radius: var(--cometchat-radius-2);
+}
+.cometchat-stream-message-bubble tr:last-child td:first-child {
+  border-bottom-left-radius: var(--cometchat-radius-2);
+}
+.cometchat-stream-message-bubble tr:last-child td:last-child {
+  border-bottom-right-radius: var(--cometchat-radius-2);
+}
 .cometchat-stream-message-bubble th,
 .cometchat-stream-message-bubble td {
   padding: var(--cometchat-padding-2);
-  border: 1px solid var(--cometchat-border-color-light);
-  text-align: left;
-  word-break: break-word; /* prevents text overflow in cells */
-  min-width: 100px;
+  border: 1px solid var(--cometchat-border-color-dark);
+  width: fit-content;
+  max-width: 100%;
 }
-
 .cometchat-stream-message-bubble table::-webkit-scrollbar {
   width: 0px;
   height: 8px;
@@ -171,6 +182,80 @@
 .cometchat-stream-message-bubble table::-webkit-scrollbar-thumb {
   background: var(--cometchat-icon-color-secondary);
   border-radius: var(--cometchat-radius-2);
+}
+
+.cometchat-stream-message-bubble th,
+.cometchat-stream-message-bubble td {
+  padding: var(--cometchat-padding-2);
+  border: 1px solid var(--cometchat-border-color-dark);
+  width: fit-content;
+  max-width: 100%;
+}
+.cometchat-stream-message-bubble td{
+  text-align: left !important;
+}
+.cometchat-stream-message-bubble th{
+  text-align: center !important;
+}
+.cometchat-stream-message-bubble th{
+  background: var(--cometchat-background-color-04);
+}
+.cometchat-stream-message-bubble .cometchat-stream-message-bubble__link{
+  text-decoration: underline;
+  color: var(--cometchat-text-color-highlight);
+}
+
+.cometchat-stream-message-bubble li{
+  overflow: visible !important;
+  line-height: 20px;
+  padding: 6px 0px;
+}
+.cometchat-stream-message-bubble img{
+  max-height: 300px;
+  width: fit-content;
+  border-radius: var(--cometchat-radius-2);
+}
+.cometchat-stream-message-bubble > ol:first-child > li:first-child,
+.cometchat-stream-message-bubble > ul:first-child > li:first-child
+{
+  padding-top: 0px;
+}
+
+.cometchat-stream-message-bubble h1,
+.cometchat-stream-message-bubble h2,
+.cometchat-stream-message-bubble h3,
+.cometchat-stream-message-bubble h4,
+.cometchat-stream-message-bubble h5,
+.cometchat-stream-message-bubble h6 {
+  line-height: 20px;
+  font-size: initial;
+  padding: var(--cometchat-padding-2) 0px;
+  margin: 0;
+}
+.cometchat-stream-message-bubble > h1:first-child,
+.cometchat-stream-message-bubble > h2:first-child,
+.cometchat-stream-message-bubble > h3:first-child,
+.cometchat-stream-message-bubble > h4:first-child,
+.cometchat-stream-message-bubble > h5:first-child,
+.cometchat-stream-message-bubble > h6:first-child {
+  padding-top: 0px;
+}
+
+.cometchat-stream-message-bubble p{
+  line-height: 20px;
+  padding: var(--cometchat-padding-2) 0px;
+}
+
+.cometchat-stream-message-bubble > ul:first-child li:first-child > p:first-child{
+padding-top: 0px;
+}
+.cometchat-stream-message-bubble > ol:first-child li:first-child > p:first-child{
+padding-top: 0px;
+}
+
+.cometchat-stream-message-bubble > p:first-child{
+  padding-top: 0px;
+
 }
 @keyframes shimmer {
   0% {

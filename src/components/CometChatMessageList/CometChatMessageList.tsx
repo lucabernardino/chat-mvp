@@ -48,7 +48,7 @@ import { ComposerId } from "../../utils/MessagesDataSource";
 import { JSX } from 'react';
 import { useCometChatFrameContext } from "../../context/CometChatFrameContext";
 import { MessageUtils } from "../../utils/MessageUtils";
-import { streamingState$ } from "../../services/stream-message.service";
+import { startStreamingMessage, streamingState$ } from "../../services/stream-message.service";
 
 /**
  * Props for the MessageList component.
@@ -2486,6 +2486,7 @@ const CometChatMessageList = (props: MessageListProps) => {
               message.getType() === CometChatUIKitConstants.streamMessageTypes.run_started
             ) {
               if (lastMessage?.getId() === message.getId()) {
+                startStreamingMessage();
                 return [...prevMessageList, message];
               }
               return prevMessageList;

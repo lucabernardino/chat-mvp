@@ -1758,7 +1758,10 @@ try {
     const uid = user?.getUid() ? user.getUid() + "_" : "";
     const guid = group?.getGuid() ? group.getGuid() + "_" : "";
     const uuid = uid + guid + parentMessageId + CometChatUIKitUtility.ID();
-    uniqueIdRef.current = "cometchat-message-composer__input-" + uuid;
+    const currentId = uid + guid + parentMessageId;
+    if (!uniqueIdRef.current || !uniqueIdRef.current.includes(currentId)){
+      uniqueIdRef.current = "cometchat-message-composer__input-" + uuid;
+    }
     return uniqueIdRef.current;
   }, [user, group, parentMessageIdPropRef]);
 

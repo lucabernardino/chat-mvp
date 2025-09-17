@@ -7,6 +7,7 @@ import { getAIAssistantTools, IStreamData, messageStream, stopStreamingMessage, 
 import { getLocalizedString } from '../../../resources/CometChatLocalize/cometchat-localize';
 import CometChatErrorView from '../CometChatErrorView/CometChatErrorView';
 import remarkGfm from 'remark-gfm';
+import { getThemeMode } from '../../../utils/util';
 interface CometChatStreamMessageBubbleProps {
   message?: CometChat.AIAssistantBaseEvent
 }
@@ -28,19 +29,22 @@ const CometChatStreamMessageBubble: React.FC<CometChatStreamMessageBubbleProps> 
     CometChatUIKitConstants.streamMessageTypes.tool_call_result,
     CometChatUIKitConstants.streamMessageTypes.tool_call_start
   ]
-        const [theme, setTheme] = useState<any>(window.matchMedia('(prefers-color-scheme: dark)').matches ? oneDark : oneLight);
-  
-      useEffect(() => {
-          const handleThemeChange = (e: MediaQueryListEvent) => {
-              setTheme(e.matches ? oneDark : oneLight);
-          };
-          const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-          setTheme(mediaQuery.matches ? oneDark : oneLight);
-          mediaQuery.addEventListener('change', handleThemeChange);
-          return () => {
-              mediaQuery.removeEventListener('change', handleThemeChange);
-          };
-      }, [message]);
+  function getMarkDownTheme() {
+    return getThemeMode() === 'dark' ? oneDark : oneLight;
+  }
+  const [theme, setTheme] = useState<any>(getMarkDownTheme());
+
+  useEffect(() => {
+    const handleThemeChange = (e: MediaQueryListEvent) => {
+      setTheme(getMarkDownTheme());
+    };
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    setTheme(getMarkDownTheme());
+    mediaQuery.addEventListener('change', handleThemeChange);
+    return () => {
+      mediaQuery.removeEventListener('change', handleThemeChange);
+    };
+  }, [message]);
 
   const handleCopy = useCallback(() => {
     if (message?.getData()?.text) {

@@ -10,10 +10,9 @@
 .cometchat-ai-assistant-chat-history__loading,
 .cometchat-ai-assistant-chat-history__empty,
 .cometchat-ai-assistant-chat-history__error {
-  padding: 20px;
+  padding: var(--cometchat-padding-5);
   text-align: center;
   color: var(--cometchat-text-color-secondary);
-  font-size: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -59,6 +58,10 @@
   padding-left: 0;
 
 }
+.cometchat-ai-assistant-chat-history .cometchat-ai-assistant-chat-history__header-container-new-chat-container .cometchat-button__text{
+  color: var(--cometchat-text-color-primary);
+
+}
 .cometchat-ai-assistant-chat-history .cometchat-ai-assistant-chat-history__header-container-new-chat-container .cometchat-button__icon {
   background: var(--cometchat-icon-color-secondary);
   height: 24px;
@@ -84,6 +87,7 @@
   width: 100%;
   justify-content: space-between;
   align-items: center;
+  cursor: pointer;
 }
 
 .cometchat-ai-assistant-chat-history__list-item-date-header {

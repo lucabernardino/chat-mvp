@@ -1116,7 +1116,7 @@ getMessageSentAtDateFormat(messageSentAtDateTimeFormat?:CalendarObject) {
         const newScope = message["data"]["extras"]["scope"]["new"];
         actionMessage = `${byString} ${getLocalizedString(
           "message_list_action_made"
-        )} ${forString} ${newScope}`;
+        )} ${forString} ${getLocalizedString(`member_scope_${newScope}`)}`;
         break;
       }
       default:

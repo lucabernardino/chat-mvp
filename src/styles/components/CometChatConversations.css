@@ -398,7 +398,9 @@ box-sizing: border-box;
   box-shadow: none;
 }
 
-
+.cometchat-conversations .cometchat-list__header {
+  border-bottom: none;
+}
 .cometchat-conversations__trailing-view-options .cometchat-menu-list__main-menu-item-icon-delete {
  -webkit-mask: url("../../assets/delete_icon.svg") center center no-repeat;
   mask: url("../../assets/delete_icon.svg") center center no-repeat;

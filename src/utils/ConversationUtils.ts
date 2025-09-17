@@ -196,7 +196,7 @@ export class ConversationUtils {
         break;
       case CometChatUIKitConstants.groupMemberAction.SCOPE_CHANGE: {
         const newScope = message["data"]["extras"]["scope"]["new"];
-        actionMessage = `${byString} ${getLocalizedString("conversation_subtitle_made")} ${forString} ${newScope}`;
+        actionMessage = `${byString} ${getLocalizedString("conversation_subtitle_made")} ${forString} ${getLocalizedString(`member_scope_${newScope}`)}`;
         break;
       }
       default:
