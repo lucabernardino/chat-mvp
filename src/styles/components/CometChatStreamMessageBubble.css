@@ -205,10 +205,13 @@
   color: var(--cometchat-text-color-highlight);
 }
 
+.cometchat-stream-message-bubble ul,.cometchat-stream-message-bubble ol,.cometchat-stream-message-bubble hr{
+  margin: 0;
+}
 .cometchat-stream-message-bubble li{
   overflow: visible !important;
   line-height: 20px;
-  padding: 6px 0px;
+  padding: 0px 0px 6px 0px;
 }
 .cometchat-stream-message-bubble img{
   max-height: 300px;

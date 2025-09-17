@@ -142,11 +142,13 @@
   text-decoration: underline;
   color: var(--cometchat-text-color-highlight);
 }
-
+.cometchat-ai-assistant-message-bubble ul,.cometchat-ai-assistant-message-bubble ol,.cometchat-ai-assistant-message-bubble hr{
+  margin: 0;
+}
 .cometchat-ai-assistant-message-bubble li{
   overflow: visible !important;
   line-height: 20px;
-  padding: 6px 0px;
+  padding: 0px 0px 6px 0px;
 }
 .cometchat-ai-assistant-message-bubble > ol:first-child > li:first-child,
 .cometchat-ai-assistant-message-bubble > ul:first-child > li:first-child
