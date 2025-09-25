@@ -8,13 +8,13 @@ export const sampleUsers = {
     "users":[
         {
             "uid": "cometchat-uid-1",
-            "name": "Andrew Joseph",
-            "avatar": AndrewJoseph
+            "name": "Luca Bernardino",
+            "avatar": LucaBernardino
         },
         {
             "uid": "cometchat-uid-2",
-            "name": "George Alan",
-            "avatar": GeorgeAlan
+            "name": "Kris Savoia",
+            "avatar": KrisSavoia
         },
         {
            "uid": "cometchat-uid-3",
