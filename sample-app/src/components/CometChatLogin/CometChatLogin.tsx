@@ -139,7 +139,7 @@ const CometChatLogin = () => {
 
         <div className='cometchat-login__header'>
 
-          <div className='cometchat-login__title'>Sign in to cometchat</div>
+          <div className='cometchat-login__title'>Chat MVP</div>
           <div className='cometchat-login__sample-users'>
             <div className='cometchat-login__sample-users-title'>
               Using our sample users
